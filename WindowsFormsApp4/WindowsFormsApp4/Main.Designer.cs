@@ -30,69 +30,79 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.btn_manual = new Guna.UI2.WinForms.Guna2Button();
             this.btn_start = new Guna.UI2.WinForms.Guna2Button();
             this.guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
+            this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.SuspendLayout();
-            // 
-            // guna2HtmlLabel2
-            // 
-            this.guna2HtmlLabel2.AutoSize = false;
-            this.guna2HtmlLabel2.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel2.Font = new System.Drawing.Font("휴먼둥근헤드라인", 72F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.guna2HtmlLabel2.ForeColor = System.Drawing.Color.Brown;
-            this.guna2HtmlLabel2.Location = new System.Drawing.Point(846, 313);
-            this.guna2HtmlLabel2.Name = "guna2HtmlLabel2";
-            this.guna2HtmlLabel2.Size = new System.Drawing.Size(491, 152);
-            this.guna2HtmlLabel2.TabIndex = 2;
-            this.guna2HtmlLabel2.Text = "팡팡아!";
             // 
             // btn_manual
             // 
             this.btn_manual.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.btn_manual.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.button;
+            this.btn_manual.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btn_manual.BorderColor = System.Drawing.Color.Transparent;
             this.btn_manual.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btn_manual.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btn_manual.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btn_manual.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btn_manual.FillColor = System.Drawing.Color.Black;
+            this.btn_manual.FillColor = System.Drawing.Color.Transparent;
             this.btn_manual.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_manual.ForeColor = System.Drawing.Color.White;
-            this.btn_manual.Location = new System.Drawing.Point(509, 537);
+            this.btn_manual.ForeColor = System.Drawing.Color.NavajoWhite;
+            this.btn_manual.Location = new System.Drawing.Point(367, 617);
             this.btn_manual.Name = "btn_manual";
-            this.btn_manual.Size = new System.Drawing.Size(290, 118);
+            this.btn_manual.Size = new System.Drawing.Size(357, 125);
             this.btn_manual.TabIndex = 3;
-            this.btn_manual.Text = "설명서";
+            this.btn_manual.Text = "ＭＥＮＵ";
             this.btn_manual.Click += new System.EventHandler(this.btn_manual_Click);
             // 
             // btn_start
             // 
+            this.btn_start.BackColor = System.Drawing.Color.Transparent;
+            this.btn_start.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.button;
+            this.btn_start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btn_start.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btn_start.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btn_start.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btn_start.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btn_start.FillColor = System.Drawing.Color.Black;
+            this.btn_start.FillColor = System.Drawing.Color.Transparent;
             this.btn_start.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_start.ForeColor = System.Drawing.Color.White;
-            this.btn_start.Location = new System.Drawing.Point(901, 537);
+            this.btn_start.ForeColor = System.Drawing.Color.NavajoWhite;
+            this.btn_start.Location = new System.Drawing.Point(852, 617);
             this.btn_start.Name = "btn_start";
-            this.btn_start.Size = new System.Drawing.Size(283, 118);
+            this.btn_start.Size = new System.Drawing.Size(357, 123);
             this.btn_start.TabIndex = 4;
-            this.btn_start.Text = "시작";
+            this.btn_start.Text = "ＳＴＡＲＴ";
             this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
             // 
             // guna2HtmlLabel3
             // 
-            this.guna2HtmlLabel3.AutoSize = false;
             this.guna2HtmlLabel3.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel3.Font = new System.Drawing.Font("휴먼둥근헤드라인", 72F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.guna2HtmlLabel3.ForeColor = System.Drawing.Color.DarkOrange;
-            this.guna2HtmlLabel3.Location = new System.Drawing.Point(385, 251);
+            this.guna2HtmlLabel3.Location = new System.Drawing.Point(0, 0);
             this.guna2HtmlLabel3.Name = "guna2HtmlLabel3";
-            this.guna2HtmlLabel3.Size = new System.Drawing.Size(432, 152);
-            this.guna2HtmlLabel3.TabIndex = 5;
-            this.guna2HtmlLabel3.Text = "도망가";
+            this.guna2HtmlLabel3.Size = new System.Drawing.Size(3, 2);
+            this.guna2HtmlLabel3.TabIndex = 0;
+            this.guna2HtmlLabel3.Text = null;
+            // 
+            // guna2HtmlLabel2
+            // 
+            this.guna2HtmlLabel2.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel2.Location = new System.Drawing.Point(0, 0);
+            this.guna2HtmlLabel2.Name = "guna2HtmlLabel2";
+            this.guna2HtmlLabel2.Size = new System.Drawing.Size(3, 2);
+            this.guna2HtmlLabel2.TabIndex = 0;
+            this.guna2HtmlLabel2.Text = null;
+            // 
+            // guna2HtmlLabel1
+            // 
+            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(0, 0);
+            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            this.guna2HtmlLabel1.Size = new System.Drawing.Size(3, 2);
+            this.guna2HtmlLabel1.TabIndex = 0;
+            this.guna2HtmlLabel1.Text = null;
             // 
             // Main
             // 
@@ -100,11 +110,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.DarkSeaGreen;
-            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.main;
+            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.title1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1722, 931);
+            this.ClientSize = new System.Drawing.Size(1578, 944);
             this.Controls.Add(this.guna2HtmlLabel3);
-            this.Controls.Add(this.guna2HtmlLabel2);
             this.Controls.Add(this.btn_start);
             this.Controls.Add(this.btn_manual);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -112,15 +121,17 @@
             this.Name = "Main";
             this.Text = "Main";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
         private Guna.UI2.WinForms.Guna2Button btn_manual;
         private Guna.UI2.WinForms.Guna2Button btn_start;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
         private Guna.UI2.WinForms.Guna2AnimateWindow guna2AnimateWindow1;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
     }
 }
 

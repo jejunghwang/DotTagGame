@@ -106,12 +106,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\main.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\manual.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\title1.png" />
+    <None Include="Resources\button.jpg" />
     <Content Include="Resources\menu-button-89141.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
