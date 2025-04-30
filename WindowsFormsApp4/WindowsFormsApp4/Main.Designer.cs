@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.btn_manual = new Guna.UI2.WinForms.Guna2Button();
             this.btn_start = new Guna.UI2.WinForms.Guna2Button();
@@ -39,7 +40,7 @@
             // guna2HtmlLabel2
             // 
             this.guna2HtmlLabel2.AutoSize = false;
-            this.guna2HtmlLabel2.BackColor = System.Drawing.Color.White;
+            this.guna2HtmlLabel2.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel2.Font = new System.Drawing.Font("휴먼둥근헤드라인", 72F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.guna2HtmlLabel2.ForeColor = System.Drawing.Color.Brown;
             this.guna2HtmlLabel2.Location = new System.Drawing.Point(846, 313);
@@ -84,7 +85,7 @@
             // guna2HtmlLabel3
             // 
             this.guna2HtmlLabel3.AutoSize = false;
-            this.guna2HtmlLabel3.BackColor = System.Drawing.Color.Snow;
+            this.guna2HtmlLabel3.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel3.Font = new System.Drawing.Font("휴먼둥근헤드라인", 72F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.guna2HtmlLabel3.ForeColor = System.Drawing.Color.DarkOrange;
             this.guna2HtmlLabel3.Location = new System.Drawing.Point(385, 251);
@@ -107,6 +108,7 @@
             this.Controls.Add(this.btn_start);
             this.Controls.Add(this.btn_manual);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "Main";
             this.ResumeLayout(false);
