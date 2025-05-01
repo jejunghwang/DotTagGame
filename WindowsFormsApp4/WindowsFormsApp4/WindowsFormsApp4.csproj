@@ -111,6 +111,8 @@
   <ItemGroup>
     <None Include="Resources\title1.png" />
     <None Include="Resources\button.jpg" />
+    <None Include="Resources\bgm.wav" />
+    <None Include="Resources\buttonClick.wav" />
     <Content Include="Resources\menu-button-89141.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
