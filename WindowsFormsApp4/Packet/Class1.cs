@@ -6,11 +6,11 @@ namespace Packets
     public enum PacketType
     {
         move,
+        loginRequest,
+        loginResponse,
         chat,
         skill,
-        loginRequest,
-        status,
-        loginResponse
+        status
     }
 
     public interface Header
@@ -106,6 +106,36 @@ namespace Packets
             return new LoginResponsePacket
             {
                 successLogin = BitConverter.ToBoolean(buffer, 1)
+            };
+        }
+    }
+
+    public class ChatPacket : Header
+    {
+        public PacketType Type => PacketType.chat;
+        int playerId;
+        string message;
+
+        public byte[] ToBytes()
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            byte[] buffer = new byte[9 + messageBytes.Length];
+
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 1);
+            BitConverter.GetBytes(messageBytes.Length).CopyTo(buffer, 5);
+            messageBytes.CopyTo(buffer, 9);
+
+            return buffer;
+        }
+
+        public ChatPacket FromBytes(byte[] buffer)
+        {
+            int messageLength = BitConverter.ToInt32(buffer, 5);
+            string message = Encoding.UTF8.GetString(buffer, 9, messageLength);
+            return new ChatPacket
+            {
+                playerId = BitConverter.ToInt32(buffer, 1),
+                message = message
             };
         }
     }
