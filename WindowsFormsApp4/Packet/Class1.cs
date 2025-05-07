@@ -45,8 +45,6 @@ namespace Packets
                 x = BitConverter.ToSingle(buffer, 5),
                 y = BitConverter.ToSingle(buffer, 9)
             };
-
-
         }
     }
 

@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp4
 {
-    public partial class Start : Form
+    public partial class Menu : Form
     {
-        public Start()
+        public Menu()
         {
             InitializeComponent();
+        }
+
+        private void btn_cancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

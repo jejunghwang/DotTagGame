@@ -30,52 +30,36 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.btn_manual = new Guna.UI2.WinForms.Guna2Button();
-            this.btn_start = new Guna.UI2.WinForms.Guna2Button();
+            this.btn_menu = new Guna.UI2.WinForms.Guna2Button();
             this.guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
             this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.btn_start = new Guna.UI2.WinForms.Guna2Button();
             this.SuspendLayout();
             // 
-            // btn_manual
+            // btn_menu
             // 
-            this.btn_manual.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.btn_manual.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.button;
-            this.btn_manual.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_manual.BorderColor = System.Drawing.Color.Transparent;
-            this.btn_manual.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btn_manual.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btn_manual.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btn_manual.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btn_manual.FillColor = System.Drawing.Color.Transparent;
-            this.btn_manual.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_manual.ForeColor = System.Drawing.Color.NavajoWhite;
-            this.btn_manual.Location = new System.Drawing.Point(367, 617);
-            this.btn_manual.Name = "btn_manual";
-            this.btn_manual.Size = new System.Drawing.Size(357, 125);
-            this.btn_manual.TabIndex = 3;
-            this.btn_manual.Text = "ＭＥＮＵ";
-            this.btn_manual.Click += new System.EventHandler(this.btn_manual_Click);
-            // 
-            // btn_start
-            // 
-            this.btn_start.BackColor = System.Drawing.Color.Transparent;
-            this.btn_start.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.button;
-            this.btn_start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_start.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btn_start.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btn_start.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btn_start.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btn_start.FillColor = System.Drawing.Color.Transparent;
-            this.btn_start.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_start.ForeColor = System.Drawing.Color.NavajoWhite;
-            this.btn_start.Location = new System.Drawing.Point(852, 617);
-            this.btn_start.Name = "btn_start";
-            this.btn_start.Size = new System.Drawing.Size(357, 123);
-            this.btn_start.TabIndex = 4;
-            this.btn_start.Text = "ＳＴＡＲＴ";
-            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
+            this.btn_menu.BackColor = System.Drawing.Color.Transparent;
+            this.btn_menu.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_menu.BackgroundImage")));
+            this.btn_menu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btn_menu.BorderColor = System.Drawing.Color.Transparent;
+            this.btn_menu.BorderRadius = 100;
+            this.btn_menu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_menu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_menu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_menu.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_menu.FillColor = System.Drawing.Color.Transparent;
+            this.btn_menu.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_menu.ForeColor = System.Drawing.Color.NavajoWhite;
+            this.btn_menu.Location = new System.Drawing.Point(300, 480);
+            this.btn_menu.Name = "btn_menu";
+            this.btn_menu.ShadowDecoration.BorderRadius = 10;
+            this.btn_menu.ShadowDecoration.Enabled = true;
+            this.btn_menu.Size = new System.Drawing.Size(250, 100);
+            this.btn_menu.TabIndex = 3;
+            this.btn_menu.Text = "MENU";
+            this.btn_menu.Click += new System.EventHandler(this.btn_menu_Click);
             // 
             // guna2HtmlLabel3
             // 
@@ -104,22 +88,45 @@
             this.guna2HtmlLabel1.TabIndex = 0;
             this.guna2HtmlLabel1.Text = null;
             // 
+            // btn_start
+            // 
+            this.btn_start.BackColor = System.Drawing.Color.Transparent;
+            this.btn_start.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_start.BackgroundImage")));
+            this.btn_start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btn_start.BorderRadius = 100;
+            this.btn_start.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_start.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_start.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_start.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_start.FillColor = System.Drawing.Color.Transparent;
+            this.btn_start.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_start.ForeColor = System.Drawing.Color.NavajoWhite;
+            this.btn_start.Location = new System.Drawing.Point(700, 480);
+            this.btn_start.Name = "btn_start";
+            this.btn_start.ShadowDecoration.BorderRadius = 10;
+            this.btn_start.ShadowDecoration.Enabled = true;
+            this.btn_start.Size = new System.Drawing.Size(250, 100);
+            this.btn_start.TabIndex = 4;
+            this.btn_start.Text = "START";
+            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
+            // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSize = true;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.title1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1578, 944);
+            this.ClientSize = new System.Drawing.Size(1258, 744);
             this.Controls.Add(this.guna2HtmlLabel3);
             this.Controls.Add(this.btn_start);
-            this.Controls.Add(this.btn_manual);
+            this.Controls.Add(this.btn_menu);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Location = new System.Drawing.Point(750, 480);
             this.Name = "Main";
-            this.Text = "Main";
+            this.Text = "5";
             this.Load += new System.EventHandler(this.Main_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -127,7 +134,7 @@
         }
 
         #endregion
-        private Guna.UI2.WinForms.Guna2Button btn_manual;
+        private Guna.UI2.WinForms.Guna2Button btn_menu;
         private Guna.UI2.WinForms.Guna2Button btn_start;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
         private Guna.UI2.WinForms.Guna2AnimateWindow guna2AnimateWindow1;
