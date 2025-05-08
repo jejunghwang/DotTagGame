@@ -32,8 +32,7 @@
             // 
             // Lounge
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1258, 744);
             this.Name = "Lounge";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

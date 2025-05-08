@@ -52,8 +52,10 @@ namespace WindowsFormsApp4
                 stream.Read(readBuffer, 0, packetLength);
 
                 var response = Packets.RegUsrResponsePacket.FromBytes(readBuffer);
-                
-                MessageBox.Show("회원가입 성공!");
+                if (response.successReg)
+                    MessageBox.Show("회원가입 성공!");
+                else
+                    MessageBox.Show("다른 아이디로 시도하세요!");
             }
             catch (Exception ex)
             {

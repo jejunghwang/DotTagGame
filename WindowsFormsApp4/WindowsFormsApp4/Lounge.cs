@@ -25,7 +25,7 @@ namespace WindowsFormsApp4
             if (mainForm != null && !mainForm.IsDisposed)
             {
                 mainForm.bgm.Stop();   // BGM 종료
-                mainForm.Hide();      // MainForm 숨김
+                //mainForm.Hide();      // MainForm 숨김
             }
         }
     }
