@@ -16,9 +16,12 @@ namespace WindowsFormsApp4
 {
     public partial class Login : Form
     {
-        public Login()
+        private Main mainForm;
+
+        public Login(Main mainForm)
         {
             InitializeComponent();
+            this.mainForm = mainForm;
         }
 
         private void Login_Load(object sender, EventArgs e)
@@ -68,8 +71,8 @@ namespace WindowsFormsApp4
                  {
                     // 로딩 폼 띄우기 
                     this.Hide();
-
-                    Loading load = new Loading();
+                 
+                    Loading load = new Loading(mainForm);
                     load.ShowDialog();
                  }
                  else

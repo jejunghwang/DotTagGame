@@ -16,7 +16,7 @@ namespace WindowsFormsApp4
 {
     public partial class Main : Form
     {
-        public static SoundPlayer bgm;
+        public SoundPlayer bgm;
         private Panel overlayPanel;
 
         TcpClient client;
@@ -111,7 +111,8 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            Login login = new Login();
+            Login login = new Login(this);
+            login.Owner = this;
             login.StartPosition = FormStartPosition.CenterParent;
             login.ShowDialog();
 

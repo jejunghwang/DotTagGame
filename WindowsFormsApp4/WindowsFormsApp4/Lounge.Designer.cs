@@ -38,6 +38,7 @@
             this.Name = "Lounge";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";
+            this.Load += new System.EventHandler(this.Lounge_Load);
             this.ResumeLayout(false);
 
         }

@@ -12,9 +12,21 @@ namespace WindowsFormsApp4
 {
     public partial class Lounge : Form
     {
-        public Lounge()
+        private Main mainForm;
+
+        public Lounge(Main mainForm)
         {
             InitializeComponent();
+            this.mainForm = mainForm;
+        }
+
+        private void Lounge_Load(object sender, EventArgs e)
+        {
+            if (mainForm != null && !mainForm.IsDisposed)
+            {
+                mainForm.bgm.Stop();   // BGM 종료
+                mainForm.Hide();      // MainForm 숨김
+            }
         }
     }
 }
