@@ -65,8 +65,8 @@ namespace Packets
             byte[] idBytes = Encoding.UTF8.GetBytes(id);
             byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
             
-            packetLen = 13 + idBytes.Length + pwBytes.Length;
-            byte[] buffer = new byte[packetLen];
+            packetLen = 9 + idBytes.Length + pwBytes.Length;
+            byte[] buffer = new byte[4 + packetLen];
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
@@ -124,20 +124,20 @@ namespace Packets
         }
     }
 
-    public class RegUsrRequest : Header
+    public class RegUsrRequestPacket : Header
     {
         public PacketType Type => PacketType.RegUsrRequest;
 
         int packetLen;
-        string id, pw;
+        public string id, pw;
 
         public byte[] ToBytes()
         {
             byte[] idBytes = Encoding.UTF8.GetBytes(id);
             byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
 
-            packetLen = idBytes.Length + pwBytes.Length + 13;
-            byte[] buffer = new byte[packetLen];
+            packetLen = idBytes.Length + pwBytes.Length + 9;
+            byte[] buffer = new byte[4 + packetLen];
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
@@ -151,7 +151,7 @@ namespace Packets
             return buffer;
         }
 
-        public static RegUsrRequest FromBytes(byte[] buffer)
+        public static RegUsrRequestPacket FromBytes(byte[] buffer)
         {
             int idLength = BitConverter.ToInt32(buffer, 1);
             string id = Encoding.UTF8.GetString(buffer, 5, idLength);
@@ -159,7 +159,7 @@ namespace Packets
             int pwLength = BitConverter.ToInt32(buffer, 5 + idLength);
             string pw = Encoding.UTF8.GetString(buffer, 9 + idLength, pwLength);
 
-            return new RegUsrRequest
+            return new RegUsrRequestPacket
             {
                 id = id,
                 pw = pw
@@ -167,52 +167,27 @@ namespace Packets
         }
     }
 
-    public class RegUsrResponse : Header
+    public class RegUsrResponsePacket : Header
     {
         public PacketType Type => PacketType.RegUsrResponse;
 
-        int packetLen;
-        bool successReg;
-        string id, pwd;
+        public int packetLen = 2;
+        public bool successReg;
 
         public byte[] ToBytes()
         {
-            byte[] idBytes = Encoding.UTF8.GetBytes(id);
-            byte[] pwdBytes = Encoding.UTF8.GetBytes(pwd);
+            byte[] buffer = new byte[6];
 
-            packetLen = 14 + idBytes.Length + pwdBytes.Length;
-            byte[] buffer = new byte[packetLen];
-
-            buffer[0] = (byte)Type;
-            BitConverter.GetBytes(successReg).CopyTo(buffer, 1);
-            BitConverter.GetBytes(packetLen).CopyTo(buffer, 2);
-            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 6);
-            idBytes.CopyTo(buffer, 10);
-
-            BitConverter.GetBytes(pwdBytes.Length).CopyTo(buffer, 10 + idBytes.Length);
-            pwdBytes.CopyTo(buffer, 14 + idBytes.Length);
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(successReg).CopyTo(buffer, 5);
 
             return buffer;
         }
 
-        public static RegUsrResponse FromBytes(byte[] buffer)
+        public static RegUsrResponsePacket FromBytes(byte[] buffer)
         {
-            bool successReg = BitConverter.ToBoolean(buffer, 1);
-            int idLength = BitConverter.ToInt32(buffer, 2);
-            int packetLen = BitConverter.ToInt32(buffer, 6);
-
-            string id = Encoding.UTF8.GetString(buffer, 10, idLength);
-
-            int pwdLength = BitConverter.ToInt32(buffer, 10 + idLength);
-            string pwd = Encoding.UTF8.GetString(buffer, 14 + idLength, pwdLength);
-
-            return new RegUsrResponse
-            {
-                successReg = successReg,
-                packetLen = packetLen,
-                id = id,
-                pwd = pwd
-            };
+            return new RegUsrResponsePacket { successReg = BitConverter.ToBoolean(buffer, 5) };
         }
     }
 
@@ -228,8 +203,8 @@ namespace Packets
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
 
-            packetLen = 13 + messageBytes.Length;
-            byte[] buffer = new byte[packetLen];
+            packetLen = 9 + messageBytes.Length;
+            byte[] buffer = new byte[4 + packetLen];
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
