@@ -9,6 +9,8 @@ namespace Packets
         move,
         loginRequest,
         loginResponse,
+        addUsrRequest,
+        addUsrResponse,
         chat,
         skill,
         status
