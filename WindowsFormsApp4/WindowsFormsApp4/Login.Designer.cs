@@ -37,6 +37,8 @@
             this.btn_cancel = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.lbl_register = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.register = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.SuspendLayout();
             // 
             // guna2Elipse1
@@ -55,7 +57,7 @@
             this.txtId.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtId.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtId.Location = new System.Drawing.Point(123, 232);
+            this.txtId.Location = new System.Drawing.Point(123, 223);
             this.txtId.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.txtId.Name = "txtId";
             this.txtId.PlaceholderText = "아이디를 입력하세요.";
@@ -74,7 +76,7 @@
             this.txtPw.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtPw.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtPw.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPw.Location = new System.Drawing.Point(123, 340);
+            this.txtPw.Location = new System.Drawing.Point(123, 331);
             this.txtPw.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.txtPw.Name = "txtPw";
             this.txtPw.PlaceholderText = "비밀번호를 입력하세요.";
@@ -96,8 +98,8 @@
             this.btn_enter.FillColor2 = System.Drawing.Color.Transparent;
             this.btn_enter.Font = new System.Drawing.Font("휴먼둥근헤드라인", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_enter.ForeColor = System.Drawing.Color.White;
-            this.btn_enter.Location = new System.Drawing.Point(123, 448);
-            this.btn_enter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_enter.Location = new System.Drawing.Point(123, 432);
+            this.btn_enter.Margin = new System.Windows.Forms.Padding(4);
             this.btn_enter.Name = "btn_enter";
             this.btn_enter.Size = new System.Drawing.Size(553, 100);
             this.btn_enter.TabIndex = 4;
@@ -143,13 +145,30 @@
             this.lbl_register.AutoSize = false;
             this.lbl_register.BackColor = System.Drawing.Color.Transparent;
             this.lbl_register.Font = new System.Drawing.Font("함초롬돋움", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_register.Location = new System.Drawing.Point(399, 814);
-            this.lbl_register.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lbl_register.Location = new System.Drawing.Point(278, 550);
             this.lbl_register.Name = "lbl_register";
-            this.lbl_register.Size = new System.Drawing.Size(409, 46);
-            this.lbl_register.TabIndex = 8;
+            this.lbl_register.Size = new System.Drawing.Size(303, 27);
+            this.lbl_register.TabIndex = 1;
             this.lbl_register.Text = "아직 계정이 없으신가요?";
-            this.lbl_register.Click += new System.EventHandler(this.lbl_register_Click);
+            this.lbl_register.Click += new System.EventHandler(this.lbl_register_Click_1);
+            // 
+            // guna2HtmlLabel1
+            // 
+            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(0, 0);
+            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            this.guna2HtmlLabel1.Size = new System.Drawing.Size(3, 2);
+            this.guna2HtmlLabel1.TabIndex = 0;
+            this.guna2HtmlLabel1.Text = null;
+            // 
+            // register
+            // 
+            this.register.BackColor = System.Drawing.Color.Transparent;
+            this.register.Location = new System.Drawing.Point(0, 0);
+            this.register.Name = "register";
+            this.register.Size = new System.Drawing.Size(0, 0);
+            this.register.TabIndex = 0;
+            this.register.Text = null;
             // 
             // Login
             // 
@@ -159,6 +178,8 @@
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.login;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 700);
+            this.Controls.Add(this.register);
+            this.Controls.Add(this.guna2HtmlLabel1);
             this.Controls.Add(this.lbl_register);
             this.Controls.Add(this.guna2Button1);
             this.Controls.Add(this.btn_cancel);
@@ -172,6 +193,7 @@
             this.Text = "Form3";
             this.Load += new System.EventHandler(this.Login_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -183,5 +205,7 @@
         private Guna.UI2.WinForms.Guna2Button btn_cancel;
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
         private Guna.UI2.WinForms.Guna2HtmlLabel lbl_register;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Guna.UI2.WinForms.Guna2HtmlLabel register;
     }
 }
