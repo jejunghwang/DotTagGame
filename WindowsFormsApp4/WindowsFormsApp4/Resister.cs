@@ -35,7 +35,7 @@ namespace WindowsFormsApp4
                 TcpClient client = new TcpClient("127.0.0.1", 9999);
                 NetworkStream stream = client.GetStream();
 
-                var regPacket = new Packets.RegUsrRequest
+                var regPacket = new Packets.RegUsrRequestPacket
                 {
                     id = userId,
                     pw = password
@@ -51,7 +51,7 @@ namespace WindowsFormsApp4
                 readBuffer = new byte[packetLength];
                 stream.Read(readBuffer, 0, packetLength);
 
-                var response = Packets.RegUsrResponse.FromBytes(readBuffer);
+                var response = Packets.RegUsrResponsePacket.FromBytes(readBuffer);
 
                 MessageBox.Show("회원가입 성공!");
             }
