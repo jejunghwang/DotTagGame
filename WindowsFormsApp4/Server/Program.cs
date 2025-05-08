@@ -48,18 +48,26 @@ namespace Server
                         buffer = new byte[packetLength];
                         await stream.ReadAsync(buffer, 0, packetLength);
 
+                        byte[] writeBuffer;
                         switch ((PacketType)buffer[0])
                         {
                             case PacketType.loginRequest:
                                 Console.WriteLine("request login.");
-                                LoginRequestPacket packet = LoginRequestPacket.FromBytes(buffer);
+                                LoginRequestPacket loginPacket = LoginRequestPacket.FromBytes(buffer);
 
-                                byte[] writeBuffer = createLoginResponsePacket(packet).ToBytes();
+                                writeBuffer = createLoginResponsePacket(loginPacket).ToBytes();
 
                                 stream.Write(writeBuffer, 0, writeBuffer.Length);
+                                Console.WriteLine("sent response packet.");
                                 break;
                             case PacketType.RegUsrRequest:
+                                Console.WriteLine("request register user.");
+                                RegUsrRequestPacket registerPacket = RegUsrRequestPacket.FromBytes(buffer);
 
+                                writeBuffer = createRegisterResponsePacket(registerPacket).ToBytes();
+
+                                stream.Write(writeBuffer, 0, writeBuffer.Length);
+                                Console.WriteLine("sent response packet.");
                                 break;
                             case PacketType.move:
 
@@ -96,13 +104,11 @@ namespace Server
             {
                 if (line == packet.id + ',' + packet.pw)
                 {
-                    LoginResponsePacket response = new LoginResponsePacket
+                    return new LoginResponsePacket
                     {
                         userId = newId,
                         successLogin = true
                     };
-
-                    return response;
                 }
             }
 
@@ -112,6 +118,25 @@ namespace Server
                 successLogin = false
             };
 
+        }
+
+        static RegUsrResponsePacket createRegisterResponsePacket(RegUsrRequestPacket packet)
+        {
+            StreamReader rStream = new StreamReader("loginInfo.csv");
+
+            string line;
+            while((line = rStream.ReadLine()) != null)
+            {
+                if(line == packet.id + ',' + packet.pw)
+                {
+                    return new RegUsrResponsePacket { successReg = false };
+                }
+            }
+
+            StreamWriter wStream = new StreamWriter("loginInfo.csv", true);
+            wStream.WriteLine(packet.id + ',' + packet.pw);
+
+            return new RegUsrResponsePacket { successReg = true };
         }
     }
 }

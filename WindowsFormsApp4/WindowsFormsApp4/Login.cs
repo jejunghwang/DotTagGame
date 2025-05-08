@@ -54,7 +54,7 @@ namespace WindowsFormsApp4
                  byte[] recv = new byte[10]; 
                  stream.Read(recv, 0, recv.Length);
 
-                 var response = Packets.LoginResponsePacket.FromBytes(recv);
+                 var response = LoginResponsePacket.FromBytes(recv);
 
                 // stream.Close();
                 // client.Close();
