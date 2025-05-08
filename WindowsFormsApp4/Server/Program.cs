@@ -35,8 +35,13 @@ namespace Server
 
                     _ = Task.Run(async () =>
                     {
-                        byte[] readBuffer = new byte[100];
+                        byte[] buffer = new byte[4];
                         NetworkStream stream = client.GetStream();
+                        await stream.ReadAsync(buffer, 0, 4);
+
+                        buffer.
+
+                        byte[] readBuffer = new byte[100];
                         stream.Read(readBuffer, 0, readBuffer.Length);
                     });
 
