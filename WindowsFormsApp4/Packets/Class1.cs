@@ -26,16 +26,18 @@ namespace Packets
     {
         public PacketType Type => PacketType.move;
 
+        public int packetLen = 13;
         public int playerId;
         public float x, y;
 
         public byte[] ToBytes()
         {
-            byte[] buffer = new byte[13];
-            buffer[0] = (byte)Type;
-            BitConverter.GetBytes(playerId).CopyTo(buffer, 1);
-            BitConverter.GetBytes(x).CopyTo(buffer, 5);
-            BitConverter.GetBytes(y).CopyTo(buffer, 9);
+            byte[] buffer = new byte[17];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(x).CopyTo(buffer, 9);
+            BitConverter.GetBytes(y).CopyTo(buffer, 13);
 
             return buffer;
         }
@@ -55,20 +57,25 @@ namespace Packets
     {
         public PacketType Type => PacketType.loginRequest;
 
+        public int packetLen;
         public string id, pw;
 
         public byte[] ToBytes()
         {
-            byte[] buffer = new byte[9 + id.Length + pw.Length];
-            buffer[0] = (byte)Type;
             byte[] idBytes = Encoding.UTF8.GetBytes(id);
             byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
+            
+            packetLen = 9 + idBytes.Length + pwBytes.Length;
+            byte[] buffer = new byte[packetLen];
 
-            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 1);
-            idBytes.CopyTo(buffer, 5);
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
 
-            BitConverter.GetBytes(pwBytes.Length).CopyTo(buffer, 5 + idBytes.Length);
-            pwBytes.CopyTo(buffer, 9 + idBytes.Length);
+            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 5);
+            idBytes.CopyTo(buffer, 9);
+
+            BitConverter.GetBytes(pwBytes.Length).CopyTo(buffer, 9 + idBytes.Length);
+            pwBytes.CopyTo(buffer, 13 + idBytes.Length);
 
             return buffer;
         }
@@ -93,14 +100,16 @@ namespace Packets
     {
         public PacketType Type => PacketType.loginResponse;
 
+        int packetLen = 6;
         bool successLogin;
         int userId;
         public byte[] ToBytes()
         {
-            byte[] buffer = new byte[6];
-            buffer[0] = (byte)Type;
-            BitConverter.GetBytes(successLogin).CopyTo(buffer, 1);
-            BitConverter.GetBytes(userId).CopyTo(buffer, 2);
+            byte[] buffer = new byte[10];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(successLogin).CopyTo(buffer, 5);
+            BitConverter.GetBytes(userId).CopyTo(buffer, 6);
 
             return buffer;
         }
@@ -119,21 +128,25 @@ namespace Packets
     {
         public PacketType Type => PacketType.addUsrRequest;
 
+        int packetLen;
         string id, pw;
 
         public byte[] ToBytes()
         {
             byte[] idBytes = Encoding.UTF8.GetBytes(id);
             byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
-            byte[] buffer = new byte[9 + idBytes.Length + pwBytes.Length];
 
-            buffer[0] = (byte)Type;
+            packetLen = idBytes.Length + pwBytes.Length + 13;
+            byte[] buffer = new byte[packetLen];
 
-            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 1);
-            idBytes.CopyTo(buffer, 5);
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
 
-            BitConverter.GetBytes(pwBytes.Length).CopyTo(buffer, 5 + idBytes.Length);
-            pwBytes.CopyTo(buffer, 9 + idBytes.Length);
+            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 5);
+            idBytes.CopyTo(buffer, 9);
+
+            BitConverter.GetBytes(pwBytes.Length).CopyTo(buffer, 9 + idBytes.Length);
+            pwBytes.CopyTo(buffer, 13 + idBytes.Length);
 
             return buffer;
         }
@@ -157,17 +170,24 @@ namespace Packets
     public class ChatPacket : Header
     {
         public PacketType Type => PacketType.chat;
+
+        int packetLen;
         int playerId;
         string message;
 
         public byte[] ToBytes()
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-            byte[] buffer = new byte[9 + messageBytes.Length];
 
-            BitConverter.GetBytes(playerId).CopyTo(buffer, 1);
-            BitConverter.GetBytes(messageBytes.Length).CopyTo(buffer, 5);
-            messageBytes.CopyTo(buffer, 9);
+            packetLen = 13 + messageBytes.Length;
+            byte[] buffer = new byte[packetLen];
+
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(messageBytes.Length).CopyTo(buffer, 9);
+            messageBytes.CopyTo(buffer, 13);
 
             return buffer;
         }
