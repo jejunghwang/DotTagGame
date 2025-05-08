@@ -13,13 +13,16 @@ namespace WindowsFormsApp4
 {
     public partial class Loading : Form
     {
+        private Main mainForm;
+
         private int frame = 0;
         int count = 19;
         private List<Image> runFrames = new List<Image>();
 
-        public Loading()
+        public Loading(Main mainForm)
         {
             InitializeComponent();
+            this.mainForm = mainForm;
 
             runFrames.Add(Properties.Resources.pang1_left_1);
             runFrames.Add(Properties.Resources.pang1_left_2);
@@ -45,7 +48,7 @@ namespace WindowsFormsApp4
                 timerFrame.Stop();
 
                 this.Hide();
-                Lounge lounge = new Lounge();
+                Lounge lounge = new Lounge(mainForm);
                 lounge.ShowDialog();
             }
             frame = (frame + 1) % runFrames.Count;
