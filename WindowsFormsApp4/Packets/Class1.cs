@@ -101,7 +101,7 @@ namespace Packets
         public PacketType Type => PacketType.loginResponse;
 
         int packetLen = 6;
-        bool successLogin;
+        public bool successLogin;
         int userId;
         public byte[] ToBytes()
         {
@@ -215,8 +215,6 @@ namespace Packets
             };
         }
     }
-
-
 
     public class ChatPacket : Header
     {

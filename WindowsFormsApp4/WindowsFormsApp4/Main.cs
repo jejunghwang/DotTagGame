@@ -84,9 +84,9 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            Menu manual = new Menu();
-            manual.Owner = this;
-            manual.ShowDialog();
+            Menu menu = new Menu();
+            menu.StartPosition = FormStartPosition.CenterParent;
+            menu.ShowDialog();
 
             overlayPanel.Visible = false;
         }
