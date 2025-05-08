@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Packets;
@@ -11,6 +13,8 @@ namespace Server
 {
     internal class Program
     {
+        static bool[] usrId = new bool[100];
+
         static void Main(string[] args)
         {
             RunServerAsync().GetAwaiter().GetResult();
@@ -48,6 +52,11 @@ namespace Server
                         {
                             case PacketType.loginRequest:
                                 Console.WriteLine("request login.");
+                                LoginRequestPacket packet = LoginRequestPacket.FromBytes(buffer);
+
+                                byte[] writeBuffer = createLoginResponsePacket(packet).ToBytes();
+
+                                stream.Write(writeBuffer, 0, writeBuffer.Length);
                                 break;
                             case PacketType.RegUsrRequest:
 
@@ -72,6 +81,37 @@ namespace Server
             }
 
             Console.WriteLine("\n서버가 종료됩니다.");
+        }
+
+        static LoginResponsePacket createLoginResponsePacket(LoginRequestPacket packet)
+        {
+            StreamReader rStream = new StreamReader("loginInfo.csv");
+
+            int newId = 0;
+            while (usrId[newId]) { newId++; }
+
+
+            string line;
+            while ((line = rStream.ReadLine()) != null)
+            {
+                if (line == packet.id + ',' + packet.pw)
+                {
+                    LoginResponsePacket response = new LoginResponsePacket
+                    {
+                        userId = newId,
+                        successLogin = true
+                    };
+
+                    return response;
+                }
+            }
+
+            return new LoginResponsePacket
+            {
+                userId = 0,
+                successLogin = false
+            };
+
         }
     }
 }

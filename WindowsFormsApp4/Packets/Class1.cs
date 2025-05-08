@@ -101,8 +101,8 @@ namespace Packets
         public PacketType Type => PacketType.loginResponse;
 
         int packetLen = 6;
-        bool successLogin;
-        int userId;
+        public bool successLogin;
+        public int userId;
         public byte[] ToBytes()
         {
             byte[] buffer = new byte[10];
