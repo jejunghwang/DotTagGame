@@ -32,7 +32,7 @@ namespace WindowsFormsApp4
             this.Close();
         }
 
-/*        private void btn_enter_Click(object sender, EventArgs e)
+        private void btn_enter_Click(object sender, EventArgs e)
          {
              string userId = txtId.Text.Trim();
              string password = txtPw.Text;
@@ -51,13 +51,13 @@ namespace WindowsFormsApp4
                  byte[] buffer = loginPacket.ToBytes();
                  stream.Write(buffer, 0, buffer.Length);
 
-                 byte[] recv = new byte[6]; 
+                 byte[] recv = new byte[10]; 
                  stream.Read(recv, 0, recv.Length);
 
                  var response = Packets.LoginResponsePacket.FromBytes(recv);
 
-                 stream.Close();
-                 client.Close();
+                // stream.Close();
+                // client.Close();
 
                  if (response.successLogin)
                  {
@@ -85,7 +85,7 @@ namespace WindowsFormsApp4
                  MessageBox.Show("서버 연결 오류: " + ex.Message);
              }
          }
-*/
+
         private void lbl_register_Click_1(object sender, EventArgs e)
         {
             Resister register = new Resister();
@@ -93,7 +93,7 @@ namespace WindowsFormsApp4
             register.ShowDialog();
         }
 
-        private void btn_enter_Click(object sender, EventArgs e)
+       /* private void btn_enter_Click(object sender, EventArgs e)
           {
               // 로그인 체크 생략하고 바로 로딩 폼 실행
               this.Hide();
@@ -109,6 +109,6 @@ namespace WindowsFormsApp4
               //this.DialogResult = DialogResult.OK;
               //this.Close();
           }
-  
+  */
     }
 }
