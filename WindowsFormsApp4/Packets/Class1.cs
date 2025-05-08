@@ -180,7 +180,7 @@ namespace Packets
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
-            BitConverter.GetBytes(successReg).CopyTo(buffer, 5);
+            BitConverter.GetBytes(successReg).CopyTo(buffer, 1);
 
             return buffer;
         }

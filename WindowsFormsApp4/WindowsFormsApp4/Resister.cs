@@ -52,7 +52,7 @@ namespace WindowsFormsApp4
                 stream.Read(readBuffer, 0, packetLength);
 
                 var response = Packets.RegUsrResponsePacket.FromBytes(readBuffer);
-
+                
                 MessageBox.Show("회원가입 성공!");
             }
             catch (Exception ex)

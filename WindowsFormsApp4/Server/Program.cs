@@ -104,6 +104,7 @@ namespace Server
             {
                 if (line == packet.id + ',' + packet.pw)
                 {
+                    rStream.Close();
                     return new LoginResponsePacket
                     {
                         userId = newId,
@@ -112,6 +113,7 @@ namespace Server
                 }
             }
 
+            rStream.Close();
             return new LoginResponsePacket
             {
                 userId = 0,
@@ -127,14 +129,16 @@ namespace Server
             string line;
             while((line = rStream.ReadLine()) != null)
             {
-                if(line == packet.id + ',' + packet.pw)
+                if (line.Split(',')[0] == packet.id)
                 {
+                    rStream.Close();
                     return new RegUsrResponsePacket { successReg = false };
                 }
             }
-
+            rStream.Close();
             StreamWriter wStream = new StreamWriter("loginInfo.csv", true);
             wStream.WriteLine(packet.id + ',' + packet.pw);
+            wStream.Close();
 
             return new RegUsrResponsePacket { successReg = true };
         }
