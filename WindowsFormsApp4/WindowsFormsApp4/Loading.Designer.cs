@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.lbl_loading = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.timerFrame = new System.Windows.Forms.Timer(this.components);
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.pang = new Guna.UI2.WinForms.Guna2PictureBox();
@@ -37,16 +37,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.pang)).BeginInit();
             this.SuspendLayout();
             // 
-            // guna2HtmlLabel1
+            // lbl_loading
             // 
-            this.guna2HtmlLabel1.AutoSize = false;
-            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel1.Font = new System.Drawing.Font("한컴산뜻돋움", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.guna2HtmlLabel1.Location = new System.Drawing.Point(543, 488);
-            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            this.guna2HtmlLabel1.Size = new System.Drawing.Size(186, 31);
-            this.guna2HtmlLabel1.TabIndex = 1;
-            this.guna2HtmlLabel1.Text = "라 운 지 입 장 중 ...";
+            this.lbl_loading.AutoSize = false;
+            this.lbl_loading.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_loading.Font = new System.Drawing.Font("한컴산뜻돋움", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_loading.Location = new System.Drawing.Point(586, 442);
+            this.lbl_loading.Name = "lbl_loading";
+            this.lbl_loading.Size = new System.Drawing.Size(186, 31);
+            this.lbl_loading.TabIndex = 1;
+            this.lbl_loading.Text = "라 운 지 입 장 중 ...";
             // 
             // timerFrame
             // 
@@ -60,7 +60,7 @@
             // pang
             // 
             this.pang.ImageRotate = 0F;
-            this.pang.Location = new System.Drawing.Point(588, 380);
+            this.pang.Location = new System.Drawing.Point(622, 356);
             this.pang.Name = "pang";
             this.pang.Size = new System.Drawing.Size(186, 167);
             this.pang.TabIndex = 0;
@@ -71,7 +71,7 @@
             this.lbl_count.AutoSize = false;
             this.lbl_count.BackColor = System.Drawing.Color.Transparent;
             this.lbl_count.Font = new System.Drawing.Font("휴먼둥근헤드라인", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_count.Location = new System.Drawing.Point(617, 527);
+            this.lbl_count.Location = new System.Drawing.Point(638, 479);
             this.lbl_count.Name = "lbl_count";
             this.lbl_count.Size = new System.Drawing.Size(25, 25);
             this.lbl_count.TabIndex = 2;
@@ -79,16 +79,16 @@
             // 
             // Loading
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Wheat;
             this.ClientSize = new System.Drawing.Size(1280, 800);
             this.Controls.Add(this.lbl_count);
-            this.Controls.Add(this.guna2HtmlLabel1);
+            this.Controls.Add(this.lbl_loading);
             this.Controls.Add(this.pang);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Loading";
-            this.Text = "Loading";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Lounge";
             this.Load += new System.EventHandler(this.Loading_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pang)).EndInit();
             this.ResumeLayout(false);
@@ -98,7 +98,7 @@
         #endregion
 
         private Guna.UI2.WinForms.Guna2PictureBox pang;
-        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lbl_loading;
         private System.Windows.Forms.Timer timerFrame;
         private System.Windows.Forms.Timer timerClose;
         private Guna.UI2.WinForms.Guna2HtmlLabel lbl_count;

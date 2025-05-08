@@ -129,7 +129,7 @@ namespace Packets
         public PacketType Type => PacketType.RegUsrRequest;
 
         int packetLen;
-        string id, pw;
+        public string id, pw;
 
         public byte[] ToBytes()
         {
@@ -172,7 +172,7 @@ namespace Packets
         public PacketType Type => PacketType.RegUsrResponse;
 
         int packetLen;
-        bool successReg;
+        public bool successReg;
         string id, pwd;
 
         public byte[] ToBytes()

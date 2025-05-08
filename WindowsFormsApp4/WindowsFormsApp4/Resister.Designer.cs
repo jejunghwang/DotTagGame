@@ -112,6 +112,7 @@
             this.txtNewPw.Location = new System.Drawing.Point(123, 334);
             this.txtNewPw.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtNewPw.Name = "txtNewPw";
+            this.txtNewPw.PasswordChar = '*';
             this.txtNewPw.PlaceholderText = "비밀번호를 입력하세요.";
             this.txtNewPw.SelectedText = "";
             this.txtNewPw.Size = new System.Drawing.Size(553, 80);

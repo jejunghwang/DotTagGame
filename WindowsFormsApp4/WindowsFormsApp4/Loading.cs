@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace WindowsFormsApp4
 {
@@ -27,15 +28,6 @@ namespace WindowsFormsApp4
 
             pang.Image = runFrames[0];
 
-            //timerFrame.Tick += TimerFrame_Tick;
-            /*
-            timerClose.Tick += (s, e) =>
-            {
-                timerClose.Stop();
-                this.Close();
-            };
-            */
-
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
         }
@@ -51,6 +43,10 @@ namespace WindowsFormsApp4
             if(count == 0)
             {
                 timerFrame.Stop();
+
+                this.Hide();
+                Lounge lounge = new Lounge();
+                lounge.ShowDialog();
             }
             frame = (frame + 1) % runFrames.Count;
             pang.Image = runFrames[frame];
