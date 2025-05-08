@@ -9,8 +9,8 @@ namespace Packets
         move,
         loginRequest,
         loginResponse,
-        addUsrRequest,
-        addUsrResponse,
+        RegUsrRequest,
+        RegUsrResponse,
         chat,
         skill,
         status
@@ -124,7 +124,7 @@ namespace Packets
         }
     }
 
-    public class AddUsrRequest : Header
+    public class RegUsrRequest : Header
     {
         public PacketType Type => PacketType.addUsrRequest;
 
@@ -151,7 +151,7 @@ namespace Packets
             return buffer;
         }
 
-        public static AddUsrRequest FromBytes(byte[] buffer)
+        public static RegUsrRequest FromBytes(byte[] buffer)
         {
             int idLength = BitConverter.ToInt32(buffer, 1);
             string id = Encoding.UTF8.GetString(buffer, 5, idLength);
@@ -159,13 +159,64 @@ namespace Packets
             int pwLength = BitConverter.ToInt32(buffer, 5 + idLength);
             string pw = Encoding.UTF8.GetString(buffer, 9 + idLength, pwLength);
 
-            return new AddUsrRequest
+            return new RegUsrRequest
             {
                 id = id,
                 pw = pw
             };
         }
     }
+
+    public class RegUsrResponse : Header
+    {
+        public PacketType Type => PacketType.RegUsrResponse;
+
+        int packetLen;
+        bool successReg;
+        string id, pwd;
+
+        public byte[] ToBytes()
+        {
+            byte[] idBytes = Encoding.UTF8.GetBytes(id);
+            byte[] pwdBytes = Encoding.UTF8.GetBytes(pwd);
+
+            packetLen = 14 + idBytes.Length + pwdBytes.Length;
+            byte[] buffer = new byte[packetLen];
+
+            buffer[0] = (byte)Type;
+            BitConverter.GetBytes(successReg).CopyTo(buffer, 1);
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 2);
+            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 6);
+            idBytes.CopyTo(buffer, 10);
+
+            BitConverter.GetBytes(pwdBytes.Length).CopyTo(buffer, 10 + idBytes.Length);
+            pwdBytes.CopyTo(buffer, 14 + idBytes.Length);
+
+            return buffer;
+        }
+
+        public static RegUsrResponse FromBytes(byte[] buffer)
+        {
+            bool successReg = BitConverter.ToBoolean(buffer, 1);
+            int idLength = BitConverter.ToInt32(buffer, 2);
+            int packetLen = BitConverter.ToInt32(buffer, 6);
+
+            string id = Encoding.UTF8.GetString(buffer, 10, idLength);
+
+            int pwdLength = BitConverter.ToInt32(buffer, 10 + idLength);
+            string pwd = Encoding.UTF8.GetString(buffer, 14 + idLength, pwdLength);
+
+            return new RegUsrResponse
+            {
+                successReg = successReg,
+                packetLen = packetLen,
+                id = id,
+                pwd = pwd
+            };
+        }
+    }
+
+
 
     public class ChatPacket : Header
     {
