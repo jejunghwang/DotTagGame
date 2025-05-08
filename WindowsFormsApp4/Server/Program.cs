@@ -13,6 +13,11 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            RunServerAsync().GetAwaiter().GetResult();
+        }
+
+        static async Task RunServerAsync()
+        {
             TcpListener server = null;
             IPAddress addr = IPAddress.Parse("127.0.0.1");
             int port = 9999;
@@ -25,13 +30,18 @@ namespace Server
                 while (true)
                 {
                     Console.WriteLine("Waiting for a connection...");
-                    TcpClient client = server.AcceptTcpClient();
+                    TcpClient client = await server.AcceptTcpClientAsync();
                     Console.WriteLine("Connected!");
 
+                    _ = Task.Run(async () =>
+                    {
+                        NetworkStream stream = client.GetStream();
+
+                    });
 
                 }
             }
-            catch(SocketException e)
+            catch (SocketException e)
             {
                 Console.WriteLine("SocketException: {0}", e);
             }
