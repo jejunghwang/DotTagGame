@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Packets
 {
@@ -53,7 +54,7 @@ namespace Packets
         public PacketType Type => PacketType.loginRequest;
 
         public string id, pw;
-        
+
         public byte[] ToBytes()
         {
             byte[] buffer = new byte[9 + id.Length + pw.Length];

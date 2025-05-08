@@ -126,5 +126,11 @@
   <ItemGroup>
     <None Include="Resources\cancel.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Packets\Packets.csproj">
+      <Project>{7891f83b-bcbd-42c9-862b-d43c1f9ee664}</Project>
+      <Name>Packets</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
