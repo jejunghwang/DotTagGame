@@ -79,6 +79,7 @@
             this.txtPw.Location = new System.Drawing.Point(127, 324);
             this.txtPw.Margin = new System.Windows.Forms.Padding(9, 12, 9, 12);
             this.txtPw.Name = "txtPw";
+            this.txtPw.PasswordChar = '*';
             this.txtPw.PlaceholderText = "비밀번호를 입력하세요.";
             this.txtPw.SelectedText = "";
             this.txtPw.Size = new System.Drawing.Size(553, 80);
