@@ -13,6 +13,7 @@ namespace WindowsFormsApp4
     public partial class Loading : Form
     {
         private int frame = 0;
+        int count = 19;
         private List<Image> runFrames = new List<Image>();
 
         public Loading()
@@ -26,13 +27,14 @@ namespace WindowsFormsApp4
 
             pang.Image = runFrames[0];
 
-            timerFrame.Tick += TimerFrame_Tick;
-
+            //timerFrame.Tick += TimerFrame_Tick;
+            /*
             timerClose.Tick += (s, e) =>
             {
                 timerClose.Stop();
                 this.Close();
             };
+            */
 
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -41,14 +43,19 @@ namespace WindowsFormsApp4
         private void Loading_Load(object sender, EventArgs e)
         {
             timerFrame.Start();
-            timerClose.Start();
+            //timerClose.Start();
         }
 
         private void TimerFrame_Tick(object sender, EventArgs e)
         {
+            if(count == 0)
+            {
+                timerFrame.Stop();
+            }
             frame = (frame + 1) % runFrames.Count;
             pang.Image = runFrames[frame];
-            lbl_count.Text = "" + frame;
+            lbl_count.Text = ((int)(count/5)).ToString();
+            count--;
         }
     }
 }

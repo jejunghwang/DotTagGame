@@ -32,7 +32,7 @@ namespace WindowsFormsApp4
             this.Close();
         }
 
-        private void btn_enter_Click(object sender, EventArgs e)
+/*        private void btn_enter_Click(object sender, EventArgs e)
          {
              string userId = txtId.Text.Trim();
              string password = txtPw.Text;
@@ -85,7 +85,7 @@ namespace WindowsFormsApp4
                  MessageBox.Show("서버 연결 오류: " + ex.Message);
              }
          }
-
+*/
         private void lbl_register_Click_1(object sender, EventArgs e)
         {
             Resister register = new Resister();
@@ -93,22 +93,22 @@ namespace WindowsFormsApp4
             register.ShowDialog();
         }
 
-        /*  private void btn_enter_Click(object sender, EventArgs e)
+        private void btn_enter_Click(object sender, EventArgs e)
           {
               // 로그인 체크 생략하고 바로 로딩 폼 실행
               this.Hide();
 
               using (Loading load = new Loading())
               {
-                  load.Show();
-                  Application.DoEvents(); // UI 강제 렌더링
-                  System.Threading.Thread.Sleep(5000); // 5초 보여주기
-                  load.Close();
+                  load.ShowDialog();
+                  //Application.DoEvents(); // UI 강제 렌더링
+                  //System.Threading.Thread.Sleep(5000); // 5초 보여주기
+                  //load.Close();
               }
 
-              this.DialogResult = DialogResult.OK;
-              this.Close();
+              //this.DialogResult = DialogResult.OK;
+              //this.Close();
           }
-  */
+  
     }
 }

@@ -57,8 +57,8 @@
             this.txtId.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtId.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtId.Location = new System.Drawing.Point(123, 223);
-            this.txtId.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
+            this.txtId.Location = new System.Drawing.Point(127, 204);
+            this.txtId.Margin = new System.Windows.Forms.Padding(9, 12, 9, 12);
             this.txtId.Name = "txtId";
             this.txtId.PlaceholderText = "아이디를 입력하세요.";
             this.txtId.SelectedText = "";
@@ -76,8 +76,8 @@
             this.txtPw.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtPw.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtPw.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPw.Location = new System.Drawing.Point(123, 331);
-            this.txtPw.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
+            this.txtPw.Location = new System.Drawing.Point(127, 324);
+            this.txtPw.Margin = new System.Windows.Forms.Padding(9, 12, 9, 12);
             this.txtPw.Name = "txtPw";
             this.txtPw.PlaceholderText = "비밀번호를 입력하세요.";
             this.txtPw.SelectedText = "";
@@ -98,10 +98,10 @@
             this.btn_enter.FillColor2 = System.Drawing.Color.Transparent;
             this.btn_enter.Font = new System.Drawing.Font("휴먼둥근헤드라인", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_enter.ForeColor = System.Drawing.Color.White;
-            this.btn_enter.Location = new System.Drawing.Point(123, 432);
-            this.btn_enter.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_enter.Location = new System.Drawing.Point(127, 434);
+            this.btn_enter.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btn_enter.Name = "btn_enter";
-            this.btn_enter.Size = new System.Drawing.Size(553, 100);
+            this.btn_enter.Size = new System.Drawing.Size(553, 83);
             this.btn_enter.TabIndex = 4;
             this.btn_enter.Text = "ENTER";
             this.btn_enter.Click += new System.EventHandler(this.btn_enter_Click);
@@ -118,7 +118,8 @@
             this.btn_cancel.FillColor = System.Drawing.Color.Transparent;
             this.btn_cancel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_cancel.ForeColor = System.Drawing.Color.White;
-            this.btn_cancel.Location = new System.Drawing.Point(654, 21);
+            this.btn_cancel.Location = new System.Drawing.Point(934, 32);
+            this.btn_cancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn_cancel.Name = "btn_cancel";
             this.btn_cancel.Size = new System.Drawing.Size(150, 150);
             this.btn_cancel.TabIndex = 6;
@@ -145,9 +146,10 @@
             this.lbl_register.AutoSize = false;
             this.lbl_register.BackColor = System.Drawing.Color.Transparent;
             this.lbl_register.Font = new System.Drawing.Font("함초롬돋움", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_register.Location = new System.Drawing.Point(278, 550);
+            this.lbl_register.Location = new System.Drawing.Point(287, 542);
+            this.lbl_register.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lbl_register.Name = "lbl_register";
-            this.lbl_register.Size = new System.Drawing.Size(303, 27);
+            this.lbl_register.Size = new System.Drawing.Size(314, 51);
             this.lbl_register.TabIndex = 1;
             this.lbl_register.Text = "아직 계정이 없으신가요?";
             this.lbl_register.Click += new System.EventHandler(this.lbl_register_Click_1);
@@ -156,6 +158,7 @@
             // 
             this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel1.Location = new System.Drawing.Point(0, 0);
+            this.guna2HtmlLabel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             this.guna2HtmlLabel1.Size = new System.Drawing.Size(3, 2);
             this.guna2HtmlLabel1.TabIndex = 0;
@@ -165,8 +168,9 @@
             // 
             this.register.BackColor = System.Drawing.Color.Transparent;
             this.register.Location = new System.Drawing.Point(0, 0);
+            this.register.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.register.Name = "register";
-            this.register.Size = new System.Drawing.Size(0, 0);
+            this.register.Size = new System.Drawing.Size(3, 2);
             this.register.TabIndex = 0;
             this.register.Text = null;
             // 

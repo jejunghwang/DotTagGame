@@ -33,7 +33,6 @@
             this.timerFrame = new System.Windows.Forms.Timer(this.components);
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.pang = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
             this.lbl_count = new Guna.UI2.WinForms.Guna2HtmlLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pang)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +48,11 @@
             this.guna2HtmlLabel1.TabIndex = 1;
             this.guna2HtmlLabel1.Text = "라 운 지 입 장 중 ...";
             // 
+            // timerFrame
+            // 
+            this.timerFrame.Interval = 200;
+            this.timerFrame.Tick += new System.EventHandler(this.TimerFrame_Tick);
+            // 
             // timerClose
             // 
             this.timerClose.Interval = 5000;
@@ -61,11 +65,6 @@
             this.pang.Size = new System.Drawing.Size(186, 167);
             this.pang.TabIndex = 0;
             this.pang.TabStop = false;
-            // 
-            // guna2Elipse1
-            // 
-            this.guna2Elipse1.BorderRadius = 30;
-            this.guna2Elipse1.TargetControl = this;
             // 
             // lbl_count
             // 
@@ -102,7 +101,6 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private System.Windows.Forms.Timer timerFrame;
         private System.Windows.Forms.Timer timerClose;
-        private Guna.UI2.WinForms.Guna2Elipse guna2Elipse1;
         private Guna.UI2.WinForms.Guna2HtmlLabel lbl_count;
     }
 }
