@@ -59,13 +59,13 @@
             this.txtId.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtId.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtId.Location = new System.Drawing.Point(123, 232);
-            this.txtId.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtId.Location = new System.Drawing.Point(86, 155);
             this.txtId.Name = "txtId";
             this.txtId.PlaceholderText = "";
             this.txtId.SelectedText = "";
-            this.txtId.Size = new System.Drawing.Size(553, 87);
+            this.txtId.Size = new System.Drawing.Size(387, 58);
             this.txtId.TabIndex = 2;
+            this.txtId.Click += new System.EventHandler(this.txtId_Click);
             // 
             // txtPw
             // 
@@ -78,13 +78,13 @@
             this.txtPw.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtPw.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtPw.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPw.Location = new System.Drawing.Point(123, 340);
-            this.txtPw.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPw.Location = new System.Drawing.Point(86, 227);
             this.txtPw.Name = "txtPw";
             this.txtPw.PlaceholderText = "";
             this.txtPw.SelectedText = "";
-            this.txtPw.Size = new System.Drawing.Size(553, 80);
+            this.txtPw.Size = new System.Drawing.Size(387, 53);
             this.txtPw.TabIndex = 3;
+            this.txtPw.Click += new System.EventHandler(this.txtPwd_Click);
             this.txtPw.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPw_KeyDown);
             // 
             // guna2GradientButton1
@@ -101,9 +101,10 @@
             this.guna2GradientButton1.FillColor2 = System.Drawing.Color.Transparent;
             this.guna2GradientButton1.Font = new System.Drawing.Font("휴먼둥근헤드라인", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.guna2GradientButton1.ForeColor = System.Drawing.Color.White;
-            this.guna2GradientButton1.Location = new System.Drawing.Point(123, 444);
+            this.guna2GradientButton1.Location = new System.Drawing.Point(86, 296);
+            this.guna2GradientButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.guna2GradientButton1.Name = "guna2GradientButton1";
-            this.guna2GradientButton1.Size = new System.Drawing.Size(553, 99);
+            this.guna2GradientButton1.Size = new System.Drawing.Size(387, 66);
             this.guna2GradientButton1.TabIndex = 4;
             this.guna2GradientButton1.Text = "ENTER";
             // 
@@ -119,9 +120,10 @@
             this.btn_cancel.FillColor = System.Drawing.Color.Transparent;
             this.btn_cancel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_cancel.ForeColor = System.Drawing.Color.White;
-            this.btn_cancel.Location = new System.Drawing.Point(655, 21);
+            this.btn_cancel.Location = new System.Drawing.Point(458, 14);
+            this.btn_cancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btn_cancel.Name = "btn_cancel";
-            this.btn_cancel.Size = new System.Drawing.Size(150, 150);
+            this.btn_cancel.Size = new System.Drawing.Size(105, 100);
             this.btn_cancel.TabIndex = 6;
             this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
             // 
@@ -135,20 +137,21 @@
             this.guna2Button1.FillColor = System.Drawing.Color.Sienna;
             this.guna2Button1.Font = new System.Drawing.Font("휴먼둥근헤드라인", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.guna2Button1.ForeColor = System.Drawing.Color.White;
-            this.guna2Button1.Location = new System.Drawing.Point(240, 46);
+            this.guna2Button1.Location = new System.Drawing.Point(168, 31);
+            this.guna2Button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.guna2Button1.Name = "guna2Button1";
-            this.guna2Button1.Size = new System.Drawing.Size(320, 75);
+            this.guna2Button1.Size = new System.Drawing.Size(224, 50);
             this.guna2Button1.TabIndex = 7;
             this.guna2Button1.Text = "LOGIN";
             // 
             // Login
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.login;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(800, 700);
+            this.ClientSize = new System.Drawing.Size(560, 467);
             this.Controls.Add(this.guna2Button1);
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.guna2GradientButton1);
@@ -157,6 +160,7 @@
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Login";
             this.Text = "Form3";
             this.Load += new System.EventHandler(this.Login_Load);

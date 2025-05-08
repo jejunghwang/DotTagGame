@@ -78,5 +78,14 @@ namespace WindowsFormsApp4
         {
             this.Close();
         }
+
+        private void txtId_Click(object sender, EventArgs e)
+        {
+            txtId.Text = "";
+        }
+        private void txtPwd_Click(object sender, EventArgs e)
+        {
+            txtPw.Text = "";
+        }
     }
 }
