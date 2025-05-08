@@ -111,6 +111,45 @@ namespace Packets
         }
     }
 
+    public class AddUsrRequest : Header
+    {
+        public PacketType Type => PacketType.addUsrRequest;
+
+        string id, pw;
+
+        public byte[] ToBytes()
+        {
+            byte[] idBytes = Encoding.UTF8.GetBytes(id);
+            byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
+            byte[] buffer = new byte[9 + idBytes.Length + pwBytes.Length];
+
+            buffer[0] = (byte)Type;
+
+            BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, 1);
+            idBytes.CopyTo(buffer, 5);
+
+            BitConverter.GetBytes(pwBytes.Length).CopyTo(buffer, 5 + idBytes.Length);
+            pwBytes.CopyTo(buffer, 9 + idBytes.Length);
+
+            return buffer;
+        }
+
+        public static AddUsrRequest FromBytes(byte[] buffer)
+        {
+            int idLength = BitConverter.ToInt32(buffer, 1);
+            string id = Encoding.UTF8.GetString(buffer, 5, idLength);
+
+            int pwLength = BitConverter.ToInt32(buffer, 5 + idLength);
+            string pw = Encoding.UTF8.GetString(buffer, 9 + idLength, pwLength);
+
+            return new AddUsrRequest
+            {
+                id = id,
+                pw = pw
+            };
+        }
+    }
+
     public class ChatPacket : Header
     {
         public PacketType Type => PacketType.chat;
