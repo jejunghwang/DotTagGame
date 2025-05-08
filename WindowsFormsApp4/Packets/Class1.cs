@@ -126,7 +126,7 @@ namespace Packets
 
     public class RegUsrRequest : Header
     {
-        public PacketType Type => PacketType.addUsrRequest;
+        public PacketType Type => PacketType.RegUsrRequest;
 
         int packetLen;
         string id, pw;
