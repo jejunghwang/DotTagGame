@@ -65,7 +65,7 @@ namespace Packets
             byte[] idBytes = Encoding.UTF8.GetBytes(id);
             byte[] pwBytes = Encoding.UTF8.GetBytes(pw);
             
-            packetLen = 9 + idBytes.Length + pwBytes.Length;
+            packetLen = 13 + idBytes.Length + pwBytes.Length;
             byte[] buffer = new byte[packetLen];
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
@@ -215,8 +215,6 @@ namespace Packets
             };
         }
     }
-
-
 
     public class ChatPacket : Header
     {
