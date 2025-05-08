@@ -94,11 +94,14 @@ namespace Packets
         public PacketType Type => PacketType.loginResponse;
 
         bool successLogin;
+        int userId;
         public byte[] ToBytes()
         {
-            byte[] buffer = new byte[2];
+            byte[] buffer = new byte[6];
             buffer[0] = (byte)Type;
             BitConverter.GetBytes(successLogin).CopyTo(buffer, 1);
+            BitConverter.GetBytes(userId).CopyTo(buffer, 2);
+
             return buffer;
         }
 
@@ -106,7 +109,8 @@ namespace Packets
         {
             return new LoginResponsePacket
             {
-                successLogin = BitConverter.ToBoolean(buffer, 1)
+                successLogin = BitConverter.ToBoolean(buffer, 1),
+                userId = BitConverter.ToInt32(buffer, 2)
             };
         }
     }
