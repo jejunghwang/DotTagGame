@@ -48,32 +48,29 @@ namespace WindowsFormsApp4
                      pw = password
                  };
 
-                 byte[] buffer = loginPacket.ToBytes();
-                 stream.Write(buffer, 0, buffer.Length);
+                 byte[] writeBuffer = loginPacket.ToBytes();
+                 stream.Write(writeBuffer, 0, writeBuffer.Length);
 
-                 byte[] recv = new byte[10]; 
-                 stream.Read(recv, 0, recv.Length);
+                 byte[] readBuffer = new byte[4];
+                 stream.Read(readBuffer, 0, 4);
 
-                 var response = Packets.LoginResponsePacket.FromBytes(recv);
+                 int packetLength = BitConverter.ToInt32(readBuffer, 0);
 
-                // stream.Close();
-                // client.Close();
+                 readBuffer = new byte[packetLength];
+                 stream.Read(readBuffer, 0, packetLength);
+
+                 var response = Packets.LoginResponsePacket.FromBytes(readBuffer);
+
+                 // stream.Close();
+                 // client.Close();
 
                  if (response.successLogin)
                  {
-                     // 로딩 폼 띄우기 
-                     this.Hide();
+                    // 로딩 폼 띄우기 
+                    this.Hide();
 
-                     using (Loading load = new Loading())
-                     {
-                         load.Show();
-                         Application.DoEvents(); // UI 강제 업데이트
-                         System.Threading.Thread.Sleep(2000); // 2초 대기
-                         load.Close();
-                     }
-
-                     this.DialogResult = DialogResult.OK;
-                     this.Close(); // 로그인 창 닫기
+                    Loading load = new Loading();
+                    load.ShowDialog();
                  }
                  else
                  {
@@ -92,23 +89,5 @@ namespace WindowsFormsApp4
             register.StartPosition = FormStartPosition.CenterParent;
             register.ShowDialog();
         }
-
-       /* private void btn_enter_Click(object sender, EventArgs e)
-          {
-              // 로그인 체크 생략하고 바로 로딩 폼 실행
-              this.Hide();
-
-              using (Loading load = new Loading())
-              {
-                  load.ShowDialog();
-                  //Application.DoEvents(); // UI 강제 렌더링
-                  //System.Threading.Thread.Sleep(5000); // 5초 보여주기
-                  //load.Close();
-              }
-
-              //this.DialogResult = DialogResult.OK;
-              //this.Close();
-          }
-  */
     }
 }
