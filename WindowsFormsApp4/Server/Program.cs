@@ -39,10 +39,25 @@ namespace Server
                         NetworkStream stream = client.GetStream();
                         await stream.ReadAsync(buffer, 0, 4);
 
-                        buffer.
+                        int packetLength = BitConverter.ToInt32(buffer, 0);
 
-                        byte[] readBuffer = new byte[100];
-                        stream.Read(readBuffer, 0, readBuffer.Length);
+                        buffer = new byte[packetLength];
+                        await stream.ReadAsync(buffer, 0, packetLength);
+
+                        switch ((PacketType)buffer[0])
+                        {
+                            case PacketType.loginRequest:
+                                Console.WriteLine("request login.");
+                                break;
+                            case PacketType.RegUsrRequest:
+
+                                break;
+                            case PacketType.move:
+
+                                break;
+                            case PacketType.chat:
+                                break;
+                        }
                     });
 
                 }
