@@ -28,13 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.inputBox = new Guna.UI2.WinForms.Guna2TextBox();
+            this.chatLogBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
+            // 
+            // inputBox
+            // 
+            this.inputBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.inputBox.DefaultText = "";
+            this.inputBox.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.inputBox.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.inputBox.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.inputBox.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.inputBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.inputBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.inputBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.inputBox.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.inputBox.Location = new System.Drawing.Point(814, 639);
+            this.inputBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.inputBox.Name = "inputBox";
+            this.inputBox.PlaceholderText = "";
+            this.inputBox.SelectedText = "";
+            this.inputBox.Size = new System.Drawing.Size(402, 42);
+            this.inputBox.TabIndex = 1;
+            // 
+            // chatLogBox
+            // 
+            this.chatLogBox.BackColor = System.Drawing.Color.Black;
+            this.chatLogBox.Location = new System.Drawing.Point(814, 406);
+            this.chatLogBox.Name = "chatLogBox";
+            this.chatLogBox.Size = new System.Drawing.Size(402, 229);
+            this.chatLogBox.TabIndex = 2;
+            this.chatLogBox.Text = "";
             // 
             // Lounge
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.lounge;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 744);
+            this.Controls.Add(this.chatLogBox);
+            this.Controls.Add(this.inputBox);
             this.Name = "Lounge";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";
@@ -44,5 +78,7 @@
         }
 
         #endregion
+        private Guna.UI2.WinForms.Guna2TextBox inputBox;
+        private System.Windows.Forms.RichTextBox chatLogBox;
     }
 }
