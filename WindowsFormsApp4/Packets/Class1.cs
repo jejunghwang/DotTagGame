@@ -180,14 +180,14 @@ namespace Packets
 
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
-            BitConverter.GetBytes(successReg).CopyTo(buffer, 1);
+            BitConverter.GetBytes(successReg).CopyTo(buffer, 5);
 
             return buffer;
         }
 
         public static RegUsrResponsePacket FromBytes(byte[] buffer)
         {
-            return new RegUsrResponsePacket { successReg = BitConverter.ToBoolean(buffer, 5) };
+            return new RegUsrResponsePacket { successReg = BitConverter.ToBoolean(buffer, 1) };
         }
     }
 
