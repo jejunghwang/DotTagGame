@@ -42,10 +42,12 @@ namespace WindowsFormsApp4
 
              try
              {
-                 TcpClient client = new TcpClient("127.0.0.1", 9999);
-                 NetworkStream stream = client.GetStream();
+                if (AppState.Connection.Client == null || !AppState.Connection.Client.Connected)
+                    AppState.Connection.Connect("127.0.0.1", 9999);
 
-                 var loginPacket = new Packets.LoginRequestPacket
+                NetworkStream stream = AppState.Connection.Stream;
+
+                var loginPacket = new Packets.LoginRequestPacket
                  {
                      id = userId,
                      pw = password
@@ -69,6 +71,8 @@ namespace WindowsFormsApp4
 
                  if (response.successLogin)
                  {
+                    AppState.CurrentUserId = userId;
+
                     // 로딩 폼 띄우기 
                     this.Hide();
                  

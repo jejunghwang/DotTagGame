@@ -32,8 +32,10 @@ namespace WindowsFormsApp4
 
             try
             {
-                TcpClient client = new TcpClient("127.0.0.1", 9999);
-                NetworkStream stream = client.GetStream();
+                if (AppState.Connection.Client == null || !AppState.Connection.Client.Connected)
+                    AppState.Connection.Connect("127.0.0.1", 9999);
+
+                NetworkStream stream = AppState.Connection.Stream;
 
                 var regPacket = new Packets.RegUsrRequestPacket
                 {

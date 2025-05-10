@@ -18,9 +18,9 @@ namespace WindowsFormsApp4
     {
         private Main mainForm;
         private Panel chatBackgroundPanel;
-        private string userId;
+        /*private string userId;
         private TcpClient client;
-        private NetworkStream stream;
+        private NetworkStream stream;*/
         private Thread receiveThread;
 
         public Lounge(Main mainForm)
@@ -74,21 +74,25 @@ namespace WindowsFormsApp4
                 mainForm.bgm.Stop();   // BGM 종료
                 //mainForm.Hide();      // MainForm 숨김
             }
+
+            receiveThread = new Thread(ReceiveMessages);
+            receiveThread.IsBackground = true;
+            receiveThread.Start();
         }
 
         private void SendMessage(string message)
         {
             try
             {
-
                 var packet = new ChatPacket
                 {
-                    playerId = userId,
+                    playerId = AppState.CurrentUserId,
                     message = message
                 };
+
                 byte[] data = packet.ToBytes();
-                AppendChatLog($"[{userId}]: {message}");
-                stream.Write(data, 0, data.Length);
+                AppendChatLog($"[{AppState.CurrentUserId}]: {message}");
+                AppState.Connection.Stream.Write(data, 0, data.Length);
             }
             catch (Exception ex)
             {
@@ -108,8 +112,10 @@ namespace WindowsFormsApp4
         {
             try
             {
+                var stream = AppState.Connection.Stream;
                 byte[] buffer = new byte[1024];
-                while (client.Connected)
+
+                while (AppState.Connection.Client.Connected)
                 {
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
                     if (bytesRead > 0)
@@ -137,7 +143,5 @@ namespace WindowsFormsApp4
                 chatLogBox.AppendText(message + "\n");
             }
         }
-
-        
     }
 }
