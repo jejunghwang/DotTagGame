@@ -79,9 +79,25 @@ namespace Server
 
                                 break;
                             case PacketType.move:
-                                break;
+                                {
+                                    MovePacket movePacket = MovePacket.FromBytes(buffer);
+                                    Console.WriteLine($"PlayerId: {movePacket.playerId} \nLocation: ({movePacket.x}, {movePacket.y})");
+
+                                    byte[] moveResponse = movePacket.ToBytes();
+                                    stream.Write(moveResponse, 0, moveResponse.Length);
+                                    break;
+                                }
+
                             case PacketType.chat:
-                                break;
+                                {
+                                    ChatPacket chatPacket = new ChatPacket().FromBytes(buffer);
+                                    Console.WriteLine($"[Chat] {chatPacket.playerId}: {chatPacket.message}");
+
+                                    byte[] chatResponse = chatPacket.ToBytes();
+                                    stream.Write(chatResponse, 0, chatResponse.Length);
+                                    break;
+                                }
+
                         }
                     });
 
