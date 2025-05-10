@@ -51,6 +51,7 @@
             this.inputBox.SelectedText = "";
             this.inputBox.Size = new System.Drawing.Size(402, 42);
             this.inputBox.TabIndex = 1;
+            this.inputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputBox_KeyDown);
             // 
             // chatLogBox
             // 

@@ -72,7 +72,7 @@ namespace WindowsFormsApp4
                     // 로딩 폼 띄우기 
                     this.Hide();
                  
-                    Loading load = new Loading(mainForm);
+                    Loading load = new Loading(mainForm,userId,client,stream);
                     load.ShowDialog();
                  }
                  else

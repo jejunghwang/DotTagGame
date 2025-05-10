@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Server
     internal class Program
     {
         static bool[] usrId = new bool[100];
-
+        
         static void Main(string[] args)
         {
             RunServerAsync().GetAwaiter().GetResult();
@@ -62,15 +63,22 @@ namespace Server
                                 break;
                             case PacketType.RegUsrRequest:
                                 Console.WriteLine("request register user.");
-                                RegUsrRequestPacket registerPacket = RegUsrRequestPacket.FromBytes(buffer);
+                                
+                                try
+                                {
+                                    RegUsrRequestPacket registerPacket = RegUsrRequestPacket.FromBytes(buffer);
+                                    writeBuffer = createRegisterResponsePacket(registerPacket).ToBytes();
 
-                                writeBuffer = createRegisterResponsePacket(registerPacket).ToBytes();
+                                    stream.Write(writeBuffer, 0, writeBuffer.Length);
+                                    Console.WriteLine("sent response packet.");
 
-                                stream.Write(writeBuffer, 0, writeBuffer.Length);
-                                Console.WriteLine("sent response packet.");
+                                }catch(Exception ex)
+                                {
+                                    Console.WriteLine("파싱 실패" + ex.Message);
+                                }
+
                                 break;
                             case PacketType.move:
-
                                 break;
                             case PacketType.chat:
                                 break;
