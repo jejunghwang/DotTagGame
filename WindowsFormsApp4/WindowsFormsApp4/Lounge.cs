@@ -23,7 +23,7 @@ namespace WindowsFormsApp4
         private NetworkStream stream;
         private Thread receiveThread;
 
-        public Lounge(Main mainForm,string id,TcpClient tcp,NetworkStream network)
+        public Lounge(Main mainForm)
         {
             InitializeComponent();
             this.mainForm = mainForm;
@@ -59,12 +59,12 @@ namespace WindowsFormsApp4
             inputBox.FillColor = Color.FromArgb(30, 30, 30);
             inputBox.ForeColor = Color.White;
             inputBox.BorderRadius = 5;
-            userId = id;
+/*            userId = id;
             client = tcp;
             stream = network;
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
-            receiveThread.Start();
+            receiveThread.Start();*/
         }
 
         private void Lounge_Load(object sender, EventArgs e)
@@ -74,9 +74,6 @@ namespace WindowsFormsApp4
                 mainForm.bgm.Stop();   // BGM 종료
                 //mainForm.Hide();      // MainForm 숨김
             }
-            
-
-            
         }
 
         private void SendMessage(string message)

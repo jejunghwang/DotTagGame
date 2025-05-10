@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Net.Sockets;
+//using System.Net.Sockets;
 
 namespace WindowsFormsApp4
 {
@@ -19,11 +19,11 @@ namespace WindowsFormsApp4
         private int frame = 0;
         int count = 19;
         private List<Image> runFrames = new List<Image>();
-        private TcpClient client;
+/*        private TcpClient client;
         private NetworkStream stream;
-        private string userId;
+        private string userId;*/
 
-        public Loading(Main mainForm,string id,TcpClient tcp,NetworkStream network)
+        public Loading(Main mainForm)
         {
             InitializeComponent();
             this.mainForm = mainForm;
@@ -34,9 +34,9 @@ namespace WindowsFormsApp4
             runFrames.Add(Properties.Resources.pang1_left_4);
 
             pang.Image = runFrames[0];
-            userId = id;
+/*            userId = id;
             client = tcp;
-            stream = network;
+            stream = network;*/
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
         }
@@ -54,7 +54,7 @@ namespace WindowsFormsApp4
                 timerFrame.Stop();
 
                 this.Hide();
-                Lounge lounge = new Lounge(mainForm,userId,client,stream);
+                Lounge lounge = new Lounge(mainForm);
                 lounge.ShowDialog();
             }
             frame = (frame + 1) % runFrames.Count;
