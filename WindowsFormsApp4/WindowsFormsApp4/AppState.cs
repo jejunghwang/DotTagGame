@@ -9,6 +9,7 @@ namespace WindowsFormsApp4
     public static class AppState
     {
         public static TcpConnectionManager Connection = new TcpConnectionManager();
-        public static string CurrentUserId = "";
+        public static int CurrentUserId = -1;
+        public static string CurrentUserName = "";
     }
 }

@@ -84,6 +84,7 @@
             this.txtPw.SelectedText = "";
             this.txtPw.Size = new System.Drawing.Size(553, 80);
             this.txtPw.TabIndex = 3;
+            this.txtPw.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPw_KeyDown);
             // 
             // btn_enter
             // 

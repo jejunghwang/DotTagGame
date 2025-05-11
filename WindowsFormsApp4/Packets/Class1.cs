@@ -195,16 +195,16 @@ namespace Packets
     {
         public PacketType Type => PacketType.chat;
 
-        public int packetLen;
-        public string playerId;
+        int packetLen;
+        public int playerId;
         public string message;
 
         public byte[] ToBytes()
         {
-            byte[] playerIdBytes = Encoding.UTF8.GetBytes(playerId);
+            // byte[] playerIdBytes = Encoding.UTF8.GetBytes(playerId);
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
 
-            int packetLen = 1 + 4 + playerIdBytes.Length + messageBytes.Length;
+            int packetLen = 9 + messageBytes.Length;
             byte[] buffer = new byte[4 + packetLen];
 
             // 패킷 길이 (4 bytes)
@@ -213,28 +213,40 @@ namespace Packets
             // 패킷 타입 (1 byte)
             buffer[4] = (byte)Type;
 
-            // 플레이어 ID 길이 (4 bytes)
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(messageBytes.Length).CopyTo(buffer, 9);
+            messageBytes.CopyTo(buffer, 13);
+
+/*          // 플레이어 ID 길이 (4 bytes)
             BitConverter.GetBytes(playerIdBytes.Length).CopyTo(buffer, 5);
 
             // 플레이어 ID
             playerIdBytes.CopyTo(buffer, 9);
 
             // 메시지 본문
-            messageBytes.CopyTo(buffer, 9 + playerIdBytes.Length);
+            messageBytes.CopyTo(buffer, 9 + playerIdBytes.Length);*/
 
             return buffer;
         }
 
         public ChatPacket FromBytes(byte[] buffer)
         {
-            int playerIdLength = BitConverter.ToInt32(buffer, 5);
+            int messageLength = BitConverter.ToInt32(buffer, 5);
+            string message = Encoding.UTF8.GetString(buffer, 9, messageLength);
+            return new ChatPacket
+            {
+                playerId = BitConverter.ToInt32(buffer, 1),
+                message = message
+            };
+
+/*            int playerIdLength = BitConverter.ToInt32(buffer, 5);
             playerId = Encoding.UTF8.GetString(buffer, 9, playerIdLength);
 
             int messageStart = 9 + playerIdLength;
             int messageLength = buffer.Length - messageStart;
             message = Encoding.UTF8.GetString(buffer, messageStart, messageLength);
 
-            return this;
+            return this;*/
         }
     }
 }

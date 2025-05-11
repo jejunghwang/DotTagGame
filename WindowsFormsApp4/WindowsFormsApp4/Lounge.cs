@@ -18,15 +18,29 @@ namespace WindowsFormsApp4
     {
         private Main mainForm;
         private Panel chatBackgroundPanel;
-        /*private string userId;
-        private TcpClient client;
-        private NetworkStream stream;*/
+
+        private int userId;
+        // private TcpClient client;
+        // private NetworkStream stream;
         private Thread receiveThread;
+
+        private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
+        private int playerX = 937, playerY = 270;
+        private int moveSpeed = 5;
+
+        // 캐릭터 애니메이션 이미지 (방향별)
+        private List<Image> upFrames = new List<Image>();
+        private List<Image> downFrames = new List<Image>();
+        private List<Image> leftFrames = new List<Image>();
+        private List<Image> rightFrames = new List<Image>();
+        private int frameIndex = 0;
 
         public Lounge(Main mainForm)
         {
             InitializeComponent();
             this.mainForm = mainForm;
+            this.KeyPreview = true;
+            this.KeyDown += Lounge_KeyDown;
 
             // 배경 패널 (반투명 효과)
             chatBackgroundPanel = new Panel();
@@ -48,18 +62,19 @@ namespace WindowsFormsApp4
             chatLogBox.ForeColor = Color.White;
             chatLogBox.BorderStyle = BorderStyle.None;
             chatLogBox.Font = new Font("맑은 고딕", 9);
-           // chatLogBox.Size = new Size(380, 300);
+            // chatLogBox.Size = new Size(380, 300);
             chatLogBox.ScrollBars = RichTextBoxScrollBars.Vertical;
 
             // 입력 박스
             inputBox.PlaceholderText = "메시지를 입력하세요...";
             inputBox.Font = new Font("맑은 고딕", 9);
-         //   inputBox.Size = new Size(380, 40);
+            // inputBox.Size = new Size(380, 40);
             inputBox.BorderThickness = 0;
             inputBox.FillColor = Color.FromArgb(30, 30, 30);
             inputBox.ForeColor = Color.White;
             inputBox.BorderRadius = 5;
-/*            userId = id;
+
+            /* userId = id;
             client = tcp;
             stream = network;
             receiveThread = new Thread(ReceiveMessages);
@@ -75,11 +90,44 @@ namespace WindowsFormsApp4
                 //mainForm.Hide();      // MainForm 숨김
             }
 
+            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
             receiveThread.Start();
+
+            LoadCharacterFrames();
         }
 
+        private void LoadCharacterFrames()
+        { 
+            upFrames.AddRange(new[] {
+                Properties.Resources.pang1_front_1,
+                Properties.Resources.pang1_front_2,
+                Properties.Resources.pang1_front_3,
+                Properties.Resources.pang1_front_4
+            });
+            downFrames.AddRange(new[] {
+                Properties.Resources.pang1_back_1,
+                Properties.Resources.pang1_back_2,
+                Properties.Resources.pang1_back_3,
+                Properties.Resources.pang1_back_4
+            });
+            leftFrames.AddRange(new[] {
+                Properties.Resources.pang1_left_1,
+                Properties.Resources.pang1_left_2,
+                Properties.Resources.pang1_left_3,
+                Properties.Resources.pang1_left_4
+            });
+            rightFrames.AddRange(new[] {
+                Properties.Resources.pang1_right_1,
+                Properties.Resources.pang1_right_2,
+                Properties.Resources.pang1_right_3,
+                Properties.Resources.pang1_right_4
+            });
+        }
+
+        // -------------------- 채팅 -----------------------
         private void SendMessage(string message)
         {
             try
@@ -91,7 +139,7 @@ namespace WindowsFormsApp4
                 };
 
                 byte[] data = packet.ToBytes();
-                AppendChatLog($"[{AppState.CurrentUserId}]: {message}");
+                AppendChatLog($"[{AppState.CurrentUserName}]: {message}");
                 AppState.Connection.Stream.Write(data, 0, data.Length);
             }
             catch (Exception ex)
@@ -99,15 +147,7 @@ namespace WindowsFormsApp4
                 MessageBox.Show($"메시지 전송 오류: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void inputBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter&&!string.IsNullOrWhiteSpace(inputBox.Text))
-            {
-                SendMessage(inputBox.Text);
-                inputBox.Clear();
-                e.SuppressKeyPress = true;
-            }
-        }
+
         private void ReceiveMessages()
         {
             try
@@ -132,6 +172,16 @@ namespace WindowsFormsApp4
             }
         }
 
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter&&!string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                SendMessage(inputBox.Text);
+                inputBox.Clear();
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private void AppendChatLog(string message)
         {
             if (InvokeRequired)
@@ -143,5 +193,65 @@ namespace WindowsFormsApp4
                 chatLogBox.AppendText(message + "\n");
             }
         }
+        // ---------------------------------------------------------------------
+
+
+        // ---------------------------- 캐릭터 ---------------------------------
+        private void Lounge_KeyDown(object sender, KeyEventArgs e)
+        {
+            bool moved = false;
+
+            switch(e.KeyCode)
+            {
+                case Keys.W: playerY -= moveSpeed; moved = true; break;
+                case Keys.S: playerY += moveSpeed; moved = true; break;
+                case Keys.A: playerX -= moveSpeed; moved = true; break;
+                case Keys.D: playerX += moveSpeed; moved = true; break;
+            }
+
+            if(moved)
+            {
+                AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+                SendPlayerPosition(playerX, playerY);
+            }
+        }
+
+        private void AddOrUpdateCharacter(int playerId, int x, int y, bool isLocal = false)
+        {
+            if (!player.ContainsKey(playerId))
+            {
+                var pic = new PictureBox();
+                pic.Size = new Size(50, 50);
+                pic.SizeMode = PictureBoxSizeMode.StretchImage;
+                pic.Image = Properties.Resources.pang1_front_1; // 고정 캐릭터 이미지
+                pic.Location = new Point(x, y);
+                player[playerId] = pic;
+                this.Invoke(new MethodInvoker(() => this.Controls.Add(pic)));
+            }
+            else
+            {
+                this.Invoke(new MethodInvoker(() => player[playerId].Location = new Point(x, y)));
+            }
+        }
+
+        private void SendPlayerPosition(int x, int y)
+        {
+            try
+            {
+                var movePacket = new MovePacket
+                {
+                    playerId = AppState.CurrentUserId,
+                    x = x,
+                    y = y
+                };
+                byte[] data = movePacket.ToBytes();
+                AppState.Connection.Stream.Write(data, 0, data.Length);
+            }
+            catch (Exception ex)
+            {
+                AppendChatLog("위치 전송 실패: " + ex.Message);
+            }
+        }
+        // --------------------------------------------------
     }
 }

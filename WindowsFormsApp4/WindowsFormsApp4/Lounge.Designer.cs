@@ -44,7 +44,7 @@
             this.inputBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.inputBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.inputBox.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.inputBox.Location = new System.Drawing.Point(814, 639);
+            this.inputBox.Location = new System.Drawing.Point(39, 659);
             this.inputBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.inputBox.Name = "inputBox";
             this.inputBox.PlaceholderText = "";
@@ -56,16 +56,16 @@
             // chatLogBox
             // 
             this.chatLogBox.BackColor = System.Drawing.Color.Black;
-            this.chatLogBox.Location = new System.Drawing.Point(814, 406);
+            this.chatLogBox.Location = new System.Drawing.Point(39, 295);
             this.chatLogBox.Name = "chatLogBox";
-            this.chatLogBox.Size = new System.Drawing.Size(402, 229);
+            this.chatLogBox.Size = new System.Drawing.Size(402, 356);
             this.chatLogBox.TabIndex = 2;
             this.chatLogBox.Text = "";
             // 
             // Lounge
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.lounge;
+            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.lounge1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 744);
             this.Controls.Add(this.chatLogBox);
@@ -74,6 +74,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";
             this.Load += new System.EventHandler(this.Lounge_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Lounge_KeyDown);
             this.ResumeLayout(false);
 
         }

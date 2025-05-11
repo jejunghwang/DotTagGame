@@ -30,6 +30,15 @@ namespace WindowsFormsApp4
             lbl_register.Text = "<u>아직 계정이 없으신가요?<u>";
         }
 
+        private void txtPw_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btn_enter.PerformClick();
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -71,7 +80,8 @@ namespace WindowsFormsApp4
 
                  if (response.successLogin)
                  {
-                    AppState.CurrentUserId = userId;
+                    AppState.CurrentUserId = response.userId;  // int
+                    AppState.CurrentUserName = userId;  // string
 
                     // 로딩 폼 띄우기 
                     this.Hide();

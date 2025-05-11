@@ -111,9 +111,9 @@ namespace WindowsFormsApp4.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap lounge {
+        internal static System.Drawing.Bitmap lounge1 {
             get {
-                object obj = ResourceManager.GetObject("lounge", resourceCulture);
+                object obj = ResourceManager.GetObject("lounge1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -124,6 +124,86 @@ namespace WindowsFormsApp4.Properties {
         internal static System.Drawing.Bitmap manual {
             get {
                 object obj = ResourceManager.GetObject("manual", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_back_1 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_back_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_back_2 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_back_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_back_3 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_back_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_back_4 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_back_4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_front_1 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_front_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_front_2 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_front_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_front_3 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_front_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_front_4 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_front_4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -164,6 +244,46 @@ namespace WindowsFormsApp4.Properties {
         internal static System.Drawing.Bitmap pang1_left_4 {
             get {
                 object obj = ResourceManager.GetObject("pang1_left_4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_right_1 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_right_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_right_2 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_right_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_right_3 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_right_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap pang1_right_4 {
+            get {
+                object obj = ResourceManager.GetObject("pang1_right_4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
