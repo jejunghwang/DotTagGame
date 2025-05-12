@@ -26,7 +26,7 @@ namespace WindowsFormsApp4
 
         private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
         private int playerX = 937, playerY = 270;
-        private int moveSpeed = 5;
+        private int moveSpeed = 10;
 
         // 캐릭터 애니메이션 이미지 (방향별)
         private List<Image> upFrames = new List<Image>();
@@ -90,13 +90,14 @@ namespace WindowsFormsApp4
                 //mainForm.Hide();      // MainForm 숨김
             }
 
+            LoadCharacterFrames();
             AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-            
+
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
             receiveThread.Start();
 
-            LoadCharacterFrames();
+            inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
         }
 
         private void LoadCharacterFrames()
@@ -174,7 +175,7 @@ namespace WindowsFormsApp4
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter&&!string.IsNullOrWhiteSpace(inputBox.Text))
+            if(e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
             {
                 SendMessage(inputBox.Text);
                 inputBox.Clear();
@@ -200,6 +201,8 @@ namespace WindowsFormsApp4
         //서버로부터 나오는 패킷을 받는 부분은 어디?
         private void Lounge_KeyDown(object sender, KeyEventArgs e)
         {
+            if (inputBox.Focused) return;
+
             bool moved = false;
 
             switch(e.KeyCode)
@@ -222,11 +225,14 @@ namespace WindowsFormsApp4
             if (!player.ContainsKey(playerId))
             {
                 var pic = new PictureBox();
-                pic.Size = new Size(50, 50);
+                pic.Focus();
+                pic.Size = new Size(100, 100);
                 pic.SizeMode = PictureBoxSizeMode.StretchImage;
                 pic.Image = Properties.Resources.pang1_front_1; // 고정 캐릭터 이미지
                 pic.Location = new Point(x, y);
+                pic.BackColor = Color.Transparent;
                 player[playerId] = pic;
+
                 this.Invoke(new MethodInvoker(() => this.Controls.Add(pic)));
             }
             else

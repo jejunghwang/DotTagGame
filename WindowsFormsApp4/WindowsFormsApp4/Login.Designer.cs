@@ -198,6 +198,7 @@
             this.Name = "Login";
             this.Text = "Form3";
             this.Load += new System.EventHandler(this.Login_Load);
+            this.Shown += new System.EventHandler(this.Login_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

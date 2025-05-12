@@ -26,8 +26,12 @@ namespace WindowsFormsApp4
 
         private void Login_Load(object sender, EventArgs e)
         {
-            txtId.Focus();
             lbl_register.Text = "<u>아직 계정이 없으신가요?<u>";
+        }
+
+        private void Login_Shown(object sender, EventArgs e)
+        {
+            txtId.Focus();
         }
 
         private void txtPw_KeyDown(object sender, KeyEventArgs e)
@@ -106,5 +110,6 @@ namespace WindowsFormsApp4
             register.StartPosition = FormStartPosition.CenterParent;
             register.ShowDialog();
         }
+
     }
 }
