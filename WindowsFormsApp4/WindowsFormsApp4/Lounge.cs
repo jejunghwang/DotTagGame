@@ -139,7 +139,7 @@ namespace WindowsFormsApp4
                 };
 
                 byte[] data = packet.ToBytes();
-                AppendChatLog($"[{AppState.CurrentUserName}]: {message}");
+                //AppendChatLog($"[{AppState.CurrentUserName}]: {message}"); 이렇게 하면 일관성 깨짐.
                 AppState.Connection.Stream.Write(data, 0, data.Length);
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace WindowsFormsApp4
             try
             {
                 var stream = AppState.Connection.Stream;
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[1024];     //패킷 읽는 방법 완전히 잘못됨.
 
                 while (AppState.Connection.Client.Connected)
                 {
@@ -197,6 +197,7 @@ namespace WindowsFormsApp4
 
 
         // ---------------------------- 캐릭터 ---------------------------------
+        //서버로부터 나오는 패킷을 받는 부분은 어디?
         private void Lounge_KeyDown(object sender, KeyEventArgs e)
         {
             bool moved = false;
