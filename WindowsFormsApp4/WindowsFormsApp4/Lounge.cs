@@ -26,7 +26,7 @@ namespace WindowsFormsApp4
 
         private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
         private int playerX = 937, playerY = 270;
-        private int moveSpeed = 10;
+        private int moveSpeed = 3;
 
         // 캐릭터 애니메이션 이미지 (방향별)
         private List<Image> upFrames = new List<Image>();
@@ -35,6 +35,11 @@ namespace WindowsFormsApp4
         private List<Image> rightFrames = new List<Image>();
         private int frameIndex = 0;
 
+
+
+        private HashSet<Keys> pressedKeys = new HashSet<Keys>();
+
+        
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -74,6 +79,8 @@ namespace WindowsFormsApp4
             inputBox.ForeColor = Color.White;
             inputBox.BorderRadius = 5;
 
+            this.KeyUp += Lounge_KeyUp;
+            this.DoubleBuffered = true;
             /* userId = id;
             client = tcp;
             stream = network;
@@ -98,21 +105,26 @@ namespace WindowsFormsApp4
             receiveThread.Start();
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
+
+            
+            animationTimer.Interval = 30; // 밀리초 단위: 100ms마다 프레임 변경
+            animationTimer.Tick += AnimateCharacter;
+            animationTimer.Start();
         }
 
         private void LoadCharacterFrames()
         { 
             upFrames.AddRange(new[] {
+                Properties.Resources.pang1_back_1, // front와 back 위치 바꿈
+                Properties.Resources.pang1_back_2,
+                Properties.Resources.pang1_back_3,
+                Properties.Resources.pang1_back_4
+            });
+            downFrames.AddRange(new[] {
                 Properties.Resources.pang1_front_1,
                 Properties.Resources.pang1_front_2,
                 Properties.Resources.pang1_front_3,
                 Properties.Resources.pang1_front_4
-            });
-            downFrames.AddRange(new[] {
-                Properties.Resources.pang1_back_1,
-                Properties.Resources.pang1_back_2,
-                Properties.Resources.pang1_back_3,
-                Properties.Resources.pang1_back_4
             });
             leftFrames.AddRange(new[] {
                 Properties.Resources.pang1_left_1,
@@ -172,17 +184,6 @@ namespace WindowsFormsApp4
                 AppendChatLog($"연결이 끊어졌습니다: {ex.Message}");
             }
         }
-
-        private void inputBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
-            {
-                SendMessage(inputBox.Text);
-                inputBox.Clear();
-                e.SuppressKeyPress = true;
-            }
-        }
-
         private void AppendChatLog(string message)
         {
             if (InvokeRequired)
@@ -194,29 +195,68 @@ namespace WindowsFormsApp4
                 chatLogBox.AppendText(message + "\n");
             }
         }
+        // ----------------------------------------------------------------------
+
+        // --------------------- 채팅창+이동 관련 -------------------------------
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
+            {
+                SendMessage(inputBox.Text);
+                inputBox.Clear();
+                e.SuppressKeyPress = true;
+                this.ActiveControl= null;
+                this.Focus();
+            }
+        }
+
+        private void Lounge_KeyUp(object sender, KeyEventArgs e)
+        {
+            pressedKeys.Remove(e.KeyCode);
+        }
+        private void Lounge_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.T) // t를 누르면 채팅창으로 포커스 이동
+            {
+                inputBox.Focus();
+                return;
+            }
+            if (inputBox.Focused) return;
+
+            // 한 번만 추가
+            if (!pressedKeys.Contains(e.KeyCode))
+                pressedKeys.Add(e.KeyCode);
+        }
+
         // ---------------------------------------------------------------------
 
 
         // ---------------------------- 캐릭터 ---------------------------------
         //서버로부터 나오는 패킷을 받는 부분은 어디?
-        private void Lounge_KeyDown(object sender, KeyEventArgs e)
+        private void AnimateCharacter(object sender, EventArgs e)
         {
-            if (inputBox.Focused) return;
+            if (pressedKeys.Count == 0) return;
 
-            bool moved = false;
+            int dx = 0, dy = 0;
+            List<Image> frames = downFrames; // 기본 방향
 
-            switch(e.KeyCode)
+            if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
+            if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
+            if (pressedKeys.Contains(Keys.A)) { dx -= moveSpeed; frames = leftFrames; }
+            if (pressedKeys.Contains(Keys.D)) { dx += moveSpeed; frames = rightFrames; }
+
+            // 실제 위치 이동
+            playerX += dx;
+            playerY += dy;
+
+            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            SendPlayerPosition(playerX, playerY);
+
+            // 애니메이션
+            if (player.TryGetValue(AppState.CurrentUserId, out var pic))
             {
-                case Keys.W: playerY -= moveSpeed; moved = true; break;
-                case Keys.S: playerY += moveSpeed; moved = true; break;
-                case Keys.A: playerX -= moveSpeed; moved = true; break;
-                case Keys.D: playerX += moveSpeed; moved = true; break;
-            }
-
-            if(moved)
-            {
-                AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-                SendPlayerPosition(playerX, playerY);
+                frameIndex = (frameIndex + 1) % frames.Count;
+                pic.Image = frames[frameIndex];
             }
         }
 

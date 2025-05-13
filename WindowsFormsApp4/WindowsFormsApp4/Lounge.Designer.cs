@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.inputBox = new Guna.UI2.WinForms.Guna2TextBox();
             this.chatLogBox = new System.Windows.Forms.RichTextBox();
+            this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // inputBox
@@ -82,5 +84,6 @@
         #endregion
         private Guna.UI2.WinForms.Guna2TextBox inputBox;
         private System.Windows.Forms.RichTextBox chatLogBox;
+        private System.Windows.Forms.Timer animationTimer;
     }
 }
