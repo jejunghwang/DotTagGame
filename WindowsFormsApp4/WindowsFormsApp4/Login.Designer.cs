@@ -147,7 +147,7 @@
             // 
             this.lbl_register.AutoSize = false;
             this.lbl_register.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_register.Font = new System.Drawing.Font("함초롬돋움", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_register.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_register.Location = new System.Drawing.Point(287, 542);
             this.lbl_register.Margin = new System.Windows.Forms.Padding(4);
             this.lbl_register.Name = "lbl_register";
