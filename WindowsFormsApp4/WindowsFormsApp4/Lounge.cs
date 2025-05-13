@@ -26,7 +26,7 @@ namespace WindowsFormsApp4
 
         private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
         private int playerX = 937, playerY = 270;
-        private int moveSpeed = 3;
+        private int moveSpeed = 7;
 
         // 캐릭터 애니메이션 이미지 (방향별)
         private List<Image> upFrames = new List<Image>();
