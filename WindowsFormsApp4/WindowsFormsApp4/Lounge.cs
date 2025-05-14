@@ -173,7 +173,7 @@ namespace WindowsFormsApp4
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
                     if (bytesRead > 0)
                     {
-                        var receivedPacket = new ChatPacket().FromBytes(buffer);
+                        var receivedPacket = ChatPacket.FromBytes(buffer);
                         string receivedMessage = $"[{receivedPacket.playerId}]: {receivedPacket.message}";
                         AppendChatLog(receivedMessage);
                     }

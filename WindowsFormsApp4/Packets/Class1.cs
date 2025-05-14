@@ -229,7 +229,7 @@ namespace Packets
             return buffer;
         }
 
-        public ChatPacket FromBytes(byte[] buffer)
+        public static ChatPacket FromBytes(byte[] buffer)
         {
             int messageLength = BitConverter.ToInt32(buffer, 5);
             string message = Encoding.UTF8.GetString(buffer, 9, messageLength);
