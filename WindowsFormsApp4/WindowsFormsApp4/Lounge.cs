@@ -39,7 +39,7 @@ namespace WindowsFormsApp4
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
-        
+
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -87,6 +87,43 @@ namespace WindowsFormsApp4
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
             receiveThread.Start();*/
+
+            AppState.Connection.PacketReceived += OnPacketReceived;
+        }
+
+        // ① PacketReceived 이벤트 핸들러
+        private void OnPacketReceived(byte[] body)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate { ProcessPacket(body); });
+            }
+            else
+            {
+                ProcessPacket(body);
+            }
+        }
+
+        private void ProcessPacket(byte[] body)
+        {
+            switch ((PacketType)body[0])
+            {
+                case PacketType.move:
+                    var mv = MovePacket.FromBytes(body);
+                    UpdatePlayerPosition(mv.playerId, mv.x, mv.y);
+                    break;
+
+                case PacketType.chat:
+                    var chat = ChatPacket.FromBytes(body);
+                    AppendChatLog($"[{chat.playerId}]: {chat.message}");
+                    break;
+
+            }
+        }
+
+        private void UpdatePlayerPosition(int playerId, float x, float y)
+        {
+            AddOrUpdateCharacter(playerId, (int)x, (int)y, playerId == AppState.CurrentUserId);
         }
 
         private void Lounge_Load(object sender, EventArgs e)
@@ -106,14 +143,14 @@ namespace WindowsFormsApp4
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
 
-            
+
             animationTimer.Interval = 30; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
         }
 
         private void LoadCharacterFrames()
-        { 
+        {
             upFrames.AddRange(new[] {
                 Properties.Resources.pang1_back_1, // front와 back 위치 바꿈
                 Properties.Resources.pang1_back_2,
@@ -200,12 +237,12 @@ namespace WindowsFormsApp4
         // --------------------- 채팅창+이동 관련 -------------------------------
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
+            if (e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
             {
                 SendMessage(inputBox.Text);
                 inputBox.Clear();
                 e.SuppressKeyPress = true;
-                this.ActiveControl= null;
+                this.ActiveControl = null;
                 this.Focus();
             }
         }

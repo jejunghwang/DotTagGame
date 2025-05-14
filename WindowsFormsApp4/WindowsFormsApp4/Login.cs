@@ -22,6 +22,7 @@ namespace WindowsFormsApp4
         {
             InitializeComponent();
             this.mainForm = mainForm;
+            AppState.Connection.PacketReceived += OnPacketReceived;
         }
 
         private void Login_Load(object sender, EventArgs e)
@@ -49,61 +50,36 @@ namespace WindowsFormsApp4
         }
 
         private void btn_enter_Click(object sender, EventArgs e)
-         {
-             string userId = txtId.Text.Trim();
-             string password = txtPw.Text;
+        {
+            AppState.Connection.Connect("127.0.0.1", 9999);
 
-             try
-             {
-                if (AppState.Connection.Client == null || !AppState.Connection.Client.Connected)
-                    AppState.Connection.Connect("127.0.0.1", 9999);
+            var req = new LoginRequestPacket { id = txtId.Text, pw = txtPw.Text };
+            var buf = req.ToBytes();
+            AppState.Connection.Stream.Write(buf, 0, buf.Length);
+        }
 
-                NetworkStream stream = AppState.Connection.Stream;
+        private void OnPacketReceived(byte[] body)
+        {
+            if ((PacketType)body[0] != PacketType.loginResponse) return;
 
-                var loginPacket = new Packets.LoginRequestPacket
-                 {
-                     id = userId,
-                     pw = password
-                 };
+            var res = LoginResponsePacket.FromBytes(body);
+            this.Invoke(new MethodInvoker(() => HandleLoginResult(res)));
+        }
 
-                 byte[] writeBuffer = loginPacket.ToBytes();
-                 stream.Write(writeBuffer, 0, writeBuffer.Length);
-
-                 byte[] readBuffer = new byte[4];
-                 stream.Read(readBuffer, 0, 4);
-
-                 int packetLength = BitConverter.ToInt32(readBuffer, 0);
-
-                 readBuffer = new byte[packetLength];
-                 stream.Read(readBuffer, 0, packetLength);
-
-                 var response = Packets.LoginResponsePacket.FromBytes(readBuffer);
-
-                 // stream.Close();
-                 // client.Close();
-
-                 if (response.successLogin)
-                 {
-                    AppState.CurrentUserId = response.userId;  // int
-                    AppState.CurrentUserName = userId;  // string
-
-                    // 로딩 폼 띄우기 
-                    this.Hide();
-                 
-                    Loading load = new Loading(mainForm);
-                    load.ShowDialog();
-                 }
-                 else
-                 {
-                     MessageBox.Show("로그인 실패");
-                 }
-             }
-             catch (Exception ex)
-             {
-                 MessageBox.Show("서버 연결 오류: " + ex.Message);
-             }
-         }
-
+        private void HandleLoginResult(LoginResponsePacket res)
+        {
+            if (res.successLogin)
+            {
+                AppState.CurrentUserId = res.userId;
+                AppState.CurrentUserName = txtId.Text.Trim();
+                this.Hide();
+                new Loading(mainForm).ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("로그인 실패");
+            }
+        }
         private void lbl_register_Click_1(object sender, EventArgs e)
         {
             Resister register = new Resister();
