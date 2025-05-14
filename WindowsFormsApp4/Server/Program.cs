@@ -38,7 +38,7 @@ namespace Server
                     TcpClient client = await server.AcceptTcpClientAsync();
                     Console.WriteLine("Connected!");
 
-                    _ = Task.Run(async () =>
+                    /*_ = Task.Run(async () =>
                     {
                         byte[] buffer = new byte[4];
                         NetworkStream stream = client.GetStream();
@@ -90,7 +90,7 @@ namespace Server
 
                             case PacketType.chat:
                                 {
-                                    ChatPacket chatPacket = new ChatPacket().FromBytes(buffer);
+                                    ChatPacket chatPacket = ChatPacket.FromBytes(buffer);
                                     Console.WriteLine($"[Chat] {chatPacket.playerId}: {chatPacket.message}");
 
                                     byte[] chatResponse = chatPacket.ToBytes();
@@ -99,7 +99,69 @@ namespace Server
                                 }
 
                         }
+                    });*/
+
+                    _ = Task.Run(async () =>
+                    {
+                        var stream = client.GetStream();
+                        try
+                        {
+                            while (true)
+                            {
+                                var hdr = new byte[4];
+                                int n = await stream.ReadAsync(hdr, 0, 4);
+                                if (n == 0) break; 
+
+                                int packetLength = BitConverter.ToInt32(hdr, 0);
+
+                                var body = new byte[packetLength];
+                                int offset = 0;
+                                while (offset < packetLength)
+                                    offset += await stream.ReadAsync(body, offset, packetLength - offset);
+
+                                switch ((PacketType)body[0])
+                                {
+                                    case PacketType.loginRequest:
+                                        var loginReq = LoginRequestPacket.FromBytes(body);
+                                        var loginRes = createLoginResponsePacket(loginReq);
+                                        await stream.WriteAsync(loginRes.ToBytes(), 0, loginRes.ToBytes().Length);
+                                        Console.WriteLine("로그인 처리 완료.");
+                                        break;
+
+                                    case PacketType.RegUsrRequest:
+                                        var regReq = RegUsrRequestPacket.FromBytes(body);
+                                        var regRes = createRegisterResponsePacket(regReq);
+                                        await stream.WriteAsync(regRes.ToBytes(), 0, regRes.ToBytes().Length);
+                                        Console.WriteLine("회원가입 처리 완료.");
+                                        break;
+
+                                    case PacketType.move:
+                                        var mv = MovePacket.FromBytes(body);
+                                        Console.WriteLine($"[MOVE] PlayerId:{mv.playerId} Location:({mv.x},{mv.y})");
+                                        break;
+
+                                    case PacketType.chat:
+                                        var chat = ChatPacket.FromBytes(body);
+                                        Console.WriteLine($"[CHAT] {chat.playerId}: {chat.message}");
+                                        break;
+
+                                    default:
+                                        Console.WriteLine("Unknown packet type");
+                                        break;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("세션 에러: " + ex.Message);
+                        }
+                        finally
+                        {
+                            client.Close();
+                            Console.WriteLine("클라이언트 연결 종료");
+                        }
                     });
+
 
                 }
             }
