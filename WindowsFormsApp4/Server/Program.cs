@@ -37,7 +37,7 @@ namespace Server
 
         private static async Task HandleClientAsync(TcpClient client)
         {
-            string ip = ((IPEndPoint)client.Client.RemoteEndPoint!).Address.ToString();
+            string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
             Console.WriteLine($"[{ip}] connected.");
             int userId = -1;
 
