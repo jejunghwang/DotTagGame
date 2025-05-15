@@ -14,176 +14,154 @@ namespace Server
 {
     internal class Program
     {
-        static bool[] usrId = new bool[100];
-        
-        static void Main(string[] args)
+        private const int MaxUsr = 100;
+        private static ConcurrentDictionary<string, int> IpToUserId = new ConcurrentDictionary<string, int>();
+        private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
+        private static bool[] UsedId = new bool[MaxUsr];
+
+
+        static async Task Main(string[] args) => await RunAsync();
+
+        private static async Task RunAsync()
         {
-            RunServerAsync().GetAwaiter().GetResult();
+            TcpListener listener = new TcpListener(IPAddress.Any, 9999);
+            listener.Start();
+            Console.WriteLine("Server started");
+
+            while (true)
+            {
+                TcpClient client = await listener.AcceptTcpClientAsync();
+                _ = HandleClientAsync(client);
+            }
         }
 
-        static async Task RunServerAsync()
+        private static async Task HandleClientAsync(TcpClient client)
         {
-            TcpListener server = null;
-            IPAddress addr = IPAddress.Parse("127.0.0.1");
-            int port = 9999;
+            string ip = ((IPEndPoint)client.Client.RemoteEndPoint!).Address.ToString();
+            Console.WriteLine($"[{ip}] connected.");
+            int userId = -1;
 
-            try
+            using (client)
+            using (NetworkStream stream = client.GetStream())
             {
-                server = new TcpListener(addr, port);
-                server.Start();
-
-                while (true)
+                try
                 {
-                    Console.WriteLine("Waiting for a connection...");
-                    TcpClient client = await server.AcceptTcpClientAsync();
-                    Console.WriteLine("Connected!");
+                    var loginPacket = await ReadPacketAsync(stream);
+                    byte[] buffer;
 
-                    /*_ = Task.Run(async () =>
+                    switch ((PacketType)loginPacket[0])
                     {
-                        byte[] buffer = new byte[4];
-                        NetworkStream stream = client.GetStream();
-                        await stream.ReadAsync(buffer, 0, 4);
-
-                        int packetLength = BitConverter.ToInt32(buffer, 0);
-
-                        buffer = new byte[packetLength];
-                        await stream.ReadAsync(buffer, 0, packetLength);
-
-                        byte[] writeBuffer;
-                        switch ((PacketType)buffer[0])
-                        {
-                            case PacketType.loginRequest:
-                                Console.WriteLine("request login.");
-                                LoginRequestPacket loginPacket = LoginRequestPacket.FromBytes(buffer);
-
-                                writeBuffer = createLoginResponsePacket(loginPacket).ToBytes();
-
-                                stream.Write(writeBuffer, 0, writeBuffer.Length);
-                                Console.WriteLine("sent response packet.");
-                                break;
-                            case PacketType.RegUsrRequest:
-                                Console.WriteLine("request register user.");
-                                
-                                try
-                                {
-                                    RegUsrRequestPacket registerPacket = RegUsrRequestPacket.FromBytes(buffer);
-                                    writeBuffer = createRegisterResponsePacket(registerPacket).ToBytes();
-
-                                    stream.Write(writeBuffer, 0, writeBuffer.Length);
-                                    Console.WriteLine("sent response packet.");
-
-                                }catch(Exception ex)
-                                {
-                                    Console.WriteLine("파싱 실패" + ex.Message);
-                                }
-
-                                break;
-                            case PacketType.move:
-                                {
-                                    MovePacket movePacket = MovePacket.FromBytes(buffer);
-                                    Console.WriteLine($"PlayerId: {movePacket.playerId} \nLocation: ({movePacket.x}, {movePacket.y})");
-
-                                    byte[] moveResponse = movePacket.ToBytes();
-                                    stream.Write(moveResponse, 0, moveResponse.Length);
-                                    break;
-                                }
-
-                            case PacketType.chat:
-                                {
-                                    ChatPacket chatPacket = ChatPacket.FromBytes(buffer);
-                                    Console.WriteLine($"[Chat] {chatPacket.playerId}: {chatPacket.message}");
-
-                                    byte[] chatResponse = chatPacket.ToBytes();
-                                    stream.Write(chatResponse, 0, chatResponse.Length);
-                                    break;
-                                }
-
-                        }
-                    });*/
-
-                    _ = Task.Run(async () =>
-                    {
-                        var stream = client.GetStream();
-                        try
-                        {
-                            while (true)
+                        case PacketType.loginRequest:
+                            LoginRequestPacket loginRequest = LoginRequestPacket.FromBytes(loginPacket);
+                            if (isValidCredential(loginRequest))
                             {
-                                var hdr = new byte[4];
-                                int n = await stream.ReadAsync(hdr, 0, 4);
-                                if (n == 0) break; 
-
-                                int packetLength = BitConverter.ToInt32(hdr, 0);
-
-                                var body = new byte[packetLength];
-                                int offset = 0;
-                                while (offset < packetLength)
-                                    offset += await stream.ReadAsync(body, offset, packetLength - offset);
-
-                                switch ((PacketType)body[0])
+                                userId = RegisterClient(ip);
+                                SessionMap[userId] = stream;
+                                buffer = new LoginResponsePacket
                                 {
-                                    case PacketType.loginRequest:
-                                        var loginReq = LoginRequestPacket.FromBytes(body);
-                                        var loginRes = createLoginResponsePacket(loginReq);
-                                        await stream.WriteAsync(loginRes.ToBytes(), 0, loginRes.ToBytes().Length);
-                                        Console.WriteLine("로그인 처리 완료.");
-                                        break;
+                                    successLogin = true,
+                                    userId = userId
 
-                                    case PacketType.RegUsrRequest:
-                                        var regReq = RegUsrRequestPacket.FromBytes(body);
-                                        var regRes = createRegisterResponsePacket(regReq);
-                                        await stream.WriteAsync(regRes.ToBytes(), 0, regRes.ToBytes().Length);
-                                        Console.WriteLine("회원가입 처리 완료.");
-                                        break;
-
-                                    case PacketType.move:
-                                        var mv = MovePacket.FromBytes(body);
-                                        Console.WriteLine($"[MOVE] PlayerId:{mv.playerId} Location:({mv.x},{mv.y})");
-                                        break;
-
-                                    case PacketType.chat:
-                                        var chat = ChatPacket.FromBytes(body);
-                                        Console.WriteLine($"[CHAT] {chat.playerId}: {chat.message}");
-                                        break;
-
-                                    default:
-                                        Console.WriteLine("Unknown packet type");
-                                        break;
-                                }
+                                }.ToBytes();
                             }
-                        }
-                        catch (Exception ex)
+                            else
+                            {
+                                buffer = new LoginResponsePacket { successLogin = false }.ToBytes();
+                            }
+                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            Console.WriteLine($"{ip} sent login response packet.");
+                            break;
+                        case PacketType.RegUsrRequest:
+                            RegUsrRequestPacket regRequest = RegUsrRequestPacket.FromBytes(loginPacket);
+                            buffer = createRegisterResponsePacket(regRequest).ToBytes();
+                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            Console.WriteLine($"{ip} sent register response packet.");
+                            break;
+                        default:
+                            return;
+                    }
+
+                    while (true)
+                    {
+                        var packet = await ReadPacketAsync(stream);
+                        if (packet == null) break;
+
+                        switch ((PacketType)packet[0])
                         {
-                            Console.WriteLine("세션 에러: " + ex.Message);
-                        }
-                        finally
-                        {
-                            client.Close();
-                            Console.WriteLine("클라이언트 연결 종료");
-                        }
-                    });
+                            case PacketType.move:
+
+                                break;
+                            case PacketType.chat:
+
+                                break;
 
 
+                            default:
+                                Console.WriteLine($"{ip} unknown packet.");
+                                break;
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine($"[{ip}] session error: {e.Message}");
+                }
+                finally
+                {
+                    ReleaseClient(ip);
+                    if (SessionMap.TryRemove(userId, out var s)) s.Close();
+                    Console.WriteLine($"[{ip}] disconnected");
                 }
             }
-            catch (SocketException e)
-            {
-                Console.WriteLine("SocketException: {0}", e);
-            }
-            finally
-            {
-                server.Stop();
-            }
-
-            Console.WriteLine("\n서버가 종료됩니다.");
         }
 
-        static LoginResponsePacket createLoginResponsePacket(LoginRequestPacket packet)
+        private static int RegisterClient(string ip)
+        {
+            lock (UsedId)
+            {
+                for(int i=0; i<MaxUsr; i++)
+                {
+                    if (!UsedId[i])
+                    {
+                        UsedId[i] = true;
+                        IpToUserId[ip] = i;
+                        return i;
+                    }
+                }
+            }
+            throw new InvalidOperationException("User limit reached");
+        }
+
+        private static void ReleaseClient(string ip)
+        {
+            if (!IpToUserId.TryRemove(ip, out int id)) return;
+            lock (UsedId) UsedId[id] = false;
+        }
+
+        private static async Task<byte[]> ReadPacketAsync(NetworkStream stream)
+        {
+            byte[] temp = new byte[4];
+            int n = await stream.ReadAsync(temp, 0, 4);
+            if (n == 0) return null;
+
+            int len = BitConverter.ToInt32(temp, 0);
+            byte[] packet = new byte[len];
+
+            int offset = 0;
+
+            while(offset < len)
+            {
+                int read = await stream.ReadAsync(packet, offset, len - offset);
+                if (read == 0) return null;
+                offset += read;
+            }
+
+            return packet;
+        }
+
+        static bool isValidCredential(LoginRequestPacket packet)
         {
             StreamReader rStream = new StreamReader("loginInfo.csv");
-
-            int newId = 0;
-            while (usrId[newId]) { newId++; }
-
 
             string line;
             while ((line = rStream.ReadLine()) != null)
@@ -191,21 +169,12 @@ namespace Server
                 if (line == packet.id + ',' + packet.pw)
                 {
                     rStream.Close();
-                    return new LoginResponsePacket
-                    {
-                        userId = newId,
-                        successLogin = true
-                    };
+                    return true;
                 }
             }
 
             rStream.Close();
-            return new LoginResponsePacket
-            {
-                userId = 0,
-                successLogin = false
-            };
-
+            return false;
         }
 
         static RegUsrResponsePacket createRegisterResponsePacket(RegUsrRequestPacket packet)
