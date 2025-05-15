@@ -197,5 +197,26 @@ namespace Server
 
             return new RegUsrResponsePacket { successReg = true };
         }
+
+        public static async Task BroadCastAsync(byte[] packet)
+        {
+            byte[] header = BitConverter.GetBytes(packet.Length);
+            byte[] buffer = new byte[header.Length + packet.Length];
+            header.CopyTo(buffer, 0);
+            packet.CopyTo(buffer, 4);
+
+            foreach(var session in SessionMap)
+            {
+                NetworkStream stream = session.Value;
+                try
+                {
+                    await stream.WriteAsync(buffer, 0, buffer.Length);
+                }
+                catch
+                {
+                    if (SessionMap.TryRemove(session.Key, out var s)) s.Close();
+                }
+            }
+        }
     }
 }
