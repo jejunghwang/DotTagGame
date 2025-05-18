@@ -90,7 +90,7 @@ namespace WindowsFormsApp4
             receiveThread.Start();*/
             this.Load += Lounge_Load;
             //AppState.Connection.PacketReceived += OnPacketReceived;
-            //this.Shown += Lounge_Shown;
+            this.Shown += Lounge_Shown;
         }
 
         private void OnPacketReceived(byte[] body)
@@ -139,7 +139,7 @@ namespace WindowsFormsApp4
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
 
         }
-        private async void Lounge_Load(object sender, EventArgs e)
+        private void Lounge_Load(object sender, EventArgs e)
         {
             if (mainForm != null && !mainForm.IsDisposed)
             {
@@ -150,13 +150,9 @@ namespace WindowsFormsApp4
             LoadCharacterFrames();
             frames = downFrames; // 기본 방향
             AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-            AppState.Connection.PacketReceived += OnPacketReceived;
-            var req = new WelcomeRequestPacket();
+/*            var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
-            await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
-            /*            var req = new WelcomeRequestPacket();
-                        var buf = req.ToBytes();
-                        AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
+            AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
 
