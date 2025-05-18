@@ -49,9 +49,10 @@ namespace WindowsFormsApp4
             this.Close();
         }
 
-        private void btn_enter_Click(object sender, EventArgs e)
+        private async void btn_enter_Click(object sender, EventArgs e)
         {
-            AppState.Connection.Connect("127.0.0.1", 9999);
+            btn_enter.Enabled = false;
+            await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
 
             var req = new LoginRequestPacket { id = txtId.Text, pw = txtPw.Text };
             var buf = req.ToBytes();
@@ -70,6 +71,7 @@ namespace WindowsFormsApp4
         {
             if (res.successLogin)
             {
+                AppState.Connection.PacketReceived -= OnPacketReceived;
                 AppState.CurrentUserId = res.userId;
                 AppState.CurrentUserName = txtId.Text.Trim();
                 this.Hide();
@@ -77,6 +79,7 @@ namespace WindowsFormsApp4
             }
             else
             {
+                btn_enter.Enabled = true;
                 MessageBox.Show("로그인 실패");
             }
         }

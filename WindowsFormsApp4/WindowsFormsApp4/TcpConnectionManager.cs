@@ -1,60 +1,81 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Net.Sockets;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WindowsFormsApp4
 {
     public class TcpConnectionManager
     {
-        public TcpClient Client { get; private set; }
-        public NetworkStream Stream => Client?.GetStream();
+        private TcpClient client;
+        private CancellationTokenSource cts;
 
+        public NetworkStream Stream => client?.GetStream();
+        public bool IsConnected => client?.Connected ?? false;
         public event Action<byte[]> PacketReceived;
-        public void Connect(string ip, int port)
+
+        public async Task ConnectAsync(string ip, int port)
         {
-            if (Client != null && Client.Connected)
-                return; // 이미 연결되어 있음
+            if (client != null && client.Connected)
+                return;
 
-            Client = new TcpClient();
-            Client.Connect(ip, port);
+            client = new TcpClient();
+            await client.ConnectAsync(ip, port).ConfigureAwait(false);
 
-            maintainConnection();
+            cts?.Cancel();
+            cts = new CancellationTokenSource();
+
+            _ = ReadLoopAsync(cts.Token);
         }
 
-        private void maintainConnection()
+        private async Task ReadLoopAsync(CancellationToken token)
         {
-            Task.Run(() =>
+            try
             {
-                try
+                var stream = Stream;
+                while (!token.IsCancellationRequested && client.Connected)
                 {
-                    var stream = Stream;
-                    while (Client.Connected)
+                    Debug.WriteLine("[Client]: Awaiting header...");
+
+                    var header = new byte[4];
+                    int read = await stream.ReadAsync(header, 0, header.Length, token).ConfigureAwait(false);
+                    if (read == 0) break;
+
+                    int bodyLen = BitConverter.ToInt32(header, 0);
+                    Debug.WriteLine($"[Client]: Header received, bodyLen={bodyLen}");
+
+                    var body = new byte[bodyLen];
+                    int offset = 0;
+                    while (offset < bodyLen)
                     {
-                        var header = new byte[4];
-                        int read = stream.Read(header, 0, 4);
-                        if (read == 0) break;
-
-                        int bodyLen = BitConverter.ToInt32(header, 0);
-                        var body = new byte[bodyLen];
-                        int offset = 0;
-                        while (offset < bodyLen)
-                            offset += stream.Read(body, offset, bodyLen - offset);
-
-                        PacketReceived?.Invoke(body);
+                        int chunk = await stream.ReadAsync(body, offset, bodyLen - offset, token).ConfigureAwait(false);
+                        if (chunk == 0) throw new SocketException();
+                        offset += chunk;
                     }
+
+                    PacketReceived?.Invoke(body);
                 }
-                catch
-                {
-                }
-            });
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("[Client]: Read loop canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Client] ReadLoop error: {ex.Message}");
+            }
+            finally
+            {
+                Debug.WriteLine("[Client]: Disconnected.");
+                Close();
+            }
         }
         public void Close()
         {
-            Stream?.Close();
-            Client?.Close();
+            cts?.Cancel();
+            try { Stream?.Close(); } catch { }
+            try { client?.Close(); } catch { }
         }
     }
 }
