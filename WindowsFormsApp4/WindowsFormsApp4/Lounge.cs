@@ -40,6 +40,7 @@ namespace WindowsFormsApp4
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
+        private Panel overlayPanel;
 
         public Lounge(Main mainForm)
         {
@@ -160,6 +161,14 @@ namespace WindowsFormsApp4
             animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
+
+            overlayPanel = new Panel();
+            overlayPanel.Dock = DockStyle.Fill;
+            overlayPanel.BackColor = Color.FromArgb(150, 0, 0, 0); // 반투명 검정
+            overlayPanel.Visible = false;
+            overlayPanel.BringToFront();
+
+            this.Controls.Add(overlayPanel);
         }
 
         private void LoadCharacterFrames()
@@ -319,7 +328,7 @@ namespace WindowsFormsApp4
             }
         }
 
-
+  
         private void SendPlayerPosition(int x, int y)
         {
             var data = new MovePacket
@@ -333,5 +342,19 @@ namespace WindowsFormsApp4
         }
 
         // --------------------------------------------------
+
+        private void btn_select_Click(object sender, EventArgs e)
+        {
+            overlayPanel.Visible = true;
+            overlayPanel.BringToFront();
+
+            Pick pick = new Pick();
+            pick.Owner = this;
+            pick.StartPosition = FormStartPosition.CenterParent;
+            pick.ShowDialog();
+
+            overlayPanel.Visible = false;
+        }
+
     }
 }

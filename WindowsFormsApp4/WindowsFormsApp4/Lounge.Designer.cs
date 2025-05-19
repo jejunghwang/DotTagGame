@@ -32,6 +32,8 @@
             this.inputBox = new Guna.UI2.WinForms.Guna2TextBox();
             this.chatLogBox = new System.Windows.Forms.RichTextBox();
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
+            this.btn_select = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2ShapesTool1 = new Guna.UI2.WinForms.Guna2ShapesTool(this.components);
             this.SuspendLayout();
             // 
             // inputBox
@@ -64,14 +66,47 @@
             this.chatLogBox.TabIndex = 2;
             this.chatLogBox.Text = "";
             // 
+            // btn_select
+            // 
+            this.btn_select.BackColor = System.Drawing.Color.Transparent;
+            this.btn_select.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.select;
+            this.btn_select.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btn_select.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_select.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_select.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_select.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_select.FillColor = System.Drawing.Color.Transparent;
+            this.btn_select.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_select.ForeColor = System.Drawing.Color.Black;
+            this.btn_select.Location = new System.Drawing.Point(39, 28);
+            this.btn_select.Name = "btn_select";
+            this.btn_select.ShadowDecoration.CustomizableEdges.BottomLeft = false;
+            this.btn_select.ShadowDecoration.CustomizableEdges.BottomRight = false;
+            this.btn_select.ShadowDecoration.CustomizableEdges.TopLeft = false;
+            this.btn_select.ShadowDecoration.CustomizableEdges.TopRight = false;
+            this.btn_select.Size = new System.Drawing.Size(274, 111);
+            this.btn_select.TabIndex = 3;
+            this.btn_select.Text = "캐릭터 선택";
+            this.btn_select.Click += new System.EventHandler(this.btn_select_Click);
+            // 
+            // guna2ShapesTool1
+            // 
+            this.guna2ShapesTool1.Location = new System.Drawing.Point(0, 0);
+            this.guna2ShapesTool1.PolygonSkip = 1;
+            this.guna2ShapesTool1.Rotate = 0F;
+            this.guna2ShapesTool1.Size = new System.Drawing.Size(200, 200);
+            this.guna2ShapesTool1.TargetControl = null;
+            // 
             // Lounge
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.lounge1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 744);
+            this.Controls.Add(this.btn_select);
             this.Controls.Add(this.chatLogBox);
             this.Controls.Add(this.inputBox);
+            this.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.Name = "Lounge";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";
@@ -85,5 +120,7 @@
         private Guna.UI2.WinForms.Guna2TextBox inputBox;
         private System.Windows.Forms.RichTextBox chatLogBox;
         private System.Windows.Forms.Timer animationTimer;
+        private Guna.UI2.WinForms.Guna2Button btn_select;
+        private Guna.UI2.WinForms.Guna2ShapesTool guna2ShapesTool1;
     }
 }
