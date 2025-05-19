@@ -116,7 +116,9 @@ namespace Server
                                 break;
 
                             case PacketType.chat:
-
+                                var chat = ChatPacket.FromBytes(packet);
+                                Console.WriteLine($"[CHAT] {chat.playerId}: {chat.message}");
+                                await BroadCastAsync(packet);
                                 break;
 
 
