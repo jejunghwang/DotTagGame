@@ -25,15 +25,15 @@ namespace WindowsFormsApp4
             this.Close();
         }
 
-        private void btn_enter_Click(object sender, EventArgs e)
+        private async void btn_enter_Click(object sender, EventArgs e)
         {
             string userId = txtNewId.Text.Trim();
             string password = txtNewPw.Text;
 
             try
             {
-                if (AppState.Connection.Client == null || !AppState.Connection.Client.Connected)
-                    AppState.Connection.Connect("127.0.0.1", 9999);
+                if (!AppState.Connection.IsConnected)
+                    await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
 
                 NetworkStream stream = AppState.Connection.Stream;
 

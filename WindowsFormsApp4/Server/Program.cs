@@ -18,6 +18,7 @@ namespace Server
         private static ConcurrentDictionary<string, int> IpToUserId = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedId = new bool[MaxUsr];
+        private static ConcurrentDictionary<int, (float x, float y)> Positions = new ConcurrentDictionary<int, (float x, float y)>();
 
 
         static async Task Main(string[] args) => await RunAsync();
@@ -84,13 +85,36 @@ namespace Server
                     while (true)
                     {
                         var packet = await ReadPacketAsync(stream);
-                        if (packet == null) break;
+                        //if (packet == null) break;
 
                         switch ((PacketType)packet[0])
                         {
-                            case PacketType.move:
+                            case PacketType.welcomeRequest:
+                                var welcome = new WelcomeResponsePacket();
+                                foreach (var kv in Positions)
+                                    welcome.Entries.Add((kv.Key, kv.Value.x, kv.Value.y));
+                                Console.WriteLine($"[Server] Sending WelcomeResponse to user {userId}, entries={welcome.Entries.Count}");
+                                await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
 
+                                float startX = 937, startY = 270;
+                                Positions[userId] = (startX, startY);
+
+                                var welcomePacket = new MovePacket
+                                {
+                                    playerId = userId,
+                                    x = startX,
+                                    y = startY
+                                }.ToBytes();
+                                byte[] bodyOnly = welcomePacket.Skip(4).ToArray();
+                                await BroadCastAsync(bodyOnly);
                                 break;
+                            case PacketType.move:
+                                var mv = MovePacket.FromBytes(packet);
+                                Positions[mv.playerId] = (mv.x, mv.y);
+                                Console.WriteLine($"[MOVE] {mv.playerId}: ({mv.x},{mv.y})");
+                                await BroadCastAsync(packet);
+                                break;
+
                             case PacketType.chat:
 
                                 break;
@@ -205,7 +229,7 @@ namespace Server
             header.CopyTo(buffer, 0);
             packet.CopyTo(buffer, 4);
 
-            foreach(var session in SessionMap)
+            foreach (var session in SessionMap)
             {
                 NetworkStream stream = session.Value;
                 try
@@ -218,5 +242,7 @@ namespace Server
                 }
             }
         }
+
+
     }
 }

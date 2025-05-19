@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Packets
@@ -13,7 +14,9 @@ namespace Packets
         RegUsrResponse,
         chat,
         skill,
-        status
+        status,
+        welcomeRequest,
+        welcomeResponse
     }
 
     public interface Header
@@ -247,6 +250,73 @@ namespace Packets
             message = Encoding.UTF8.GetString(buffer, messageStart, messageLength);
 
             return this;*/
+        }
+    }
+
+    public class WelcomeRequestPacket : Header
+    {
+        public PacketType Type => PacketType.welcomeRequest;
+        private const int BodyLength = 1;
+
+        public byte[] ToBytes()
+        {
+            int packetLen = 5;
+
+            byte[] buffer = new byte[9];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            BitConverter.GetBytes(BodyLength).CopyTo(buffer, 5);
+            buffer[4] = (byte)Type;
+            return buffer;
+        }
+
+        public static WelcomeRequestPacket FromBytes(byte[] buffer)
+        {
+            return new WelcomeRequestPacket();
+        }
+    }
+
+    public class WelcomeResponsePacket : Header
+    {
+        public PacketType Type => PacketType.welcomeResponse;
+        public List<(int playerId, float x, float y)> Entries { get; } = new List<(int, float, float)>();
+
+        public byte[] ToBytes()
+        {
+            int count = Entries.Count;
+            int bodyLen = 1 + 4 + count * (4 + 4 + 4);
+            byte[] buffer = new byte[4 + bodyLen];
+
+            BitConverter.GetBytes(bodyLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(count).CopyTo(buffer, 5);
+
+            int offset = 9;
+            foreach (var (pid, x, y) in Entries)
+            {
+                BitConverter.GetBytes(pid).CopyTo(buffer, offset);
+                offset += 4;
+                BitConverter.GetBytes(x).CopyTo(buffer, offset);
+                offset += 4;
+                BitConverter.GetBytes(y).CopyTo(buffer, offset);
+                offset += 4;
+            }
+            return buffer;
+        }
+
+        public static WelcomeResponsePacket FromBytes(byte[] buffer)
+        {
+            var welcomePacket = new WelcomeResponsePacket();
+            int count = BitConverter.ToInt32(buffer, 1);
+            int offset = 5;
+            for (int i = 0; i < count; i++)
+            {
+                int pid = BitConverter.ToInt32(buffer, offset);
+                float x = BitConverter.ToSingle(buffer, offset + 4);
+                float y = BitConverter.ToSingle(buffer, offset + 8);
+                welcomePacket.Entries.Add((pid, x, y));
+                offset += 12;
+            }
+            return welcomePacket;
         }
     }
 }

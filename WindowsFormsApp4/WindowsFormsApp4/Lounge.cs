@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -22,7 +24,6 @@ namespace WindowsFormsApp4
         private int userId;
         // private TcpClient client;
         // private NetworkStream stream;
-        private Thread receiveThread;
 
         private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
         private int playerX = 937, playerY = 270;
@@ -34,7 +35,7 @@ namespace WindowsFormsApp4
         private List<Image> leftFrames = new List<Image>();
         private List<Image> rightFrames = new List<Image>();
         private int frameIndex = 0;
-
+        private List<Image> frames;
 
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
@@ -87,16 +88,18 @@ namespace WindowsFormsApp4
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
             receiveThread.Start();*/
-
-            AppState.Connection.PacketReceived += OnPacketReceived;
+            this.Load += Lounge_Load;
+            //AppState.Connection.PacketReceived += OnPacketReceived;
+            this.Shown += Lounge_Shown;
         }
 
-        // ① PacketReceived 이벤트 핸들러
         private void OnPacketReceived(byte[] body)
         {
             if (InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate { ProcessPacket(body); });
+                var pt = (PacketType)body[0];
+                System.Diagnostics.Debug.WriteLine($"[Client] OnPacketReceived: {pt}");
+                this.BeginInvoke((MethodInvoker)(() => ProcessPacket(body)));
             }
             else
             {
@@ -108,24 +111,34 @@ namespace WindowsFormsApp4
         {
             switch ((PacketType)body[0])
             {
+                case PacketType.welcomeResponse:
+                    var welcome = WelcomeResponsePacket.FromBytes(body);
+                    foreach (var (pid, x, y) in welcome.Entries)
+                        AddOrUpdateCharacter(pid, (int)x, (int)y, pid == AppState.CurrentUserId);
+                    break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
-                    UpdatePlayerPosition(mv.playerId, mv.x, mv.y);
+                    AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
                     break;
 
                 case PacketType.chat:
                     var chat = ChatPacket.FromBytes(body);
                     AppendChatLog($"[{chat.playerId}]: {chat.message}");
                     break;
-
+                default:
+                    break;
             }
         }
 
-        private void UpdatePlayerPosition(int playerId, float x, float y)
-        {
-            AddOrUpdateCharacter(playerId, (int)x, (int)y, playerId == AppState.CurrentUserId);
-        }
 
+        private async void Lounge_Shown(object sender, EventArgs e)
+        {
+            AppState.Connection.PacketReceived+=OnPacketReceived;
+            var req = new WelcomeRequestPacket();
+            var buf = req.ToBytes();
+            await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
+
+        }
         private void Lounge_Load(object sender, EventArgs e)
         {
             if (mainForm != null && !mainForm.IsDisposed)
@@ -135,16 +148,16 @@ namespace WindowsFormsApp4
             }
 
             LoadCharacterFrames();
+            frames = downFrames; // 기본 방향
             AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-
-            receiveThread = new Thread(ReceiveMessages);
-            receiveThread.IsBackground = true;
-            receiveThread.Start();
+/*            var req = new WelcomeRequestPacket();
+            var buf = req.ToBytes();
+            AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
 
 
-            animationTimer.Interval = 30; // 밀리초 단위: 100ms마다 프레임 변경
+            animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
         }
@@ -197,30 +210,6 @@ namespace WindowsFormsApp4
                 MessageBox.Show($"메시지 전송 오류: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void ReceiveMessages()
-        {
-            try
-            {
-                var stream = AppState.Connection.Stream;
-                byte[] buffer = new byte[1024];     //패킷 읽는 방법 완전히 잘못됨.
-
-                while (AppState.Connection.Client.Connected)
-                {
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
-                    if (bytesRead > 0)
-                    {
-                        var receivedPacket = ChatPacket.FromBytes(buffer);
-                        string receivedMessage = $"[{receivedPacket.playerId}]: {receivedPacket.message}";
-                        AppendChatLog(receivedMessage);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                AppendChatLog($"연결이 끊어졌습니다: {ex.Message}");
-            }
-        }
         private void AppendChatLog(string message)
         {
             if (InvokeRequired)
@@ -253,7 +242,7 @@ namespace WindowsFormsApp4
         }
         private void Lounge_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.T) // t를 누르면 채팅창으로 포커스 이동
+            if (e.KeyCode == Keys.Enter) // t를 누르면 채팅창으로 포커스 이동
             {
                 inputBox.Focus();
                 return;
@@ -275,21 +264,21 @@ namespace WindowsFormsApp4
             if (pressedKeys.Count == 0) return;
 
             int dx = 0, dy = 0;
-            List<Image> frames = downFrames; // 기본 방향
+            frames = downFrames; // 기본
 
             if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
             if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
             if (pressedKeys.Contains(Keys.A)) { dx -= moveSpeed; frames = leftFrames; }
             if (pressedKeys.Contains(Keys.D)) { dx += moveSpeed; frames = rightFrames; }
 
-            // 실제 위치 이동
             playerX += dx;
             playerY += dy;
 
             AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-            SendPlayerPosition(playerX, playerY);
 
-            // 애니메이션
+            if (dx != 0 || dy != 0)
+                SendPlayerPosition(playerX, playerY);
+
             if (player.TryGetValue(AppState.CurrentUserId, out var pic))
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
@@ -299,43 +288,50 @@ namespace WindowsFormsApp4
 
         private void AddOrUpdateCharacter(int playerId, int x, int y, bool isLocal = false)
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, isLocal)));
+                return;
+            }
+
             if (!player.ContainsKey(playerId))
             {
-                var pic = new PictureBox();
-                pic.Focus();
-                pic.Size = new Size(100, 100);
-                pic.SizeMode = PictureBoxSizeMode.StretchImage;
-                pic.Image = Properties.Resources.pang1_front_1; // 고정 캐릭터 이미지
-                pic.Location = new Point(x, y);
-                pic.BackColor = Color.Transparent;
+                var pic = new PictureBox {
+                    Size = new Size(100, 100),
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    Image = Properties.Resources.pang1_front_1,
+                    Location = new Point(x, y),
+                    BackColor = Color.Transparent
+                };
                 player[playerId] = pic;
-
-                this.Invoke(new MethodInvoker(() => this.Controls.Add(pic)));
+                this.Controls.Add(pic);  
             }
             else
             {
-                this.Invoke(new MethodInvoker(() => player[playerId].Location = new Point(x, y)));
+                player[playerId].Location = new Point(x, y);
+            }
+
+            if (isLocal)
+            {
+                var pic = player[playerId];
+                frameIndex = (frameIndex + 1) % frames.Count;
+                pic.Image = frames[frameIndex];
             }
         }
 
+
         private void SendPlayerPosition(int x, int y)
         {
-            try
+            var data = new MovePacket
             {
-                var movePacket = new MovePacket
-                {
-                    playerId = AppState.CurrentUserId,
-                    x = x,
-                    y = y
-                };
-                byte[] data = movePacket.ToBytes();
-                AppState.Connection.Stream.Write(data, 0, data.Length);
-            }
-            catch (Exception ex)
-            {
-                AppendChatLog("위치 전송 실패: " + ex.Message);
-            }
+                playerId = AppState.CurrentUserId,
+                x = x,
+                y = y
+            }.ToBytes();
+
+            _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
+
         // --------------------------------------------------
     }
 }
