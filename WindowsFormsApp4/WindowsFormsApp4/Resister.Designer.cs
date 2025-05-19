@@ -117,6 +117,7 @@
             this.txtNewPw.SelectedText = "";
             this.txtNewPw.Size = new System.Drawing.Size(553, 80);
             this.txtNewPw.TabIndex = 9;
+            this.txtNewPw.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNewPw_KeyDown);
             // 
             // txtNewId
             // 
@@ -154,6 +155,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Resister";
             this.Text = "Resister";
+            this.Shown += new System.EventHandler(this.Resister_Shown);
             this.ResumeLayout(false);
 
         }

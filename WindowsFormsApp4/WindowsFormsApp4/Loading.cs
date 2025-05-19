@@ -53,8 +53,10 @@ namespace WindowsFormsApp4
             {
                 timerFrame.Stop();
                 this.Close();
+
                 Lounge lounge = new Lounge(mainForm);
-                lounge.Show();
+                lounge.Owner = mainForm;
+                lounge.Show(mainForm);
             }
             frame = (frame + 1) % runFrames.Count;
             pang.Image = runFrames[frame];
