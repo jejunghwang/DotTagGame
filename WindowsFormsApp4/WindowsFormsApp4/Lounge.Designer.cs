@@ -111,7 +111,7 @@
             this.btn_ready.FillColor = System.Drawing.Color.Transparent;
             this.btn_ready.Font = new System.Drawing.Font("휴먼둥근헤드라인", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_ready.ForeColor = System.Drawing.Color.White;
-            this.btn_ready.Location = new System.Drawing.Point(970, 492);
+            this.btn_ready.Location = new System.Drawing.Point(970, 476);
             this.btn_ready.Name = "btn_ready";
             this.btn_ready.Size = new System.Drawing.Size(250, 100);
             this.btn_ready.TabIndex = 4;
@@ -133,7 +133,7 @@
             this.btn_start.Name = "btn_start";
             this.btn_start.ShadowDecoration.Color = System.Drawing.Color.IndianRed;
             this.btn_start.Size = new System.Drawing.Size(250, 100);
-            this.btn_start.TabIndex = 5;
+            this.btn_start.TabIndex = 4;
             this.btn_start.Text = "START";
             // 
             // guna2PictureBox1

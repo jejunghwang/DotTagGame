@@ -167,6 +167,8 @@ namespace WindowsFormsApp4
             overlayPanel.BringToFront();
 
             this.Controls.Add(overlayPanel);
+
+            btn_start.Enabled = false;
         }
 
         private void LoadCharacterFrames()
