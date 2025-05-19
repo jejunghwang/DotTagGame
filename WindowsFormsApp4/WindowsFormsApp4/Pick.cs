@@ -23,7 +23,7 @@ namespace WindowsFormsApp4
             pang1.Image = Properties.Resources.pang1_front_1;
             pang2.Image = Properties.Resources.pang2_front_1;
             pang3.Image = Properties.Resources.pang3_front_1;
-            pang4.Image = Properties.Resources.pang4_front_4;
+            pang4.Image = Properties.Resources.pang4_front_1;
 
             label1.Text = "";
             label2.Text = "";
@@ -44,7 +44,7 @@ namespace WindowsFormsApp4
             int charOffsetX = 40;   // 캐릭터 그룹을 오른쪽으로 이동
             int charOffsetY = 30;   // 캐릭터 그룹을 아래로 이동
             int buttonOffsetX = -5;  // 버튼을 왼쪽으로 이동
-            int buttonOffsetY = -30;  // 버튼을 위로 이동
+            int buttonOffsetY = -20;  // 버튼을 위로 이동
                                       
 
             // 1) PictureBox 크기 계산

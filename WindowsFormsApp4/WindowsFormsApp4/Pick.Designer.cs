@@ -40,6 +40,7 @@
             this.pang1 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
             this.btn_cancel = new Guna.UI2.WinForms.Guna2Button();
+            this.lbl_title = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pang4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pang3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pang2)).BeginInit();
@@ -157,12 +158,24 @@
             this.btn_cancel.TabIndex = 9;
             this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
             // 
+            // lbl_title
+            // 
+            this.lbl_title.AutoSize = true;
+            this.lbl_title.Font = new System.Drawing.Font("한컴산뜻돋움", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_title.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lbl_title.Location = new System.Drawing.Point(272, 43);
+            this.lbl_title.Name = "lbl_title";
+            this.lbl_title.Size = new System.Drawing.Size(252, 26);
+            this.lbl_title.TabIndex = 10;
+            this.lbl_title.Text = "!!! 캐릭터를 선택하세요 !!!";
+            // 
             // Pick
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PeachPuff;
             this.ClientSize = new System.Drawing.Size(778, 444);
+            this.Controls.Add(this.lbl_title);
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -198,5 +211,6 @@
         private System.Windows.Forms.Label label4;
         private Guna.UI2.WinForms.Guna2Elipse guna2Elipse1;
         private Guna.UI2.WinForms.Guna2Button btn_cancel;
+        private System.Windows.Forms.Label lbl_title;
     }
 }

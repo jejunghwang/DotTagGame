@@ -127,8 +127,8 @@
   <data name="pang2_front_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang2_front_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang4_front_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang4_front_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang4_front_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang4_front_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang2_front_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang2_front_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -154,8 +154,8 @@
   <data name="pang3_right_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang3_right_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang2_back_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang2_back_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang3_front_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang3_front_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="lounge1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\lounge1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,14 +175,14 @@
   <data name="pang3_left_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang3_left_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang4_front_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang4_front_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang4_front_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang4_front_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang4_left_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang4_left_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang3_front_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang3_front_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang2_right_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang2_right_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang4_back_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang4_back_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -192,9 +192,6 @@
   </data>
   <data name="pang1_right_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_right_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pang4_right_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang4_right_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,26 +211,26 @@
   <data name="pang2_left_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang2_left_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ready" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ready.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="pang３_back_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang_back_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="title1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\title1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="buttonClick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\buttonClick.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="bgm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bgm.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="pang4_front_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang4_front_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang4_front_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang4_front_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang3_front_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang3_front_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang1_front_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang1_front_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang2_back_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang2_back_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\manual.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -265,8 +262,8 @@
   <data name="pang1_back_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_back_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang2_right_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang2_right_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pang4_right_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang4_right_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang3_back_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang3_back_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -286,6 +283,9 @@
   <data name="pang1_front_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_front_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="pang2_right_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang2_right_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -294,6 +294,9 @@
   </data>
   <data name="pang4_back_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang4_back_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pang4_front_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang4_front_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang4_back_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang4_back_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -319,14 +322,17 @@
   <data name="pang1_back_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_back_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pang4_front_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pang4_front_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="buttonClick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\buttonClick.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="pang4_right_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang4_right_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang3_left_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang3_left_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pang1_front_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pang1_front_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pang1_left_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_left_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -337,7 +343,7 @@
   <data name="pang1_front_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pang1_front_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="select" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="deco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

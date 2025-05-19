@@ -34,6 +34,8 @@
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.pang = new Guna.UI2.WinForms.Guna2PictureBox();
             this.lbl_count = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
+            this.guna2Elipse2 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pang)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,6 +79,11 @@
             this.lbl_count.TabIndex = 2;
             this.lbl_count.Text = "3";
             // 
+            // guna2Elipse1
+            // 
+            this.guna2Elipse1.BorderRadius = 100;
+            this.guna2Elipse1.TargetControl = this;
+            // 
             // Loading
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -102,5 +109,7 @@
         private System.Windows.Forms.Timer timerFrame;
         private System.Windows.Forms.Timer timerClose;
         private Guna.UI2.WinForms.Guna2HtmlLabel lbl_count;
+        private Guna.UI2.WinForms.Guna2Elipse guna2Elipse1;
+        private Guna.UI2.WinForms.Guna2Elipse guna2Elipse2;
     }
 }

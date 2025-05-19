@@ -65,8 +65,6 @@ namespace WindowsFormsApp4
 
             // 채팅 로그 RichTextBox
             chatLogBox.ReadOnly = true;
-            chatLogBox.BackColor = Color.Black; // 실제 배경은 안 보이지만 대비를 위해
-            chatLogBox.ForeColor = Color.White;
             chatLogBox.BorderStyle = BorderStyle.None;
             chatLogBox.Font = new Font("맑은 고딕", 9);
             // chatLogBox.Size = new Size(380, 300);
@@ -77,7 +75,7 @@ namespace WindowsFormsApp4
             inputBox.Font = new Font("맑은 고딕", 9);
             // inputBox.Size = new Size(380, 40);
             inputBox.BorderThickness = 0;
-            inputBox.FillColor = Color.FromArgb(30, 30, 30);
+            // inputBox.FillColor = Color.FromArgb(30, 30, 30);
             inputBox.ForeColor = Color.White;
             inputBox.BorderRadius = 5;
 
