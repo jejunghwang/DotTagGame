@@ -40,6 +40,7 @@ namespace WindowsFormsApp4
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
+        private Panel overlayPanel;
 
         public Lounge(Main mainForm)
         {
@@ -64,8 +65,6 @@ namespace WindowsFormsApp4
 
             // 채팅 로그 RichTextBox
             chatLogBox.ReadOnly = true;
-            chatLogBox.BackColor = Color.Black; // 실제 배경은 안 보이지만 대비를 위해
-            chatLogBox.ForeColor = Color.White;
             chatLogBox.BorderStyle = BorderStyle.None;
             chatLogBox.Font = new Font("맑은 고딕", 9);
             // chatLogBox.Size = new Size(380, 300);
@@ -76,7 +75,7 @@ namespace WindowsFormsApp4
             inputBox.Font = new Font("맑은 고딕", 9);
             // inputBox.Size = new Size(380, 40);
             inputBox.BorderThickness = 0;
-            inputBox.FillColor = Color.FromArgb(30, 30, 30);
+            // inputBox.FillColor = Color.FromArgb(30, 30, 30);
             inputBox.ForeColor = Color.White;
             inputBox.BorderRadius = 5;
 
@@ -160,6 +159,16 @@ namespace WindowsFormsApp4
             animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
+
+            overlayPanel = new Panel();
+            overlayPanel.Dock = DockStyle.Fill;
+            overlayPanel.BackColor = Color.FromArgb(150, 0, 0, 0); // 반투명 검정
+            overlayPanel.Visible = false;
+            overlayPanel.BringToFront();
+
+            this.Controls.Add(overlayPanel);
+
+            btn_start.Enabled = false;
         }
 
         private void LoadCharacterFrames()
@@ -319,7 +328,7 @@ namespace WindowsFormsApp4
             }
         }
 
-
+  
         private void SendPlayerPosition(int x, int y)
         {
             var data = new MovePacket
@@ -333,5 +342,19 @@ namespace WindowsFormsApp4
         }
 
         // --------------------------------------------------
+
+        private void btn_select_Click(object sender, EventArgs e)
+        {
+            overlayPanel.Visible = true;
+            overlayPanel.BringToFront();
+
+            Pick pick = new Pick();
+            pick.Owner = this;
+            pick.StartPosition = FormStartPosition.CenterParent;
+            pick.ShowDialog();
+
+            overlayPanel.Visible = false;
+        }
+
     }
 }

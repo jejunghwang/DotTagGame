@@ -18,6 +18,21 @@ namespace WindowsFormsApp4
         public Resister()
         {
             InitializeComponent();
+            AppState.Connection.PacketReceived += OnPacketReceived;
+        }
+
+        private void Resister_Shown(object sender, EventArgs e)
+        {
+            txtNewId.Focus();
+        }
+
+        private void txtNewPw_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btn_enter.PerformClick();
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
@@ -27,41 +42,33 @@ namespace WindowsFormsApp4
 
         private async void btn_enter_Click(object sender, EventArgs e)
         {
-            string userId = txtNewId.Text.Trim();
-            string password = txtNewPw.Text;
+            btn_enter.Enabled = false;
+            await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
 
-            try
+            var req = new RegUsrRequestPacket { id = txtNewId.Text, pw = txtNewPw.Text };
+            var buf = req.ToBytes();
+            AppState.Connection.Stream.Write(buf, 0, buf.Length);
+        }
+
+        private void OnPacketReceived(byte[] body)
+        {
+            if ((PacketType)body[0] != PacketType.RegUsrResponse) return;
+
+            var res = RegUsrResponsePacket.FromBytes(body);
+            this.Invoke(new MethodInvoker(() => HandleRegResult(res)));
+        }
+
+        private void HandleRegResult(RegUsrResponsePacket res)
+        {
+            if (res.successReg)
             {
-                if (!AppState.Connection.IsConnected)
-                    await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
-
-                NetworkStream stream = AppState.Connection.Stream;
-
-                var regPacket = new Packets.RegUsrRequestPacket
-                {
-                    id = userId,
-                    pw = password
-                };
-
-                byte[] writeBuffer = regPacket.ToBytes();
-                stream.Write(writeBuffer, 0, writeBuffer.Length);
-
-                byte[] readBuffer = new byte[4];
-                stream.Read(readBuffer, 0, 4);
-
-                int packetLength = BitConverter.ToInt32(readBuffer, 0);
-                readBuffer = new byte[packetLength];
-                stream.Read(readBuffer, 0, packetLength);
-
-                var response = Packets.RegUsrResponsePacket.FromBytes(readBuffer);
-                if (response.successReg)
-                    MessageBox.Show("회원가입 성공!");
-                else
-                    MessageBox.Show("다른 아이디로 시도하세요!");
+                AppState.Connection.PacketReceived -= OnPacketReceived;
+                MessageBox.Show("회원가입 성공");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("서버 연결 실패: " + ex.Message);
+                btn_enter.Enabled = true;
+                MessageBox.Show("회원가입 실패");
             }
         }
     }
