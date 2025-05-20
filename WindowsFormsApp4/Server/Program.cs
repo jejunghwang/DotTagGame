@@ -85,7 +85,7 @@ namespace Server
                     while (true)
                     {
                         var packet = await ReadPacketAsync(stream);
-                        //if (packet == null) break;
+                        if (packet == null) break;
 
                         switch ((PacketType)packet[0])
                         {
