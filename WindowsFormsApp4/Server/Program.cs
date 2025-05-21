@@ -139,6 +139,8 @@ namespace Server
                 }
                 finally
                 {
+                    byte[] buffer = new DisconnectPacket { playerTag = userId }.ToBytes();
+                    await BroadCastAsync(buffer);
                     ReleaseClient(ip);
                     if (SessionMap.TryRemove(userId, out var s)) s.Close();
                     Console.WriteLine($"[{ip}] disconnected");
