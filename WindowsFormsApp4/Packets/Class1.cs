@@ -16,7 +16,9 @@ namespace Packets
         skill,
         status,
         welcomeRequest,
-        welcomeResponse
+        welcomeResponse,
+        ready,
+        disconnect
     }
 
     public interface Header
@@ -317,6 +319,51 @@ namespace Packets
                 offset += 12;
             }
             return welcomePacket;
+        }
+    }
+
+    public class DisconnectPacket : Header
+    {
+        public PacketType Type => PacketType.disconnect;
+        int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)PacketType.disconnect;
+
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+
+            return buffer;
+        }
+
+        public static DisconnectPacket FromBytes(byte[] buffer)
+        {
+            return new DisconnectPacket { playerTag = BitConverter.ToInt32(buffer, 5) };
+        }
+    }
+    
+    public class ReadyPacket : Header
+    {
+        public PacketType Type => PacketType.ready;
+        int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)PacketType.ready;
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+
+            return buffer;
+        }
+
+        public static ReadyPacket FromBytes(byte[] buffer)
+        {
+            return new ReadyPacket { playerTag = BitConverter.ToInt32(buffer, 5) };
         }
     }
 }
