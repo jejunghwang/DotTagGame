@@ -19,7 +19,7 @@ namespace Server
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedId = new bool[MaxUsr];
         private static ConcurrentDictionary<int, (float x, float y)> Positions = new ConcurrentDictionary<int, (float x, float y)>();
-
+        private static bool[] readyStatus = new bool[100];
 
         static async Task Main(string[] args) => await RunAsync();
 
@@ -62,7 +62,6 @@ namespace Server
                                 {
                                     successLogin = true,
                                     userId = userId
-
                                 }.ToBytes();
                             }
                             else
@@ -70,14 +69,14 @@ namespace Server
                                 buffer = new LoginResponsePacket { successLogin = false }.ToBytes();
                             }
                             await stream.WriteAsync(buffer, 0, buffer.Length);
-                            Console.WriteLine($"{ip} sent login response packet.");
+                            Console.WriteLine($"[{ip}] sent login response packet.");
                             break;
                         case PacketType.RegUsrRequest:
                             RegUsrRequestPacket regRequest = RegUsrRequestPacket.FromBytes(loginPacket);
                             buffer = createRegisterResponsePacket(regRequest).ToBytes();
                             await stream.WriteAsync(buffer, 0, buffer.Length);
-                            Console.WriteLine($"{ip} sent register response packet.");
-                            break;
+                            Console.WriteLine($"[{ip}] sent register response packet.");
+                            return;
                         default:
                             return;
                     }
@@ -85,7 +84,7 @@ namespace Server
                     while (true)
                     {
                         var packet = await ReadPacketAsync(stream);
-                        if (packet == null) break;
+                        if (packet == null || (PacketType)packet[0] == PacketType.disconnect) break;
 
                         switch ((PacketType)packet[0])
                         {
@@ -121,9 +120,15 @@ namespace Server
                                 await BroadCastAsync(packet);
                                 break;
 
+                            case PacketType.ready:
+                                var ready = ReadyPacket.FromBytes(packet);
+                                Console.WriteLine($"[READY] {ready.playerTag}");
 
+                                break;
+                            case PacketType.disconnect:
+                                throw new Exception($"[{ip}] disconnected");
                             default:
-                                Console.WriteLine($"{ip} unknown packet.");
+                                Console.WriteLine($"[{ip}] unknown packet.");
                                 break;
                         }
                     }
@@ -192,6 +197,11 @@ namespace Server
             string line;
             while ((line = rStream.ReadLine()) != null)
             {
+                if(packet.id.Split(',').Length > 1 || packet.pw.Split(',').Length > 1)
+                {
+                    rStream.Close();
+                    return false;
+                }
                 if (line == packet.id + ',' + packet.pw)
                 {
                     rStream.Close();
@@ -210,7 +220,7 @@ namespace Server
             string line;
             while((line = rStream.ReadLine()) != null)
             {
-                if (line.Split(',')[0] == packet.id)
+                if (line.Split(',')[0] == packet.id || packet.id.Split(',').Length > 1 || packet.id.Split(',').Length > 1)
                 {
                     rStream.Close();
                     return new RegUsrResponsePacket { successReg = false };
