@@ -87,7 +87,8 @@ namespace Server
                     {
                         var packet = await ReadPacketAsync(stream);
                         if (packet == null || (PacketType)packet[0] == PacketType.disconnect) break;
-
+                        byte[] wBuffer = new byte[4 + packet.Length];
+                        BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
                         switch ((PacketType)packet[0])
                         {
                             case PacketType.welcomeRequest:
@@ -106,20 +107,22 @@ namespace Server
                                     x = startX,
                                     y = startY
                                 }.ToBytes();
-                                byte[] bodyOnly = welcomePacket.Skip(4).ToArray();
-                                await BroadCastAsync(bodyOnly);
+
+                                await BroadCastAsync(welcomePacket);
                                 break;
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
                                 Positions[mv.playerId] = (mv.x, mv.y);
                                 Console.WriteLine($"[MOVE] {mv.playerId}: ({mv.x},{mv.y})");
-                                await BroadCastAsync(packet);
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
                                 break;
 
                             case PacketType.chat:
                                 var chat = ChatPacket.FromBytes(packet);
                                 Console.WriteLine($"[CHAT] {chat.playerId}: {chat.message}");
-                                await BroadCastAsync(packet);
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
                                 break;
 
                             case PacketType.ready:
@@ -142,10 +145,10 @@ namespace Server
                 finally
                 {
                     byte[] buffer = new DisconnectPacket { playerTag = userId }.ToBytes();
-                    await BroadCastAsync(buffer);
                     ReleaseClient(ip);
                     if (SessionMap.TryRemove(userId, out var s)) s.Close();
                     Console.WriteLine($"[{ip}] disconnected");
+                    await BroadCastAsync(buffer);
                 }
             }
         }
@@ -240,10 +243,8 @@ namespace Server
 
         public static async Task BroadCastAsync(byte[] packet)
         {
-            byte[] header = BitConverter.GetBytes(packet.Length);
-            byte[] buffer = new byte[header.Length + packet.Length];
-            header.CopyTo(buffer, 0);
-            packet.CopyTo(buffer, 4);
+            byte[] buffer = new byte[packet.Length];
+            packet.CopyTo(buffer, 0);
 
             foreach (var session in SessionMap)
             {
