@@ -41,7 +41,6 @@ namespace WindowsFormsApp4
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
         private Panel overlayPanel;
-
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -141,6 +140,8 @@ namespace WindowsFormsApp4
             var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
+            this.ActiveControl = null; // 실행 시 캐릭터 안움직임 해결
+            this.Focus();
 
         }
         private void Lounge_Load(object sender, EventArgs e)
@@ -173,7 +174,7 @@ namespace WindowsFormsApp4
 
             this.Controls.Add(overlayPanel);
 
-            btn_start.Enabled = false;
+            //btn_start.Enabled = false;
         }
 
         private void LoadCharacterFrames()
@@ -240,15 +241,19 @@ namespace WindowsFormsApp4
         // --------------------- 채팅창+이동 관련 -------------------------------
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
+            
             if (e.KeyCode == Keys.Enter && !string.IsNullOrWhiteSpace(inputBox.Text))
             {
                 SendMessage(inputBox.Text);
                 inputBox.Clear();
-                e.SuppressKeyPress = true;
                 this.ActiveControl = null;
                 this.Focus();
+                e.SuppressKeyPress = true;
+                e.Handled = true;
             }
         }
+
+        
 
         private void Lounge_KeyUp(object sender, KeyEventArgs e)
         {
@@ -263,9 +268,13 @@ namespace WindowsFormsApp4
             }
             if (inputBox.Focused) return;
 
-            // 한 번만 추가
-            if (!pressedKeys.Contains(e.KeyCode))
-                pressedKeys.Add(e.KeyCode);
+            // W, A, S, D 키만 추가
+            if (e.KeyCode == Keys.W || e.KeyCode == Keys.A ||
+                e.KeyCode == Keys.S || e.KeyCode == Keys.D)
+            {
+                if (!pressedKeys.Contains(e.KeyCode))
+                    pressedKeys.Add(e.KeyCode);
+            }
         }
 
         // ---------------------------------------------------------------------
@@ -344,6 +353,19 @@ namespace WindowsFormsApp4
             }.ToBytes();
 
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
+        }
+
+        private void btn_start_Click(object sender, EventArgs e)
+        {
+            AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
+            Map game_start = new Map();
+            game_start.Owner = this;
+            game_start.FormClosed += (s, k) => {
+                this.Show();
+                AppState.Connection.PacketReceived += OnPacketReceived; // 다시 연결
+            };
+            game_start.ShowDialog();
+
         }
 
         private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
