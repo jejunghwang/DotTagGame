@@ -71,6 +71,12 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Map.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Map.Designer.cs">
+      <DependentUpon>Map.cs</DependentUpon>
+    </Compile>
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,11 +95,6 @@
     <Compile Include="Pick.Designer.cs">
       <DependentUpon>Pick.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +103,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resister.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Map.resx">
+      <DependentUpon>Map.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.cs</DependentUpon>
@@ -385,6 +394,93 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\loading2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ngrass_lm2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bridge6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tree.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ocean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otile3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

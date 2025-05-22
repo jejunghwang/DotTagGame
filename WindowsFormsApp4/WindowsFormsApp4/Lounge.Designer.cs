@@ -135,6 +135,7 @@
             this.btn_start.Size = new System.Drawing.Size(250, 100);
             this.btn_start.TabIndex = 4;
             this.btn_start.Text = "START";
+            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
             // 
             // guna2PictureBox1
             // 
