@@ -165,6 +165,7 @@
             this.Name = "Lounge";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Lounge_FormClosed);
             this.Load += new System.EventHandler(this.Lounge_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Lounge_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).EndInit();

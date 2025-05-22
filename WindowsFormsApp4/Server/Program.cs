@@ -47,15 +47,41 @@ namespace Server
             {
                 try
                 {
-                    //var loginPacket = await ReadPacketAsync(stream);
+                    var loginPacket = await ReadPacketAsync(stream);
                     byte[] buffer;
-
-                    //switch ((PacketType)loginPacket[0])
-                    //{
-
-                      //  default:
-                            //return;
-                    //}
+                    switch ((PacketType)loginPacket[0])
+                    {
+                        case PacketType.loginRequest:
+                            LoginRequestPacket loginRequest = LoginRequestPacket.FromBytes(loginPacket);
+                            if (isValidCredential(loginRequest))
+                            {
+                                userId = RegisterClient(ip);
+                                SessionMap[userId] = stream;
+                                buffer = new LoginResponsePacket
+                                {
+                                    successLogin = true,
+                                    userId = userId
+                                }.ToBytes();
+                                await stream.WriteAsync(buffer, 0, buffer.Length);
+                                Console.WriteLine($"[{ip}] logged in.");
+                            }
+                            else
+                            {
+                                buffer = new LoginResponsePacket { successLogin = false }.ToBytes();
+                                await stream.WriteAsync(buffer, 0, buffer.Length);
+                                Console.WriteLine($"[{ip}] sent login response packet.");
+                                return;
+                            }
+                            break;
+                        case PacketType.RegUsrRequest:
+                            RegUsrRequestPacket regRequest = RegUsrRequestPacket.FromBytes(loginPacket);
+                            buffer = createRegisterResponsePacket(regRequest).ToBytes();
+                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            Console.WriteLine($"[{ip}] sent register response packet.");
+                            return;
+                        default:
+                            return;
+                    }
 
                     while (true)
                     {
@@ -64,31 +90,6 @@ namespace Server
 
                         switch ((PacketType)packet[0])
                         {
-                            case PacketType.loginRequest:
-                                LoginRequestPacket loginRequest = LoginRequestPacket.FromBytes(packet);
-                                if (isValidCredential(loginRequest))
-                                {
-                                    userId = RegisterClient(ip);
-                                    SessionMap[userId] = stream;
-                                    buffer = new LoginResponsePacket
-                                    {
-                                        successLogin = true,
-                                        userId = userId
-                                    }.ToBytes();
-                                }
-                                else
-                                {
-                                    buffer = new LoginResponsePacket { successLogin = false }.ToBytes();
-                                }
-                                await stream.WriteAsync(buffer, 0, buffer.Length);
-                                Console.WriteLine($"[{ip}] sent login response packet.");
-                                break;
-                            case PacketType.RegUsrRequest:
-                                RegUsrRequestPacket regRequest = RegUsrRequestPacket.FromBytes(packet);
-                                buffer = createRegisterResponsePacket(regRequest).ToBytes();
-                                await stream.WriteAsync(buffer, 0, buffer.Length);
-                                Console.WriteLine($"[{ip}] sent register response packet.");
-                                return;
                             case PacketType.welcomeRequest:
                                 var welcome = new WelcomeResponsePacket();
                                 foreach (var kv in Positions)

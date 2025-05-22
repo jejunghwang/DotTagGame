@@ -121,8 +121,7 @@ namespace WindowsFormsApp4
 
             overlayPanel.Visible = false;
 
-            byte[] disconnection = new DisconnectPacket { playerTag = AppState.CurrentUserId }.ToBytes();
-            AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
+            
         }
     }
 }

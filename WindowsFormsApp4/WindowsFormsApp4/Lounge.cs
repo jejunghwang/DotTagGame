@@ -125,6 +125,10 @@ namespace WindowsFormsApp4
                     var chat = ChatPacket.FromBytes(body);
                     AppendChatLog($"[{chat.playerId}]: {chat.message}");
                     break;
+                case PacketType.disconnect:
+                    var disconnection = DisconnectPacket.FromBytes(body);
+                    MessageBox.Show($"{disconnection.playerTag} disconnected");
+                    break;
                 default:
                     break;
             }
@@ -340,6 +344,12 @@ namespace WindowsFormsApp4
             }.ToBytes();
 
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
+        }
+
+        private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            byte[] disconnection = new DisconnectPacket { playerTag = AppState.CurrentUserId }.ToBytes();
+            AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
         }
 
         // --------------------------------------------------

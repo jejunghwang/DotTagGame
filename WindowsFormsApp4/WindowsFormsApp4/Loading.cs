@@ -53,10 +53,9 @@ namespace WindowsFormsApp4
             if(count == 0)
             {
                 timerFrame.Stop();
-                this.Hide();
                 Lounge lounge = new Lounge(mainForm);
                 lounge.Owner = mainForm;
-                lounge.ShowDialog(mainForm);
+                lounge.Show(mainForm);
                 this.Close();
             }
             frame = (frame + 1) % runFrames.Count;

@@ -76,7 +76,6 @@ namespace WindowsFormsApp4
                 AppState.CurrentUserName = txtId.Text.Trim();
                 this.Hide();
                 new Loading(mainForm).ShowDialog();
-
             }
             else
             {
