@@ -341,7 +341,7 @@ namespace Packets
 
         public static DisconnectPacket FromBytes(byte[] buffer)
         {
-            return new DisconnectPacket { playerTag = BitConverter.ToInt32(buffer, 5) };
+            return new DisconnectPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
         }
     }
     
