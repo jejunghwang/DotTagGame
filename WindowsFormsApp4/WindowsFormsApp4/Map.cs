@@ -14,7 +14,7 @@ namespace WindowsFormsApp4
     public partial class Map : Form
     {
         private int playerX = 937, playerY = 270;
-        private int moveSpeed = 7;
+        private int moveSpeed = 5;
 
         // 캐릭터 애니메이션 이미지 (방향별)
         private List<Image> upFrames = new List<Image>();
@@ -28,6 +28,7 @@ namespace WindowsFormsApp4
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
+
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -140,13 +141,20 @@ namespace WindowsFormsApp4
         {
             switch ((PacketType)body[0])
             {
-                
+                case PacketType.welcomeResponse:
+                    var welcome = WelcomeResponsePacket.FromBytes(body);
+                    foreach (var (pid, px, py) in welcome.Entries)
+                    {
+                        AddOrUpdateCharacter(pid, (int)px, (int)py, pid == AppState.CurrentUserId);
+                    }
+                    break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
                     if (mv.playerId != AppState.CurrentUserId)
+                    {
                         AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
+                    }
                     break;
-
                 default:
                     break;
             }
@@ -155,7 +163,7 @@ namespace WindowsFormsApp4
         private async void Map_Shown(object sender, EventArgs e)
         {
             AppState.Connection.PacketReceived += OnPacketReceived;
-            var req = new MovePacket();
+            var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
         }
@@ -178,7 +186,7 @@ namespace WindowsFormsApp4
         {
             LoadCharacterFrames();
             frames = downFrames; // 기본 방향
-            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+
             animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
@@ -196,39 +204,52 @@ namespace WindowsFormsApp4
                     int tile = map[y, x];
                     if (dict.ContainsKey(tile))
                     {
-                        // 스크롤 위치 반영
                         int drawX = x * tileSize + offset.X;
                         int drawY = y * tileSize + offset.Y;
                         e.Graphics.DrawImage(dict[tile], drawX, drawY, tileSize, tileSize);
                     }
                 }
             }
+
             foreach (var kvp in characterPositions)
             {
-                var playerId = kvp.Key;
-                var pos = kvp.Value;
-                int drawX = pos.X + offset.X;
-                int drawY = pos.Y + offset.Y;
+                int playerId = kvp.Key;
+                Point worldPos = kvp.Value;
+                int drawX = worldPos.X + offset.X;
+                int drawY = worldPos.Y + offset.Y;
 
                 if (playerId == AppState.CurrentUserId && frames.Count > 0)
+                {
                     e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, tileSize, tileSize);
+                }
                 else
+                {
                     e.Graphics.DrawImage(Properties.Resources.pang1_front_1, drawX, drawY, tileSize, tileSize);
+                }
             }
         }
 
-        // 캐릭터의 월드 좌표를 반환하는 헬퍼 메서드
-        private Point? GetCharacterPosition(int playerId)
-        {
-            if (characterPositions.ContainsKey(playerId))
-                return characterPositions[playerId];
-            return null;
-        }
+       
         private void AnimateCharacter(object sender, EventArgs e)
         {
             if (pressedKeys.Count == 0) return;
+
             int dx = 0, dy = 0;
             frames = downFrames; // 기본
+
+            if (pressedKeys.Contains(Keys.W)) dy -= moveSpeed;
+            if (pressedKeys.Contains(Keys.S)) dy += moveSpeed;
+            if (pressedKeys.Contains(Keys.A)) dx -= moveSpeed;
+            if (pressedKeys.Contains(Keys.D)) dx += moveSpeed;
+
+            // 대각선 이동 시 속도 보정
+            if (dx != 0 && dy != 0)
+            {
+                // 대각선 속도를 moveSpeed로 제한
+                double diagonalSpeedFactor = 1 / Math.Sqrt(2);
+                dx = (int)(dx * diagonalSpeedFactor);
+                dy = (int)(dy * diagonalSpeedFactor);
+            }
 
             if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
             if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
@@ -244,12 +265,10 @@ namespace WindowsFormsApp4
             {
                 SendPlayerPosition(playerX, playerY);
                 UpdateCameraPosition();
+                this.Invalidate();
             }
-            // 애니메이션 프레임 업데이트
             frameIndex = (frameIndex + 1) % frames.Count;
 
-            // 화면 갱신
-            this.Invalidate();
         }
 
         // 카메라(스크롤) 위치를 캐릭터 중심으로 업데이트
@@ -275,12 +294,17 @@ namespace WindowsFormsApp4
                 return;
             }
 
-            // 위치만 Dictionary에 저장 (PictureBox 아님!)
+            // 월드 좌표 저장
             characterPositions[playerId] = new Point(x, y);
 
-            // 프레임 업데이트 (나일 경우)
+            
             if (isLocal)
+            {
                 frameIndex = (frameIndex + 1) % frames.Count;
+            }
+
+            
+            this.Invalidate();
         }
 
 
