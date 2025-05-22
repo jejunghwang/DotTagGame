@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Packets;
 //using System.Net.Sockets;
 
 namespace WindowsFormsApp4
@@ -52,11 +53,11 @@ namespace WindowsFormsApp4
             if(count == 0)
             {
                 timerFrame.Stop();
-                this.Close();
-
+                this.Hide();
                 Lounge lounge = new Lounge(mainForm);
                 lounge.Owner = mainForm;
-                lounge.Show(mainForm);
+                lounge.ShowDialog(mainForm);
+                this.Close();
             }
             frame = (frame + 1) % runFrames.Count;
             pang.Image = runFrames[frame];

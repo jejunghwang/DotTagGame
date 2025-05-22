@@ -52,7 +52,7 @@ namespace WindowsFormsApp4
         private async void btn_enter_Click(object sender, EventArgs e)
         {
             btn_enter.Enabled = false;
-            await AppState.Connection.ConnectAsync("223.194.46.58", 9999);
+            await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
 
             var req = new LoginRequestPacket { id = txtId.Text, pw = txtPw.Text };
             var buf = req.ToBytes();
@@ -76,6 +76,7 @@ namespace WindowsFormsApp4
                 AppState.CurrentUserName = txtId.Text.Trim();
                 this.Hide();
                 new Loading(mainForm).ShowDialog();
+
             }
             else
             {
