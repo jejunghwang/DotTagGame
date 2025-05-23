@@ -18,7 +18,7 @@ namespace Server
         private static ConcurrentDictionary<string, int> IpToUserId = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedId = new bool[MaxUsr];
-        private static ConcurrentDictionary<int, (float x, float y)> Positions = new ConcurrentDictionary<int, (float x, float y)>();
+        private static ConcurrentDictionary<int, (int x, int y)> Positions = new ConcurrentDictionary<int, (int x, int y)>();
         private static bool[] readyStatus = new bool[100];
 
         static async Task Main(string[] args) => await RunAsync();
@@ -97,7 +97,7 @@ namespace Server
                                 Console.WriteLine($"[Server] Sending WelcomeResponse to user {userId}, entries={welcome.Entries.Count}");
                                 await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
 
-                                float startX = 937, startY = 270;
+                                int startX = 937, startY = 270;
                                 Positions[userId] = (startX, startY);
 
                                 var welcomePacket = new MovePacket

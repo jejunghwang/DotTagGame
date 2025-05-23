@@ -33,7 +33,7 @@ namespace Packets
 
         public int packetLen = 13;
         public int playerId;
-        public float x, y;
+        public int x, y;
 
         public byte[] ToBytes()
         {
@@ -52,8 +52,8 @@ namespace Packets
             return new MovePacket
             {
                 playerId = BitConverter.ToInt32(buffer, 1),
-                x = BitConverter.ToSingle(buffer, 5),
-                y = BitConverter.ToSingle(buffer, 9)
+                x = BitConverter.ToInt32(buffer, 5),
+                y = BitConverter.ToInt32(buffer, 9)
             };
         }
     }
@@ -280,7 +280,7 @@ namespace Packets
     public class WelcomeResponsePacket : Header
     {
         public PacketType Type => PacketType.welcomeResponse;
-        public List<(int playerId, float x, float y)> Entries { get; } = new List<(int, float, float)>();
+        public List<(int playerId, int x, int y)> Entries { get; } = new List<(int, int, int)>();
 
         public byte[] ToBytes()
         {
@@ -313,8 +313,8 @@ namespace Packets
             for (int i = 0; i < count; i++)
             {
                 int pid = BitConverter.ToInt32(buffer, offset);
-                float x = BitConverter.ToSingle(buffer, offset + 4);
-                float y = BitConverter.ToSingle(buffer, offset + 8);
+                int x = BitConverter.ToInt32(buffer, offset + 4);
+                int y = BitConverter.ToInt32(buffer, offset + 8);
                 welcomePacket.Entries.Add((pid, x, y));
                 offset += 12;
             }
