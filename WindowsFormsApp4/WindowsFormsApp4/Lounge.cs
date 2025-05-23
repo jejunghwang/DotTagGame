@@ -37,7 +37,7 @@ namespace WindowsFormsApp4
         private int frameIndex = 0;
         private List<Image> frames;
 
-
+        
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
         private Panel overlayPanel;
@@ -173,7 +173,6 @@ namespace WindowsFormsApp4
             overlayPanel.BringToFront();
 
             this.Controls.Add(overlayPanel);
-
             //btn_start.Enabled = false;
         }
 
