@@ -123,7 +123,7 @@ namespace WindowsFormsApp4
 
                 case PacketType.chat:
                     var chat = ChatPacket.FromBytes(body);
-                    AppendChatLog($"[{chat.playerId}]: {chat.message}");
+                    AppendChatLog($"[{Players.players[chat.playerId].Name}]: {chat.message}");
                     break;
                 case PacketType.disconnect:
                     var disconnection = DisconnectPacket.FromBytes(body);
