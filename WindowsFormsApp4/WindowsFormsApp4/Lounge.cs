@@ -111,13 +111,14 @@ namespace WindowsFormsApp4
             {
                 case PacketType.welcomeResponse:
                     var welcome = WelcomeResponsePacket.FromBytes(body);
-                    foreach (var (pid, x, y) in welcome.Entries)
-                        AddOrUpdateCharacter(pid, (int)x, (int)y, pid == AppState.CurrentUserId);
+                    //foreach (var (pid, x, y) in welcome.Entries)
+                    //AddOrUpdateCharacter(pid, (int)x, (int)y, pid == AppState.CurrentUserId);
+                    AddCharacter(welcome);
                     break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
-                    if(mv.playerId != AppState.CurrentUserId)
-                        AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
+                    //if(mv.playerId != AppState.CurrentUserId)
+                        //UpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
                     break;
 
                 case PacketType.chat:
@@ -154,7 +155,7 @@ namespace WindowsFormsApp4
 
             LoadCharacterFrames();
             frames = downFrames; // 기본 방향
-            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            //UpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
 /*            var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
@@ -288,18 +289,18 @@ namespace WindowsFormsApp4
             int dx = 0, dy = 0;
             frames = downFrames; // 기본
 
-            if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
-            if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
-            if (pressedKeys.Contains(Keys.A)) { dx -= moveSpeed; frames = leftFrames; }
-            if (pressedKeys.Contains(Keys.D)) { dx += moveSpeed; frames = rightFrames; }
+            if (pressedKeys.Contains(Keys.W)) { dy = -Players.players[AppState.CurrentUserId].Speed; frames = upFrames; }
+            if (pressedKeys.Contains(Keys.S)) { dy = Players.players[AppState.CurrentUserId].Speed; frames = downFrames; }
+            if (pressedKeys.Contains(Keys.A)) { dx = -Players.players[AppState.CurrentUserId].Speed; frames = leftFrames; }
+            if (pressedKeys.Contains(Keys.D)) { dx = Players.players[AppState.CurrentUserId].Speed; frames = rightFrames; }
 
-            playerX += dx;
-            playerY += dy;
+            //playerX += dx;
+            //playerY += dy;
 
-            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            UpdateCharacter(AppState.CurrentUserId, dx, dy, true);
 
             if (dx != 0 || dy != 0)
-                SendPlayerPosition(playerX, playerY);
+                SendPlayerPosition(dx, dy);
 
             if (player.TryGetValue(AppState.CurrentUserId, out var pic))
             {
@@ -308,16 +309,43 @@ namespace WindowsFormsApp4
             }
         }
 
-        private void AddOrUpdateCharacter(int playerId, int x, int y, bool isLocal = false)
+        private void AddCharacter(WelcomeResponsePacket packet)
         {
             if (InvokeRequired)
             {
-                BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, isLocal)));
+                BeginInvoke((MethodInvoker)(() => AddCharacter(packet)));
                 return;
             }
 
-            if (!player.ContainsKey(playerId))
+            foreach (var (playerId, (playerTag, x, y)) in packet.Entries)
             {
+                if(!player.ContainsKey(playerTag))
+                {
+                    Players.add_player(playerTag, playerId);
+                    this.Controls.Add(Players.players[playerTag].Pbox);
+                }
+                
+                if(playerTag == AppState.CurrentUserId)
+                {
+                    frameIndex = (frameIndex + 1) % frames.Count;
+                    Players.players[playerTag].Pbox.Image = frames[frameIndex];
+                }
+            }
+
+        }
+        private void UpdateCharacter(int playerTag, int x, int y, bool isLocal = false)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)(() => UpdateCharacter(playerTag, x, y, isLocal)));
+                return;
+            }
+
+            //if (!player.ContainsKey(playerTag))
+            //{
+                //var newPlayer = new Character(playerId);
+                //Players.add_player(playerTag, playerId);
+                /*
                 var pic = new PictureBox {
                     Size = new Size(100, 100),
                     SizeMode = PictureBoxSizeMode.StretchImage,
@@ -325,19 +353,24 @@ namespace WindowsFormsApp4
                     Location = new Point(x, y),
                     BackColor = Color.Transparent
                 };
-                player[playerId] = pic;
+                player[playerTag] = pic;
                 this.Controls.Add(pic);  
-            }
-            else
-            {
-                player[playerId].Location = new Point(x, y);
-            }
+                */
+                //this.Controls.Add(Players.players[playerTag].Pbox);
+            //}
+            //else
+            //{
+                //player[playerTag].Location = new Point(x, y);
+                Players.players[playerTag].Move(x, y);
+            //}
 
             if (isLocal)
             {
-                var pic = player[playerId];
+                //var pic = player[playerTag];
+                //frameIndex = (frameIndex + 1) % frames.Count;
+                //pic.Image = frames[frameIndex];
                 frameIndex = (frameIndex + 1) % frames.Count;
-                pic.Image = frames[frameIndex];
+                Players.players[playerTag].Pbox.Image = frames[frameIndex];
             }
         }
 

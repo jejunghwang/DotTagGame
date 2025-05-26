@@ -149,9 +149,9 @@ namespace WindowsFormsApp4
             {
                 case PacketType.welcomeResponse:
                     var welcome = WelcomeResponsePacket.FromBytes(body);
-                    foreach (var (pid, px, py) in welcome.Entries)
+                    foreach (var (id, (tag, px, py)) in welcome.Entries)
                     {
-                        AddOrUpdateCharacter(pid, (int)px, (int)py, pid == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px, (int)py, tag == AppState.CurrentUserId);
                     }
                     break;
                 case PacketType.move:

@@ -8,6 +8,15 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp4
 {
+    public static class Players
+    {
+        public static Character[] players = new Character[100];
+        
+        public static void add_player(int playerTag, string name)
+        {
+            players[playerTag] = new Character(name, playerTag);
+        }
+    }
     public class Character
     {
         public string Name { get; set; }
@@ -17,7 +26,7 @@ namespace WindowsFormsApp4
         public int Speed { get; set; }
         public PictureBox Pbox { get; private set; }
 
-        public Character(string name, int x, int y, int hp, int speed)
+        public Character(string name, int x= 937, int y= 270, int hp=100, int speed=3)
         {
             Name = name;
             X = x;
