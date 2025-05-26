@@ -117,8 +117,8 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
-                    //if(mv.playerId != AppState.CurrentUserId)
-                        //UpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
+                    if(mv.playerId != AppState.CurrentUserId)
+                        UpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
                     break;
 
                 case PacketType.chat:
