@@ -72,7 +72,7 @@
             // 
             // guna2Elipse1
             // 
-            this.guna2Elipse1.BorderRadius = 100;
+            this.guna2Elipse1.BorderRadius = 50;
             this.guna2Elipse1.TargetControl = this;
             // 
             // pang

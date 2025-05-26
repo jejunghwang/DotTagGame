@@ -35,8 +35,8 @@
             this.btn_select = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ShapesTool1 = new Guna.UI2.WinForms.Guna2ShapesTool(this.components);
             this.btn_ready = new Guna.UI2.WinForms.Guna2Button();
-            this.btn_start = new Guna.UI2.WinForms.Guna2Button();
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.btn_start = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -117,6 +117,19 @@
             this.btn_ready.TabIndex = 4;
             this.btn_ready.Text = "READY";
             // 
+            // guna2PictureBox1
+            // 
+            this.guna2PictureBox1.BackColor = System.Drawing.Color.DarkGreen;
+            this.guna2PictureBox1.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.deco;
+            this.guna2PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.guna2PictureBox1.FillColor = System.Drawing.Color.Transparent;
+            this.guna2PictureBox1.ImageRotate = 0F;
+            this.guna2PictureBox1.Location = new System.Drawing.Point(318, 602);
+            this.guna2PictureBox1.Name = "guna2PictureBox1";
+            this.guna2PictureBox1.Size = new System.Drawing.Size(111, 46);
+            this.guna2PictureBox1.TabIndex = 6;
+            this.guna2PictureBox1.TabStop = false;
+            // 
             // btn_start
             // 
             this.btn_start.BackColor = System.Drawing.Color.Transparent;
@@ -136,19 +149,6 @@
             this.btn_start.TabIndex = 4;
             this.btn_start.Text = "START";
             this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
-            // 
-            // guna2PictureBox1
-            // 
-            this.guna2PictureBox1.BackColor = System.Drawing.Color.DarkGreen;
-            this.guna2PictureBox1.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.deco;
-            this.guna2PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.guna2PictureBox1.FillColor = System.Drawing.Color.Transparent;
-            this.guna2PictureBox1.ImageRotate = 0F;
-            this.guna2PictureBox1.Location = new System.Drawing.Point(318, 602);
-            this.guna2PictureBox1.Name = "guna2PictureBox1";
-            this.guna2PictureBox1.Size = new System.Drawing.Size(111, 46);
-            this.guna2PictureBox1.TabIndex = 6;
-            this.guna2PictureBox1.TabStop = false;
             // 
             // Lounge
             // 
@@ -181,7 +181,7 @@
         private Guna.UI2.WinForms.Guna2Button btn_select;
         private Guna.UI2.WinForms.Guna2ShapesTool guna2ShapesTool1;
         private Guna.UI2.WinForms.Guna2Button btn_ready;
-        private Guna.UI2.WinForms.Guna2Button btn_start;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
+        private Guna.UI2.WinForms.Guna2Button btn_start;
     }
 }

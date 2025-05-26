@@ -63,6 +63,8 @@ namespace WindowsFormsApp4
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7}
         };
         private int tileSize = 32;
+        int characterSize = 64; // 캐릭터 크기
+
         public Map()
         {
             InitializeComponent();
@@ -70,7 +72,11 @@ namespace WindowsFormsApp4
         }
         private void init()
         {
-            this.WindowState = FormWindowState.Maximized;
+            // this.WindowState = FormWindowState.Maximized;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;      
+            this.StartPosition = FormStartPosition.CenterScreen;    
+            this.ClientSize = new Size(1280, 800);                
+
             this.Paint += new PaintEventHandler(DrawMap);
             this.DoubleBuffered = true;
             this.AutoScroll = true;
@@ -188,6 +194,10 @@ namespace WindowsFormsApp4
         private void DrawMap(object sender, PaintEventArgs e)
         {
             Point offset = this.AutoScrollPosition;
+            int rows = map.GetLength(0);
+            int cols = map.GetLength(1);
+            int viewW = this.ClientSize.Width;
+            int viewH = this.ClientSize.Height;
 
             for (int y = 0; y < map.GetLength(0); y++)
             {
@@ -203,6 +213,30 @@ namespace WindowsFormsApp4
                     }
                 }
             }
+
+            // 오른쪽 여백 채움
+            int blankStart = cols;
+            int blankEnd = (viewW - offset.X + tileSize - 1) / tileSize;
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = blankStart; x < blankEnd; x++)
+                {
+                    bool isEdge = (y == 0)
+                               || (y == rows - 1)
+                               || (x == blankStart)
+                               || (x == blankEnd - 1);
+
+                    int tileID = isEdge ? 1  // tree
+                                        : 2; // grass
+
+                    e.Graphics.DrawImage(
+                        dict[tileID],
+                        x * tileSize + offset.X,
+                        y * tileSize + offset.Y,
+                        tileSize, tileSize);
+                }
+            }
+
             foreach (var kvp in characterPositions)
             {
                 var playerId = kvp.Key;
@@ -211,7 +245,7 @@ namespace WindowsFormsApp4
                 int drawY = pos.Y + offset.Y;
 
                 if (playerId == AppState.CurrentUserId && frames.Count > 0)
-                    e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, tileSize, tileSize);
+                    e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, characterSize, characterSize);
                 else
                     e.Graphics.DrawImage(Properties.Resources.pang1_front_1, drawX, drawY, tileSize, tileSize);
             }
