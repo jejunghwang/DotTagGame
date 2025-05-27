@@ -136,9 +136,13 @@ namespace WindowsFormsApp4
                     Players.players[ready.playerTag].isReady = !Players.players[ready.playerTag].isReady;
                     break;
                 case PacketType.start:
-                    //ready 상태 모두 false로 변경
                     foreach (var player in Players.players)
-                        player.isReady = false;
+                        if(player != null)
+                            player.isReady = false;
+
+                    btn_ready.Text = "준비";
+                    btn_ready.ForeColor = Color.White;
+
                     AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
                     Map game_start = new Map();
                     game_start.Owner = this;

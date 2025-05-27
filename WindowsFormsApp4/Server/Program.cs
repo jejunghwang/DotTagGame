@@ -154,10 +154,12 @@ namespace Server
                                 }
                                 if (!dp)
                                 {
+                                    
                                     for(int i=0; i<100; i++)
                                     {
                                         readyStatus[i] = false;
                                     }
+                                    
                                     await BroadCastAsync(new StartPacket().ToBytes());
                                 }
                                 break;
