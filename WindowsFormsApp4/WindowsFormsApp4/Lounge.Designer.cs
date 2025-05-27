@@ -36,7 +36,6 @@
             this.guna2ShapesTool1 = new Guna.UI2.WinForms.Guna2ShapesTool(this.components);
             this.btn_ready = new Guna.UI2.WinForms.Guna2Button();
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.btn_start = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -111,11 +110,12 @@
             this.btn_ready.FillColor = System.Drawing.Color.Transparent;
             this.btn_ready.Font = new System.Drawing.Font("휴먼둥근헤드라인", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_ready.ForeColor = System.Drawing.Color.White;
-            this.btn_ready.Location = new System.Drawing.Point(970, 476);
+            this.btn_ready.Location = new System.Drawing.Point(961, 602);
             this.btn_ready.Name = "btn_ready";
             this.btn_ready.Size = new System.Drawing.Size(250, 100);
             this.btn_ready.TabIndex = 4;
             this.btn_ready.Text = "READY";
+            this.btn_ready.Click += new System.EventHandler(this.btn_ready_Click);
             // 
             // guna2PictureBox1
             // 
@@ -130,26 +130,6 @@
             this.guna2PictureBox1.TabIndex = 6;
             this.guna2PictureBox1.TabStop = false;
             // 
-            // btn_start
-            // 
-            this.btn_start.BackColor = System.Drawing.Color.Transparent;
-            this.btn_start.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.ready;
-            this.btn_start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_start.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btn_start.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btn_start.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btn_start.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btn_start.FillColor = System.Drawing.Color.Transparent;
-            this.btn_start.Font = new System.Drawing.Font("휴먼둥근헤드라인", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_start.ForeColor = System.Drawing.Color.Crimson;
-            this.btn_start.Location = new System.Drawing.Point(970, 601);
-            this.btn_start.Name = "btn_start";
-            this.btn_start.ShadowDecoration.Color = System.Drawing.Color.IndianRed;
-            this.btn_start.Size = new System.Drawing.Size(250, 100);
-            this.btn_start.TabIndex = 4;
-            this.btn_start.Text = "START";
-            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
-            // 
             // Lounge
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -157,7 +137,6 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 744);
             this.Controls.Add(this.guna2PictureBox1);
-            this.Controls.Add(this.btn_start);
             this.Controls.Add(this.btn_ready);
             this.Controls.Add(this.btn_select);
             this.Controls.Add(this.chatLogBox);
@@ -182,6 +161,5 @@
         private Guna.UI2.WinForms.Guna2ShapesTool guna2ShapesTool1;
         private Guna.UI2.WinForms.Guna2Button btn_ready;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
-        private Guna.UI2.WinForms.Guna2Button btn_start;
     }
 }

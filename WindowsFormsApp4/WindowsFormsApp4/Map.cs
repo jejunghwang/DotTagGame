@@ -253,7 +253,7 @@ namespace WindowsFormsApp4
 
                 if (playerId == AppState.CurrentUserId && frames.Count > 0)
                 {
-                    e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, tileSize, tileSize);
+                    e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, characterSize, characterSize);
                 }
                 else
                 {

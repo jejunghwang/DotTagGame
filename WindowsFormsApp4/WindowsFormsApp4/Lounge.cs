@@ -354,7 +354,7 @@ namespace WindowsFormsApp4
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
 
-        private void btn_start_Click(object sender, EventArgs e)
+        /*private void btn_start_Click(object sender, EventArgs e)
         {
             AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
             Map game_start = new Map();
@@ -365,7 +365,9 @@ namespace WindowsFormsApp4
             };
             game_start.ShowDialog();
 
-        }
+        }*/
+
+        // --------------------------------------------------
 
         private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -373,7 +375,23 @@ namespace WindowsFormsApp4
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
         }
 
-        // --------------------------------------------------
+        private void btn_ready_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var packet = new ReadyPacket
+                {
+                    playerTag = AppState.CurrentUserId
+                };
+
+                byte[] data = packet.ToBytes();
+                AppState.Connection.Stream.Write(data, 0, data.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"전송 오류: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void btn_select_Click(object sender, EventArgs e)
         {
