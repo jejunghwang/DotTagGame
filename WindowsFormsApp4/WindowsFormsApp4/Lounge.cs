@@ -131,8 +131,12 @@ namespace WindowsFormsApp4
                     Players.players[disconnection.playerTag].Pbox.Dispose();
                     Players.players[disconnection.playerTag] = null;
                     break;
-
+                case PacketType.ready:
+                    var ready = ReadyPacket.FromBytes(body);
+                    Players.players[ready.playerTag].isReady = !Players.players[ready.playerTag].isReady;
+                    break;
                 case PacketType.start:
+                    //ready 상태 모두 false로 변경
                     AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
                     Map game_start = new Map();
                     game_start.Owner = this;
@@ -418,11 +422,21 @@ namespace WindowsFormsApp4
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
-            if (btn_ready.Text == "준비")
+            //if (btn_ready.Text == "준비")
+            //{
+            //btn_ready.Text = "준비 완료";
+            //btn_ready.ForeColor = Color.Crimson;
+            //}
+            if (Players.players[AppState.CurrentUserId].isReady)
+            {
+                btn_ready.Text = "준비";
+                btn_ready.ForeColor = Color.White;
+            }
+            else
             {
                 btn_ready.Text = "준비 완료";
                 btn_ready.ForeColor = Color.Crimson;
-            } 
+            }
                 
             try
             {

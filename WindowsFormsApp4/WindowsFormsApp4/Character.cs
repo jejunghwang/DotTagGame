@@ -25,6 +25,7 @@ namespace WindowsFormsApp4
         public int HP { get; set; }
         public int Speed { get; set; }
         public PictureBox Pbox { get; private set; }
+        public bool isReady = false;
 
         public Character(string name, int x= 937, int y= 270, int hp=100, int speed=3)
         {

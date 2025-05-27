@@ -142,8 +142,11 @@ namespace Server
                                 var ready = ReadyPacket.FromBytes(packet);
                                 Console.WriteLine($"[READY] {ready.playerTag}");
 
-                                readyStatus[ready.playerTag] = !readyStatus[ready.playerTag];
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
 
+                                readyStatus[ready.playerTag] = !readyStatus[ready.playerTag];
+                                
                                 bool dp = readyStatus[0] ^ UsedTag[0];
                                 for(int i=1; i<100; i++)
                                 {
