@@ -15,13 +15,13 @@ namespace Server
     internal class Program
     {
         private const int MaxUsr = 100;
+        private int curUserNum = 0;
         private static ConcurrentDictionary<string, int> IpToUserTag = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedTag = new bool[MaxUsr];
         private static ConcurrentDictionary<int, (int x, int y)> Positions = new ConcurrentDictionary<int, (int x, int y)>();
         private static bool[] readyStatus = new bool[100];
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
-
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -125,8 +125,8 @@ namespace Server
                                 break;
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
-                                Positions[mv.playerId] = (mv.x, mv.y);
-                                Console.WriteLine($"[MOVE] {mv.playerId}: ({mv.x},{mv.y})");
+                                Positions[mv.playerId] = (Positions[mv.playerId].x + mv.x, Positions[mv.playerId].y + mv.y);
+                                Console.WriteLine($"[MOVE] {mv.playerId}: ({Positions[mv.playerId].x},{Positions[mv.playerId].y})");
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
                                 break;
@@ -142,7 +142,19 @@ namespace Server
                                 var ready = ReadyPacket.FromBytes(packet);
                                 Console.WriteLine($"[READY] {ready.playerTag}");
 
+                                readyStatus[ready.playerTag] = !readyStatus[ready.playerTag];
+
+                                bool dp = readyStatus[0] ^ UsedTag[0];
+                                for(int i=1; i<100; i++)
+                                {
+                                    dp = dp | (readyStatus[i] ^ UsedTag[i]);
+                                }
+                                if (!dp)
+                                {
+                                    await BroadCastAsync(new StartPacket().ToBytes());
+                                }
                                 break;
+
                             case PacketType.disconnect:
                                 throw new Exception($"[{ip}] disconnected");
                             default:

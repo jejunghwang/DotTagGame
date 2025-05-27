@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Packets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace Packets
@@ -19,16 +21,17 @@ namespace Packets
         welcomeRequest,
         welcomeResponse,
         ready,
-        disconnect
+        disconnect,
+        start
     }
 
-    public interface Header
+    public interface pHeader
     {
         PacketType Type { get; }
         byte[] ToBytes();
     }
 
-    public class MovePacket : Header
+    public class MovePacket : pHeader
     {
         public PacketType Type => PacketType.move;
 
@@ -59,7 +62,7 @@ namespace Packets
         }
     }
 
-    public class LoginRequestPacket : Header
+    public class LoginRequestPacket : pHeader
     {
         public PacketType Type => PacketType.loginRequest;
 
@@ -102,7 +105,7 @@ namespace Packets
         }
     }
 
-    public class LoginResponsePacket : Header
+    public class LoginResponsePacket : pHeader
     {
         public PacketType Type => PacketType.loginResponse;
 
@@ -130,7 +133,7 @@ namespace Packets
         }
     }
 
-    public class RegUsrRequestPacket : Header
+    public class RegUsrRequestPacket : pHeader
     {
         public PacketType Type => PacketType.RegUsrRequest;
 
@@ -173,7 +176,7 @@ namespace Packets
         }
     }
 
-    public class RegUsrResponsePacket : Header
+    public class RegUsrResponsePacket : pHeader
     {
         public PacketType Type => PacketType.RegUsrResponse;
 
@@ -197,7 +200,7 @@ namespace Packets
         }
     }
 
-    public class ChatPacket : Header
+    public class ChatPacket : pHeader
     {
         public PacketType Type => PacketType.chat;
 
@@ -256,7 +259,7 @@ namespace Packets
         }
     }
 
-    public class WelcomeRequestPacket : Header
+    public class WelcomeRequestPacket : pHeader
     {
         public PacketType Type => PacketType.welcomeRequest;
         private const int BodyLength = 1;
@@ -278,7 +281,7 @@ namespace Packets
         }
     }
 
-    public class WelcomeResponsePacket : Header
+    public class WelcomeResponsePacket : pHeader
     {
         public PacketType Type => PacketType.welcomeResponse;
         public List<(string playerId, (int playerTag, int x, int y))> Entries { get; } = new List<(string, (int, int, int))>();
@@ -336,7 +339,7 @@ namespace Packets
         }
     }
 
-    public class DisconnectPacket : Header
+    public class DisconnectPacket : pHeader
     {
         public PacketType Type => PacketType.disconnect;
         int packetLen = 5;
@@ -359,7 +362,7 @@ namespace Packets
         }
     }
     
-    public class ReadyPacket : Header
+    public class ReadyPacket : pHeader
     {
         public PacketType Type => PacketType.ready;
         int packetLen = 5;
@@ -379,5 +382,18 @@ namespace Packets
         {
             return new ReadyPacket { playerTag = BitConverter.ToInt32(buffer, 5) };
         }
+    }
+}
+
+public class StartPacket : pHeader
+{
+    public PacketType Type => PacketType.start;
+    int packetLen = 1;
+    public byte[] ToBytes()
+    {
+        byte[] buffer = new byte[4 + packetLen];
+        BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+        buffer[4] = (byte)PacketType.start;
+        return buffer;
     }
 }

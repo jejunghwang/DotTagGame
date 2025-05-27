@@ -130,10 +130,19 @@ namespace WindowsFormsApp4
                     this.Controls.Remove(Players.players[disconnection.playerTag].Pbox);
                     Players.players[disconnection.playerTag].Pbox.Dispose();
                     Players.players[disconnection.playerTag] = null;
-
-
-                    //MessageBox.Show($"{disconnection.playerTag} disconnected");
                     break;
+
+                case PacketType.start:
+                    AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
+                    Map game_start = new Map();
+                    game_start.Owner = this;
+                    game_start.FormClosed += (s, k) => {
+                        this.Show();
+                        AppState.Connection.PacketReceived += OnPacketReceived; // 다시 연결
+                    };
+                    game_start.ShowDialog();
+                    break;
+
                 default:
                     break;
             }
@@ -395,14 +404,7 @@ namespace WindowsFormsApp4
 
         private void btn_start_Click(object sender, EventArgs e)
         {
-            AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
-            Map game_start = new Map();
-            game_start.Owner = this;
-            game_start.FormClosed += (s, k) => {
-                this.Show();
-                AppState.Connection.PacketReceived += OnPacketReceived; // 다시 연결
-            };
-            game_start.ShowDialog();
+
 
         }
 
