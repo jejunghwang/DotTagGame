@@ -402,11 +402,13 @@ namespace WindowsFormsApp4
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
 
-        private void btn_start_Click(object sender, EventArgs e)
+        /*private void btn_start_Click(object sender, EventArgs e)
         {
 
 
-        }
+        }*/
+
+        // --------------------------------------------------
 
         private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -414,7 +416,29 @@ namespace WindowsFormsApp4
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
         }
 
-        // --------------------------------------------------
+        private void btn_ready_Click(object sender, EventArgs e)
+        {
+            if (btn_ready.Text == "준비")
+            {
+                btn_ready.Text = "준비 완료";
+                btn_ready.ForeColor = Color.Crimson;
+            } 
+                
+            try
+            {
+                var packet = new ReadyPacket
+                {
+                    playerTag = AppState.CurrentUserId
+                };
+
+                byte[] data = packet.ToBytes();
+                AppState.Connection.Stream.Write(data, 0, data.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"전송 오류: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void btn_select_Click(object sender, EventArgs e)
         {
