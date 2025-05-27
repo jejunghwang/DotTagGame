@@ -25,7 +25,7 @@ namespace WindowsFormsApp4
         // private TcpClient client;
         // private NetworkStream stream;
 
-        private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
+        //private Dictionary<int, PictureBox> player = new Dictionary<int, PictureBox>();
         private int playerX = 937, playerY = 270;
         private int moveSpeed = 7;
 
@@ -127,7 +127,12 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.disconnect:
                     var disconnection = DisconnectPacket.FromBytes(body);
-                    MessageBox.Show($"{disconnection.playerTag} disconnected");
+                    this.Controls.Remove(Players.players[disconnection.playerTag].Pbox);
+                    Players.players[disconnection.playerTag].Pbox.Dispose();
+                    Players.players[disconnection.playerTag] = null;
+
+
+                    //MessageBox.Show($"{disconnection.playerTag} disconnected");
                     break;
                 default:
                     break;
@@ -302,10 +307,11 @@ namespace WindowsFormsApp4
             if (dx != 0 || dy != 0)
                 SendPlayerPosition(dx, dy);
 
-            if (player.TryGetValue(AppState.CurrentUserId, out var pic))
+            //if (player.TryGetValue(AppState.CurrentUserId, out var pic))
+            if (Players.players[AppState.CurrentUserId] != null)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
-                pic.Image = frames[frameIndex];
+                Players.players[AppState.CurrentUserId].Pbox.Image = frames[frameIndex];
             }
         }
 
@@ -319,7 +325,7 @@ namespace WindowsFormsApp4
 
             foreach (var (playerId, (playerTag, x, y)) in packet.Entries)
             {
-                if(!player.ContainsKey(playerTag))
+                if (Players.players[playerTag] == null)
                 {
                     Players.add_player(playerTag, playerId);
                     this.Controls.Add(Players.players[playerTag].Pbox);

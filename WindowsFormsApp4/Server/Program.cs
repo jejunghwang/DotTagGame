@@ -42,6 +42,7 @@ namespace Server
             string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
             Console.WriteLine($"[{ip}] connected.");
             int userTag = -1;
+            string userId;
 
             using (client)
             using (NetworkStream stream = client.GetStream())
@@ -57,8 +58,9 @@ namespace Server
                             if (isValidCredential(loginRequest))
                             {
                                 userTag = RegisterClient(ip);
+                                userId = loginRequest.id;
                                 SessionMap[userTag] = stream;
-                                TagToId[userTag] = loginRequest.id;
+                                TagToId[userTag] = userId;
                                 buffer = new LoginResponsePacket
                                 {
                                     successLogin = true,
@@ -94,23 +96,32 @@ namespace Server
                         switch ((PacketType)packet[0])
                         {
                             case PacketType.welcomeRequest:
+
                                 var welcome = new WelcomeResponsePacket();
                                 foreach (var kv in Positions)
+                                {
+                                    if (kv.Key == userTag) continue;
                                     welcome.Entries.Add((TagToId[kv.Key], (kv.Key, kv.Value.x, kv.Value.y)));
-                                Console.WriteLine($"[Server] Sending WelcomeResponse to user {userTag}, entries={welcome.Entries.Count}");
-                                await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
+                                }
 
                                 int startX = 937, startY = 270;
                                 Positions[userTag] = (startX, startY);
 
-                                var welcomePacket = new MovePacket
-                                {
-                                    playerId = userTag,
-                                    x = startX,
-                                    y = startY
-                                }.ToBytes();
+                                welcome.Entries.Add((userId, (userTag, startX, startY)));
 
-                                await BroadCastAsync(welcomePacket);
+                                Console.WriteLine($"[Server] Sending WelcomeResponse to user {userTag}, entries={welcome.Entries.Count}");
+                                //await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
+                                await BroadCastAsync(welcome.ToBytes());
+                                
+
+                                //var welcomePacket = new MovePacket
+                                //{
+                                //    playerId = userTag,
+                                //    x = startX,
+                                //    y = startY
+                                //}.ToBytes();
+
+                                //await BroadCastAsync(welcomePacket);
                                 break;
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
