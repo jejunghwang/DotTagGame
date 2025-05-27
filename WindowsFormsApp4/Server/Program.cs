@@ -15,11 +15,12 @@ namespace Server
     internal class Program
     {
         private const int MaxUsr = 100;
-        private static ConcurrentDictionary<string, int> IpToUserId = new ConcurrentDictionary<string, int>();
+        private static ConcurrentDictionary<string, int> IpToUserTag = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
-        private static bool[] UsedId = new bool[MaxUsr];
+        private static bool[] UsedTag = new bool[MaxUsr];
         private static ConcurrentDictionary<int, (int x, int y)> Positions = new ConcurrentDictionary<int, (int x, int y)>();
         private static bool[] readyStatus = new bool[100];
+        private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
 
         static async Task Main(string[] args) => await RunAsync();
 
@@ -40,7 +41,8 @@ namespace Server
         {
             string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
             Console.WriteLine($"[{ip}] connected.");
-            int userId = -1;
+            int userTag = -1;
+            string userId;
 
             using (client)
             using (NetworkStream stream = client.GetStream())
@@ -55,12 +57,14 @@ namespace Server
                             LoginRequestPacket loginRequest = LoginRequestPacket.FromBytes(loginPacket);
                             if (isValidCredential(loginRequest))
                             {
-                                userId = RegisterClient(ip);
-                                SessionMap[userId] = stream;
+                                userTag = RegisterClient(ip);
+                                userId = loginRequest.id;
+                                SessionMap[userTag] = stream;
+                                TagToId[userTag] = userId;
                                 buffer = new LoginResponsePacket
                                 {
                                     successLogin = true,
-                                    userId = userId
+                                    userId = userTag
                                 }.ToBytes();
                                 await stream.WriteAsync(buffer, 0, buffer.Length);
                                 Console.WriteLine($"[{ip}] logged in.");
@@ -92,23 +96,32 @@ namespace Server
                         switch ((PacketType)packet[0])
                         {
                             case PacketType.welcomeRequest:
+
                                 var welcome = new WelcomeResponsePacket();
                                 foreach (var kv in Positions)
-                                    welcome.Entries.Add((kv.Key, kv.Value.x, kv.Value.y));
-                                Console.WriteLine($"[Server] Sending WelcomeResponse to user {userId}, entries={welcome.Entries.Count}");
-                                await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
+                                {
+                                    if (kv.Key == userTag) continue;
+                                    welcome.Entries.Add((TagToId[kv.Key], (kv.Key, kv.Value.x, kv.Value.y)));
+                                }
 
                                 int startX = 937, startY = 270;
-                                Positions[userId] = (startX, startY);
+                                Positions[userTag] = (startX, startY);
 
-                                var welcomePacket = new MovePacket
-                                {
-                                    playerId = userId,
-                                    x = startX,
-                                    y = startY
-                                }.ToBytes();
+                                welcome.Entries.Add((userId, (userTag, startX, startY)));
 
-                                await BroadCastAsync(welcomePacket);
+                                Console.WriteLine($"[Server] Sending WelcomeResponse to user {userTag}, entries={welcome.Entries.Count}");
+                                //await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
+                                await BroadCastAsync(welcome.ToBytes());
+                                
+
+                                //var welcomePacket = new MovePacket
+                                //{
+                                //    playerId = userTag,
+                                //    x = startX,
+                                //    y = startY
+                                //}.ToBytes();
+
+                                //await BroadCastAsync(welcomePacket);
                                 break;
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
@@ -144,9 +157,9 @@ namespace Server
                 }
                 finally
                 {
-                    byte[] buffer = new DisconnectPacket { playerTag = userId }.ToBytes();
+                    byte[] buffer = new DisconnectPacket { playerTag = userTag }.ToBytes();
                     ReleaseClient(ip);
-                    if (SessionMap.TryRemove(userId, out var s)) s.Close();
+                    if (SessionMap.TryRemove(userTag, out var s)) s.Close();
                     Console.WriteLine($"[{ip}] disconnected");
                     await BroadCastAsync(buffer);
                 }
@@ -155,14 +168,14 @@ namespace Server
 
         private static int RegisterClient(string ip)
         {
-            lock (UsedId)
+            lock (UsedTag)
             {
                 for(int i=0; i<MaxUsr; i++)
                 {
-                    if (!UsedId[i])
+                    if (!UsedTag[i])
                     {
-                        UsedId[i] = true;
-                        IpToUserId[ip] = i;
+                        UsedTag[i] = true;
+                        IpToUserTag[ip] = i;
                         return i;
                     }
                 }
@@ -172,8 +185,8 @@ namespace Server
 
         private static void ReleaseClient(string ip)
         {
-            if (!IpToUserId.TryRemove(ip, out int id)) return;
-            lock (UsedId) UsedId[id] = false;
+            if (!IpToUserTag.TryRemove(ip, out int id)) return;
+            lock (UsedTag) UsedTag[id] = false;
         }
 
         private static async Task<byte[]> ReadPacketAsync(NetworkStream stream)

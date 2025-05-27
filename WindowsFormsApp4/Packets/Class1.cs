@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Packets
@@ -280,12 +281,14 @@ namespace Packets
     public class WelcomeResponsePacket : Header
     {
         public PacketType Type => PacketType.welcomeResponse;
-        public List<(int playerId, int x, int y)> Entries { get; } = new List<(int, int, int)>();
-
+        public List<(string playerId, (int playerTag, int x, int y))> Entries { get; } = new List<(string, (int, int, int))>();
         public byte[] ToBytes()
         {
             int count = Entries.Count;
-            int bodyLen = 1 + 4 + count * (4 + 4 + 4);
+            List<int> idLen = new List<int>();
+            for (int i = 0; i < Entries.Count; i++)
+                idLen.Add(Entries[i].Item1.Length);
+            int bodyLen = 1 + 4 + count * 16 + idLen.Sum();
             byte[] buffer = new byte[4 + bodyLen];
 
             BitConverter.GetBytes(bodyLen).CopyTo(buffer, 0);
@@ -293,14 +296,21 @@ namespace Packets
             BitConverter.GetBytes(count).CopyTo(buffer, 5);
 
             int offset = 9;
-            foreach (var (pid, x, y) in Entries)
+            foreach (var (id, (tag, x, y)) in Entries)
             {
-                BitConverter.GetBytes(pid).CopyTo(buffer, offset);
+                byte[] idBytes = Encoding.UTF8.GetBytes(id);
+                BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, offset);
+                offset += 4;
+                idBytes.CopyTo(buffer, offset);
+                offset += idBytes.Length;
+                BitConverter.GetBytes(tag).CopyTo(buffer, offset);
                 offset += 4;
                 BitConverter.GetBytes(x).CopyTo(buffer, offset);
                 offset += 4;
                 BitConverter.GetBytes(y).CopyTo(buffer, offset);
                 offset += 4;
+
+
             }
             return buffer;
         }
@@ -312,10 +322,14 @@ namespace Packets
             int offset = 5;
             for (int i = 0; i < count; i++)
             {
-                int pid = BitConverter.ToInt32(buffer, offset);
+                int idLen = BitConverter.ToInt32(buffer, offset);
+                offset += 4;
+                string id = Encoding.UTF8.GetString(buffer, offset, idLen);
+                offset += idLen;
+                int tag = BitConverter.ToInt32(buffer, offset);
                 int x = BitConverter.ToInt32(buffer, offset + 4);
                 int y = BitConverter.ToInt32(buffer, offset + 8);
-                welcomePacket.Entries.Add((pid, x, y));
+                welcomePacket.Entries.Add((id, (tag, x, y)));
                 offset += 12;
             }
             return welcomePacket;
