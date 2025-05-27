@@ -137,6 +137,8 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.start:
                     //ready 상태 모두 false로 변경
+                    foreach (var player in Players.players)
+                        player.isReady = false;
                     AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
                     Map game_start = new Map();
                     game_start.Owner = this;
