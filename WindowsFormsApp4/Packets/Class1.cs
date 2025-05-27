@@ -380,7 +380,7 @@ namespace Packets
 
         public static ReadyPacket FromBytes(byte[] buffer)
         {
-            return new ReadyPacket { playerTag = BitConverter.ToInt32(buffer, 5) };
+            return new ReadyPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
         }
     }
 }
