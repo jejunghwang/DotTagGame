@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,9 @@ namespace WindowsFormsApp4
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
+
+        private readonly HashSet<int> walkableTiles = new HashSet<int> {-15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5};
+
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6},
@@ -54,7 +58,7 @@ namespace WindowsFormsApp4
             {1,1,13,-3,5,-4,9,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-7,-7,-6,-6,-3,5,-4,-6,-6,-3,5,-4,-7,-7},
             {1,1,13,-3,5,-4,9,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-6,-6,-6,-6,-3,5,-4,-6,-6,-3,5,-4,-6,-6},
             {1,1,13,-3,5,-4,9,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-7,-7,-6,-6,-3,5,-4,-6,-6,-3,5,-4,-7,-7},
-            {1,1,13,-3,5,-4,9,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-6,-6,-6,-6,-3,5,-4,-6,-6,-3,5,-4,-7,-7},
+            {1,1,13,-3,5,-4,9,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-6,-6,-6,-6,-3,5,-4,-6,-6,-3,5,-4,-6,-6},
             {1,1,13,-1,-1,-1,-1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,1,1,-7,-7,-6,-6,-3,5,-4,-1,-1,-1,-1,-1,-7,-7},
             {1,1,13,-5,-5,-5,-5,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,6,7,7,7,8,1,1,-6,-6,-6,-6,-3,5,-4,-5,-5,-5,-5,-5,-6,-6},
             {1,1,13,-2,-2,-2,-2,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,13,4,4,4,9,1,1,-7,-7,-6,-6,-3,5,-4,-2,-2,-2,-2,-2,-7,-7},
@@ -64,12 +68,13 @@ namespace WindowsFormsApp4
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7}
         };
         private int tileSize = 32;
-        int characterSize = 64; // 캐릭터 크기
+        int characterSize = 32; // 캐릭터 크기
 
         public Map()
         {
             InitializeComponent();
             init();
+
         }
         private void init()
         {
@@ -199,6 +204,19 @@ namespace WindowsFormsApp4
 
         }
 
+        private void DrawTransparentImage(Graphics g, Image image, Rectangle destRect, float alpha)
+        {
+            using (ImageAttributes attributes = new ImageAttributes())
+            {
+                ColorMatrix matrix = new ColorMatrix
+                {
+                    Matrix33 = alpha // 0.0 (완전 투명) ~ 1.0 (완전 불투명)
+                };
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+            }
+        }
+
         private void DrawMap(object sender, PaintEventArgs e)
         {
             Point offset = this.AutoScrollPosition;
@@ -251,55 +269,96 @@ namespace WindowsFormsApp4
                 int drawX = worldPos.X + offset.X;
                 int drawY = worldPos.Y + offset.Y;
 
+                // 중심 기준 타일 좌표 계산
+                int centerX = worldPos.X + characterSize / 2;
+                int centerY = worldPos.Y + characterSize / 2;
+                int tileCol = centerX / tileSize;
+                int tileRow = centerY / tileSize;
+
+                bool isOnTile3 = (tileRow >= 0 && tileRow < map.GetLength(0) &&
+                                  tileCol >= 0 && tileCol < map.GetLength(1) &&
+                                  map[tileRow, tileCol] == 3);
+
+                float alpha = isOnTile3 ? 0.4f : 1.0f; // 투명도 설정
+
+                Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
+
                 if (playerId == AppState.CurrentUserId && frames.Count > 0)
                 {
-                    e.Graphics.DrawImage(frames[frameIndex], drawX, drawY, characterSize, characterSize);
+                    DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
                 }
                 else
                 {
-                    e.Graphics.DrawImage(Properties.Resources.pang1_front_1, drawX, drawY, tileSize, tileSize);
+                    DrawTransparentImage(e.Graphics, Properties.Resources.pang1_front_1, destRect, alpha);
                 }
+
             }
         }
 
        
+
         private void AnimateCharacter(object sender, EventArgs e)
         {
             if (pressedKeys.Count == 0) return;
 
             int dx = 0, dy = 0;
-            frames = downFrames; // 기본
+            frames = downFrames; // 기본 방향
 
-            if (pressedKeys.Contains(Keys.W)) dy -= moveSpeed;
-            if (pressedKeys.Contains(Keys.S)) dy += moveSpeed;
-            if (pressedKeys.Contains(Keys.A)) dx -= moveSpeed;
-            if (pressedKeys.Contains(Keys.D)) dx += moveSpeed;
-
-            // 대각선 이동 시 속도 보정
-            if (dx != 0 && dy != 0)
-            {
-                // 대각선 속도를 moveSpeed로 제한
-                double diagonalSpeedFactor = 1 / Math.Sqrt(2);
-                dx = (int)(dx * diagonalSpeedFactor);
-                dy = (int)(dy * diagonalSpeedFactor);
-            }
-
+            // 방향별 속도 및 애니메이션 프레임 설정
             if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
             if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
             if (pressedKeys.Contains(Keys.A)) { dx -= moveSpeed; frames = leftFrames; }
             if (pressedKeys.Contains(Keys.D)) { dx += moveSpeed; frames = rightFrames; }
 
-            playerX += dx;
-            playerY += dy;
+            // 대각선 이동 시 속도 보정
+            if (dx != 0 && dy != 0)
+            {
+                double factor = 1 / Math.Sqrt(2);
+                dx = (int)(dx * factor);
+                dy = (int)(dy * factor);
+            }
+            // 충돌 감지
+            int nextX = playerX + dx;
+            int nextY = playerY + dy;
+
+            int hitboxMargin = 6; // 캐릭터 이미지 여유 공간
+            Rectangle hitbox = new Rectangle(
+                nextX + hitboxMargin,
+                nextY + hitboxMargin,
+                tileSize - 2 * hitboxMargin,
+                tileSize - 2 * hitboxMargin
+            );
+
+            bool canMove = true;
+            for (int y = hitbox.Top / tileSize; y <= hitbox.Bottom / tileSize; y++)
+            {
+                for (int x = hitbox.Left / tileSize; x <= hitbox.Right / tileSize; x++)
+                {
+                    if (y < 0 || y >= map.GetLength(0) || x < 0 || x >= map.GetLength(1))
+                    {
+                        canMove = false;
+                        break;
+                    }
+
+                    if (!walkableTiles.Contains(map[y, x]))
+                    {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMove)
+                return;
+
+            // 이동 허용
+            playerX = nextX;
+            playerY = nextY;
 
             AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            SendPlayerPosition(playerX, playerY);
+            UpdateCameraPosition();
+            this.Invalidate();
 
-            if (dx != 0 || dy != 0)
-            {
-                SendPlayerPosition(playerX, playerY);
-                UpdateCameraPosition();
-                this.Invalidate();
-            }
             frameIndex = (frameIndex + 1) % frames.Count;
 
         }
