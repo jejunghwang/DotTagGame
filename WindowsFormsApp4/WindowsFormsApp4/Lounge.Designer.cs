@@ -108,13 +108,13 @@
             this.btn_ready.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btn_ready.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btn_ready.FillColor = System.Drawing.Color.Transparent;
-            this.btn_ready.Font = new System.Drawing.Font("휴먼둥근헤드라인", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_ready.Font = new System.Drawing.Font("휴먼둥근헤드라인", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_ready.ForeColor = System.Drawing.Color.White;
             this.btn_ready.Location = new System.Drawing.Point(961, 602);
             this.btn_ready.Name = "btn_ready";
             this.btn_ready.Size = new System.Drawing.Size(250, 100);
             this.btn_ready.TabIndex = 4;
-            this.btn_ready.Text = "READY";
+            this.btn_ready.Text = "준비";
             this.btn_ready.Click += new System.EventHandler(this.btn_ready_Click);
             // 
             // guna2PictureBox1

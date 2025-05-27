@@ -416,6 +416,12 @@ namespace WindowsFormsApp4
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
+            if (btn_ready.Text == "준비")
+            {
+                btn_ready.Text = "준비 완료";
+                btn_ready.ForeColor = Color.Crimson;
+            } 
+                
             try
             {
                 var packet = new ReadyPacket
