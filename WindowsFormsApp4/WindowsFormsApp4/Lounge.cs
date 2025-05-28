@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace WindowsFormsApp4
 {
@@ -123,6 +124,8 @@ namespace WindowsFormsApp4
                     this.Controls.Remove(Players.players[disconnection.playerTag].Pbox);
                     Players.players[disconnection.playerTag].Pbox.Dispose();
                     Players.players[disconnection.playerTag] = null;
+                    var name = Players.players[disconnection.playerTag].Name;
+                    AppendChatLog($"[시스템] { name }님이 퇴장하였습니다");
                     break;
                 case PacketType.ready:
                     var ready = ReadyPacket.FromBytes(body);
@@ -338,11 +341,15 @@ namespace WindowsFormsApp4
 
             foreach (var (playerId, (playerTag, x, y)) in packet.Entries)
             {
-                if (Players.players[playerTag] == null)
+                bool isNew = (Players.players[playerTag] == null);
+
+                if (isNew)
                 {
                     Players.add_player(playerTag, playerId);
                     this.Controls.Add(Players.players[playerTag].Pbox);
                     this.Controls.Add(Players.players[playerTag].NameLabel);
+
+                    AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
                 }
 
                 Players.players[playerTag].SetPosition(x, y);
@@ -353,8 +360,8 @@ namespace WindowsFormsApp4
                     Players.players[playerTag].Pbox.Image = frames[frameIndex];
                 }
             }
-
         }
+
         private void UpdateCharacter(int playerTag, int x, int y, bool isLocal = false)
         {
             if (InvokeRequired)
