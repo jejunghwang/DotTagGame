@@ -180,7 +180,8 @@ namespace WindowsFormsApp4
             }
             Array.Clear(Players.players, 0, Players.players.Length);
 
-            AppState.Connection.PacketReceived+=OnPacketReceived;
+            AppState.Connection.PacketReceived -= OnPacketReceived;
+            AppState.Connection.PacketReceived += OnPacketReceived;
             var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
@@ -452,6 +453,8 @@ namespace WindowsFormsApp4
 
         private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
         {
+            AppState.Connection.PacketReceived -= OnPacketReceived;
+
             byte[] disconnection = new DisconnectPacket { playerTag = AppState.CurrentUserId }.ToBytes();
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
         }
