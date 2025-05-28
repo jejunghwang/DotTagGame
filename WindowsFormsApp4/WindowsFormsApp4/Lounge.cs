@@ -129,7 +129,10 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.ready:
                     var ready = ReadyPacket.FromBytes(body);
-                    Players.players[ready.playerTag].isReady = !Players.players[ready.playerTag].isReady;
+                    var c = Players.players[ready.playerTag];
+                    c.isReady = !c.isReady;
+                    c.BubbleBox.Visible = c.isReady;
+                    c.SetPosition(c.X, c.Y);
                     break;
                 case PacketType.start:
                     foreach (var player in Players.players)
@@ -348,6 +351,7 @@ namespace WindowsFormsApp4
                     Players.add_player(playerTag, playerId);
                     this.Controls.Add(Players.players[playerTag].Pbox);
                     this.Controls.Add(Players.players[playerTag].NameLabel);
+                    this.Controls.Add(Players.players[playerTag].BubbleBox);
 
                     AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
                 }
@@ -474,6 +478,5 @@ namespace WindowsFormsApp4
 
             overlayPanel.Visible = false;
         }
-
     }
 }

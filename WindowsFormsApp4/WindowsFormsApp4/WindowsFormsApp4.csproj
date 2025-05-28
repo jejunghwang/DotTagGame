@@ -483,5 +483,8 @@
   <ItemGroup>
     <None Include="Resources\otile3.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bubble.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
