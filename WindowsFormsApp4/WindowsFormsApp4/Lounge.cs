@@ -43,9 +43,6 @@ namespace WindowsFormsApp4
 
         private Panel overlayPanel;
 
-        // 처음 환영 패킷인지 체크
-        private bool isFirstWelcome = true;
-
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -172,7 +169,16 @@ namespace WindowsFormsApp4
 
         private async void Lounge_Shown(object sender, EventArgs e)
         {
-            isFirstWelcome = true;   // 폼이 보일 때마다 초기 로드 모드로
+            foreach (var c in Players.players)
+            {
+                if (c != null)
+                {
+                    this.Controls.Remove(c.Pbox);
+                    this.Controls.Remove(c.NameLabel);
+                    this.Controls.Remove(c.BubbleBox);
+                }
+            }
+            Array.Clear(Players.players, 0, Players.players.Length);
 
             AppState.Connection.PacketReceived+=OnPacketReceived;
             var req = new WelcomeRequestPacket();
@@ -365,9 +371,8 @@ namespace WindowsFormsApp4
                     this.Controls.Add(Players.players[playerTag].Pbox);
                     this.Controls.Add(Players.players[playerTag].NameLabel);
                     this.Controls.Add(Players.players[playerTag].BubbleBox);
-
-                    if (!isFirstWelcome)
-                        AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
+                  
+                    AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
                 }
 
                 Players.players[playerTag].SetPosition(x, y);
@@ -378,8 +383,6 @@ namespace WindowsFormsApp4
                     Players.players[playerTag].Pbox.Image = frames[frameIndex];
                 }
             }
-
-            isFirstWelcome = false;
         }
 
         private void UpdateCharacter(int playerTag, int x, int y, bool isLocal = false)
