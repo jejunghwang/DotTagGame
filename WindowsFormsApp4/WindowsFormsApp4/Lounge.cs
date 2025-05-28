@@ -80,14 +80,7 @@ namespace WindowsFormsApp4
 
             this.KeyUp += Lounge_KeyUp;
             this.DoubleBuffered = true;
-            /* userId = id;
-            client = tcp;
-            stream = network;
-            receiveThread = new Thread(ReceiveMessages);
-            receiveThread.IsBackground = true;
-            receiveThread.Start();*/
             this.Load += Lounge_Load;
-            //AppState.Connection.PacketReceived += OnPacketReceived;
             this.Shown += Lounge_Shown;
         }
 
@@ -318,19 +311,14 @@ namespace WindowsFormsApp4
             if (pressedKeys.Contains(Keys.A)) { dx = -1; frames = leftFrames; }
             if (pressedKeys.Contains(Keys.D)) { dx = 1; frames = rightFrames; }
 
-            //playerX += dx;
-            //playerY += dy;
-
             if (dx == 0 && dy == 0) return; // 눌린 키가 없으면 return
 
             var me = Players.players[AppState.CurrentUserId];
             me.Move(dx, dy);
+            SendPlayerPosition(me.X, me.Y);
             //me.SetPosition(me.X, me.Y);
 
             // UpdateCharacter(AppState.CurrentUserId, dx, dy, true);
-
-            //if (dx != 0 || dy != 0)
-            SendPlayerPosition(me.X, me.Y);
 
             //if (player.TryGetValue(AppState.CurrentUserId, out var pic))
             if (Players.players[AppState.CurrentUserId] != null)
@@ -354,6 +342,7 @@ namespace WindowsFormsApp4
                 {
                     Players.add_player(playerTag, playerId);
                     this.Controls.Add(Players.players[playerTag].Pbox);
+                    this.Controls.Add(Players.players[playerTag].NameLabel);
                 }
 
                 Players.players[playerTag].SetPosition(x, y);
@@ -439,11 +428,6 @@ namespace WindowsFormsApp4
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
-            //if (btn_ready.Text == "준비")
-            //{
-            //btn_ready.Text = "준비 완료";
-            //btn_ready.ForeColor = Color.Crimson;
-            //}
             if (Players.players[AppState.CurrentUserId].isReady)
             {
                 btn_ready.Text = "준비";

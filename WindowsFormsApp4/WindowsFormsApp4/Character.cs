@@ -25,6 +25,7 @@ namespace WindowsFormsApp4
         public int HP { get; set; }
         public int Speed { get; set; }
         public PictureBox Pbox { get; private set; }
+        public Label NameLabel { get; private set; }
         public bool isReady = false;
 
         public Character(string name, int x= 937, int y= 270, int hp=100, int speed=5)
@@ -43,19 +44,39 @@ namespace WindowsFormsApp4
                 Size = new Size(100, 100),
                 Location = new Point(X, Y)
             };
+
+            NameLabel = new Label
+            {
+                Text = name,
+                AutoSize = true,
+                Font = new Font("맑은 고딕", 9, FontStyle.Bold),
+                ForeColor = Color.Black,
+                BackColor = Color.Transparent,
+                Location = new Point(X, Y + Pbox.Height)  // Pbox 바로 아래
+            };
         }
 
         public void Move(int dx, int dy)
         {
             X += dx * Speed;
             Y += dy * Speed;
-            Pbox.Location = new Point(X, Y);
+            //Pbox.Location = new Point(X, Y);
+            UpdateControls();
         }
 
         public void SetPosition(int x, int y)
         {
             X = x; Y = y;
+            //Pbox.Location = new Point(X, Y);
+            UpdateControls();
+        }
+
+        private void UpdateControls()
+        {
             Pbox.Location = new Point(X, Y);
+            int labelX = X + (Pbox.Width - NameLabel.Width) / 2;
+            int labelY = Y + Pbox.Height;
+            NameLabel.Location = new Point(labelX, labelY);
         }
     }
 }
