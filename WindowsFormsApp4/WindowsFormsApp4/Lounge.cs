@@ -42,6 +42,10 @@ namespace WindowsFormsApp4
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
 
         private Panel overlayPanel;
+
+        // 처음 환영 패킷인지 체크
+        private bool isFirstWelcome = true;
+
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -121,12 +125,20 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.disconnect:
                     var disconnection = DisconnectPacket.FromBytes(body);
-                    this.Controls.Remove(Players.players[disconnection.playerTag].Pbox);
-                    Players.players[disconnection.playerTag].Pbox.Dispose();
-                    Players.players[disconnection.playerTag] = null;
-                    var name = Players.players[disconnection.playerTag].Name;
-                    AppendChatLog($"[시스템] { name }님이 퇴장하였습니다");
-                    break;
+                    var d = Players.players[disconnection.playerTag];
+                    if(d != null)
+                    {
+                        this.Controls.Remove(Players.players[disconnection.playerTag].Pbox);
+                        this.Controls.Remove(Players.players[disconnection.playerTag].NameLabel);
+                        this.Controls.Remove(Players.players[disconnection.playerTag].BubbleBox);
+                        Players.players[disconnection.playerTag].Pbox.Dispose();
+                        Players.players[disconnection.playerTag].NameLabel.Dispose();
+                        Players.players[disconnection.playerTag].BubbleBox.Dispose();
+                        Players.players[disconnection.playerTag] = null;
+                        AppendChatLog($"[시스템] {d.Name}님이 퇴장하였습니다");
+                    }
+                    break;                  
+                    
                 case PacketType.ready:
                     var ready = ReadyPacket.FromBytes(body);
                     var c = Players.players[ready.playerTag];
@@ -160,13 +172,14 @@ namespace WindowsFormsApp4
 
         private async void Lounge_Shown(object sender, EventArgs e)
         {
+            isFirstWelcome = true;   // 폼이 보일 때마다 초기 로드 모드로
+
             AppState.Connection.PacketReceived+=OnPacketReceived;
             var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
             this.ActiveControl = null; // 실행 시 캐릭터 안움직임 해결
             this.Focus();
-
         }
         private void Lounge_Load(object sender, EventArgs e)
         {
@@ -353,7 +366,8 @@ namespace WindowsFormsApp4
                     this.Controls.Add(Players.players[playerTag].NameLabel);
                     this.Controls.Add(Players.players[playerTag].BubbleBox);
 
-                    AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
+                    if (!isFirstWelcome)
+                        AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
                 }
 
                 Players.players[playerTag].SetPosition(x, y);
@@ -364,6 +378,8 @@ namespace WindowsFormsApp4
                     Players.players[playerTag].Pbox.Image = frames[frameIndex];
                 }
             }
+
+            isFirstWelcome = false;
         }
 
         private void UpdateCharacter(int playerTag, int x, int y, bool isLocal = false)
