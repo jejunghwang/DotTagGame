@@ -125,7 +125,7 @@ namespace Server
                                 break;
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
-                                Positions[mv.playerId] = (Positions[mv.playerId].x + mv.x, Positions[mv.playerId].y + mv.y);
+                                Positions[mv.playerId] = (mv.x, mv.y);
                                 Console.WriteLine($"[MOVE] {mv.playerId}: ({Positions[mv.playerId].x},{Positions[mv.playerId].y})");
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
