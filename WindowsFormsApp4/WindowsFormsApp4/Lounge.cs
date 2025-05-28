@@ -313,18 +313,24 @@ namespace WindowsFormsApp4
             int dx = 0, dy = 0;
             frames = downFrames; // 기본
 
-            if (pressedKeys.Contains(Keys.W)) { dy = -Players.players[AppState.CurrentUserId].Speed; frames = upFrames; }
-            if (pressedKeys.Contains(Keys.S)) { dy = Players.players[AppState.CurrentUserId].Speed; frames = downFrames; }
-            if (pressedKeys.Contains(Keys.A)) { dx = -Players.players[AppState.CurrentUserId].Speed; frames = leftFrames; }
-            if (pressedKeys.Contains(Keys.D)) { dx = Players.players[AppState.CurrentUserId].Speed; frames = rightFrames; }
+            if (pressedKeys.Contains(Keys.W)) { dy = -1; frames = upFrames; }
+            if (pressedKeys.Contains(Keys.S)) { dy = 1; frames = downFrames; }
+            if (pressedKeys.Contains(Keys.A)) { dx = -1; frames = leftFrames; }
+            if (pressedKeys.Contains(Keys.D)) { dx = 1; frames = rightFrames; }
 
             //playerX += dx;
             //playerY += dy;
 
-            UpdateCharacter(AppState.CurrentUserId, dx, dy, true);
+            if (dx == 0 && dy == 0) return; // 눌린 키가 없으면 return
 
-            if (dx != 0 || dy != 0)
-                SendPlayerPosition(dx, dy);
+            var me = Players.players[AppState.CurrentUserId];
+            me.Move(dx, dy);
+            //me.SetPosition(me.X, me.Y);
+
+            // UpdateCharacter(AppState.CurrentUserId, dx, dy, true);
+
+            //if (dx != 0 || dy != 0)
+            SendPlayerPosition(me.X, me.Y);
 
             //if (player.TryGetValue(AppState.CurrentUserId, out var pic))
             if (Players.players[AppState.CurrentUserId] != null)
@@ -349,8 +355,10 @@ namespace WindowsFormsApp4
                     Players.add_player(playerTag, playerId);
                     this.Controls.Add(Players.players[playerTag].Pbox);
                 }
-                
-                if(playerTag == AppState.CurrentUserId)
+
+                Players.players[playerTag].SetPosition(x, y);
+
+                if (playerTag == AppState.CurrentUserId)
                 {
                     frameIndex = (frameIndex + 1) % frames.Count;
                     Players.players[playerTag].Pbox.Image = frames[frameIndex];
@@ -386,17 +394,20 @@ namespace WindowsFormsApp4
             //else
             //{
                 //player[playerTag].Location = new Point(x, y);
-                Players.players[playerTag].Move(x, y);
+                // Players.players[playerTag].Move(x, y);
             //}
 
             if (isLocal)
             {
-                //var pic = player[playerTag];
+                /*//var pic = player[playerTag];
                 //frameIndex = (frameIndex + 1) % frames.Count;
                 //pic.Image = frames[frameIndex];
                 frameIndex = (frameIndex + 1) % frames.Count;
-                Players.players[playerTag].Pbox.Image = frames[frameIndex];
+                Players.players[playerTag].Pbox.Image = frames[frameIndex];*/
+                return;
             }
+
+            Players.players[playerTag].SetPosition(x, y);
         }
 
   
