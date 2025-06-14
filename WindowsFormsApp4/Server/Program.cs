@@ -166,6 +166,17 @@ namespace Server
 
                             case PacketType.disconnect:
                                 throw new Exception($"[{ip}] disconnected");
+
+                            case PacketType.characterSelect:
+                                var cs = CharacterSelectPacket.FromBytes(packet);
+                                Console.WriteLine($"[CHAR_SELECT] Tag={cs.playerTag} Index={cs.characterIndex}");
+
+                                byte[] toSend = new byte[4 + packet.Length];
+                                BitConverter.GetBytes(packet.Length).CopyTo(toSend, 0);
+                                packet.CopyTo(toSend, 4);
+
+                                await BroadCastAsync(toSend);
+                                break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
                                 break;

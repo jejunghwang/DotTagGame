@@ -22,7 +22,8 @@ namespace Packets
         welcomeResponse,
         ready,
         disconnect,
-        start
+        start,
+        characterSelect
     }
 
     public interface pHeader
@@ -395,5 +396,28 @@ public class StartPacket : pHeader
         BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
         buffer[4] = (byte)PacketType.start;
         return buffer;
+    }
+}
+
+public class CharacterSelectPacket
+{
+    public int playerTag;        // 누가 선택했는지
+    public int characterIndex;   // 1~4 중 어떤 캐릭터인지
+
+    public byte[] ToBytes()
+    {
+        var buf = new List<byte> { (byte)PacketType.characterSelect };
+        buf.AddRange(BitConverter.GetBytes(playerTag));
+        buf.AddRange(BitConverter.GetBytes(characterIndex));
+        return buf.ToArray();
+    }
+    public static CharacterSelectPacket FromBytes(byte[] data)
+    {
+        int tag   = BitConverter.ToInt32(data, 1);
+        int idx   = BitConverter.ToInt32(data, 5);
+        return new CharacterSelectPacket {
+            playerTag      = tag,
+            characterIndex = idx
+        };
     }
 }

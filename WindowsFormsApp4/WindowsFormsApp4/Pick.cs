@@ -13,6 +13,7 @@ namespace WindowsFormsApp4
     public partial class Pick : Form
     {
         private PictureBox[] pbs;
+        public int SelectedCharacter { get; private set; } = -1;
 
         public Pick()
         {
@@ -30,9 +31,40 @@ namespace WindowsFormsApp4
             label3.Text = "";
             label4.Text = "";
 
-            this.Resize += Pick_Resize;
+            // 각 PictureBox 클릭 시 인덱스 설정
+            pang1.Click += (s, e) => Highlight(1);
+            pang2.Click += (s, e) => Highlight(2);
+            pang3.Click += (s, e) => Highlight(3);
+            pang4.Click += (s, e) => Highlight(4);
 
-            Pick_Resize(this, EventArgs.Empty);
+            btn_pick.Click += (s, e) =>
+            {
+                if (SelectedCharacter < 0)
+                {
+                    MessageBox.Show("먼저 캐릭터를 선택해주세요");
+                    return;
+                }
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            };
+
+            // this.Resize += Pick_Resize;
+            // Pick_Resize(this, EventArgs.Empty);
+        }
+
+        private void Highlight(int idx)
+        {
+            SelectedCharacter = idx;
+            // (선택된 박스 테두리 강조 등 UI 처리)
+            foreach (var pb in new[] { pang1, pang2, pang3, pang4 })
+                pb.BorderStyle = BorderStyle.None;
+            switch (idx)
+            {
+                case 1: pang1.BorderStyle = BorderStyle.FixedSingle; break;
+                case 2: pang2.BorderStyle = BorderStyle.FixedSingle; break;
+                case 3: pang3.BorderStyle = BorderStyle.FixedSingle; break;
+                case 4: pang4.BorderStyle = BorderStyle.FixedSingle; break;
+            }
         }
 
         private void Pick_Resize(object sender, EventArgs e)

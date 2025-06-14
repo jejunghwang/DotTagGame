@@ -50,7 +50,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(102, 241);
+            this.label1.Location = new System.Drawing.Point(102, 254);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 18);
             this.label1.TabIndex = 5;
@@ -59,7 +59,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(274, 240);
+            this.label2.Location = new System.Drawing.Point(274, 253);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(54, 18);
             this.label2.TabIndex = 6;
@@ -68,7 +68,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(444, 240);
+            this.label3.Location = new System.Drawing.Point(444, 253);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 18);
             this.label3.TabIndex = 7;
@@ -77,7 +77,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(613, 241);
+            this.label4.Location = new System.Drawing.Point(613, 254);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(54, 18);
             this.label4.TabIndex = 8;
@@ -102,37 +102,45 @@
             // 
             // pang4
             // 
+            this.pang4.Image = global::WindowsFormsApp4.Properties.Resources.pang4_front_1;
             this.pang4.ImageRotate = 0F;
-            this.pang4.Location = new System.Drawing.Point(567, 72);
+            this.pang4.Location = new System.Drawing.Point(592, 135);
             this.pang4.Name = "pang4";
-            this.pang4.Size = new System.Drawing.Size(150, 150);
+            this.pang4.Size = new System.Drawing.Size(94, 100);
+            this.pang4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pang4.TabIndex = 3;
             this.pang4.TabStop = false;
             // 
             // pang3
             // 
+            this.pang3.Image = global::WindowsFormsApp4.Properties.Resources.pang3_front_1;
             this.pang3.ImageRotate = 0F;
-            this.pang3.Location = new System.Drawing.Point(398, 72);
+            this.pang3.Location = new System.Drawing.Point(421, 135);
             this.pang3.Name = "pang3";
-            this.pang3.Size = new System.Drawing.Size(150, 150);
+            this.pang3.Size = new System.Drawing.Size(100, 100);
+            this.pang3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pang3.TabIndex = 2;
             this.pang3.TabStop = false;
             // 
             // pang2
             // 
+            this.pang2.Image = global::WindowsFormsApp4.Properties.Resources.pang2_front_1;
             this.pang2.ImageRotate = 0F;
-            this.pang2.Location = new System.Drawing.Point(228, 72);
+            this.pang2.Location = new System.Drawing.Point(240, 135);
             this.pang2.Name = "pang2";
-            this.pang2.Size = new System.Drawing.Size(150, 150);
+            this.pang2.Size = new System.Drawing.Size(118, 100);
+            this.pang2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pang2.TabIndex = 1;
             this.pang2.TabStop = false;
             // 
             // pang1
             // 
+            this.pang1.Image = global::WindowsFormsApp4.Properties.Resources.pang1_front_1;
             this.pang1.ImageRotate = 0F;
-            this.pang1.Location = new System.Drawing.Point(57, 72);
+            this.pang1.Location = new System.Drawing.Point(78, 135);
             this.pang1.Name = "pang1";
-            this.pang1.Size = new System.Drawing.Size(150, 150);
+            this.pang1.Size = new System.Drawing.Size(100, 100);
+            this.pang1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pang1.TabIndex = 0;
             this.pang1.TabStop = false;
             // 
@@ -161,11 +169,11 @@
             // lbl_title
             // 
             this.lbl_title.AutoSize = true;
-            this.lbl_title.Font = new System.Drawing.Font("한컴산뜻돋움", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_title.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbl_title.Location = new System.Drawing.Point(272, 43);
+            this.lbl_title.Location = new System.Drawing.Point(283, 43);
             this.lbl_title.Name = "lbl_title";
-            this.lbl_title.Size = new System.Drawing.Size(252, 26);
+            this.lbl_title.Size = new System.Drawing.Size(207, 25);
             this.lbl_title.TabIndex = 10;
             this.lbl_title.Text = "!!! 캐릭터를 선택하세요 !!!";
             // 
