@@ -452,8 +452,12 @@ namespace WindowsFormsApp4
 
         private void Lounge_FormClosed(object sender, FormClosedEventArgs e)
         {
+            AppState.Connection.PacketReceived -= OnPacketReceived;
+
             byte[] disconnection = new DisconnectPacket { playerTag = AppState.CurrentUserId }.ToBytes();
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
+
+            AppState.Connection.Stream.Close();
         }
 
         private void btn_ready_Click(object sender, EventArgs e)
