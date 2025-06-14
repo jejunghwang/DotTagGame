@@ -43,7 +43,7 @@
             // 
             this.lbl_loading.AutoSize = false;
             this.lbl_loading.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_loading.Font = new System.Drawing.Font("한컴산뜻돋움", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_loading.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_loading.Location = new System.Drawing.Point(538, 298);
             this.lbl_loading.Name = "lbl_loading";
             this.lbl_loading.Size = new System.Drawing.Size(198, 31);
@@ -73,7 +73,6 @@
             // guna2Elipse1
             // 
             this.guna2Elipse1.BorderRadius = 50;
-            this.guna2Elipse1.TargetControl = this;
             // 
             // pang
             // 
@@ -95,7 +94,6 @@
             this.Controls.Add(this.lbl_count);
             this.Controls.Add(this.lbl_loading);
             this.Controls.Add(this.pang);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Loading";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lounge";

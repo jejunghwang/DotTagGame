@@ -32,6 +32,11 @@ namespace WindowsFormsApp4
 
         private readonly HashSet<int> walkableTiles = new HashSet<int> {-15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5};
 
+        private Label countdownLabel = new Label();
+        private Timer countdownTimer = new Timer();
+        private bool isCountdownRunning = true;
+        private int remainingSeconds;
+        private Point lockedScrollPosition;
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6},
@@ -92,7 +97,28 @@ namespace WindowsFormsApp4
             this.Shown += Map_Shown;
             LoadTileImage();
 
+            countdownLabel.Font = new Font("맑은 고딕", 48, FontStyle.Bold);
+            countdownLabel.ForeColor = Color.White;
+            countdownLabel.BackColor = Color.FromArgb(128, 0, 0, 0);
+            countdownLabel.TextAlign = ContentAlignment.MiddleCenter;
+            countdownLabel.Dock = DockStyle.None;
+            countdownLabel.AutoSize = false;
+            countdownLabel.Visible = false;
+            this.Controls.Add(countdownLabel);
+
+            this.Scroll += (s, e) => UpdateCountdownLabelPosition();
+            this.Resize += (s, e) => UpdateCountdownLabelPosition();
+
+            countdownTimer.Interval = 1000;
+            countdownTimer.Tick += CountdownTimer_Tick;
         }
+
+        private void UpdateCountdownLabelPosition()
+        {
+            countdownLabel.Location = new Point(0, 0);
+            countdownLabel.Size = this.ClientSize;
+        }
+
 
         private void LoadCharacterFrames()
         {
@@ -200,8 +226,61 @@ namespace WindowsFormsApp4
 
             animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
             animationTimer.Tick += AnimateCharacter;
-            animationTimer.Start();
+            animationTimer.Stop();
 
+            UpdateCameraPosition();
+
+            lockedScrollPosition = new Point(-AutoScrollPosition.X, -AutoScrollPosition.Y);
+            this.Scroll += Map_Scroll;
+            StartCountdown(3);
+        }
+
+        private void Map_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (isCountdownRunning)
+            {
+                // 잠금된 위치로 즉시 되돌림
+                this.AutoScrollPosition = lockedScrollPosition;
+            }
+            // 라벨이 Dock=Fill 이라도, 위치 재계산 하려면 호출
+            UpdateCountdownLabelPosition();
+        }
+
+
+        private void StartCountdown(int seconds)
+        {
+            remainingSeconds = seconds;
+            isCountdownRunning = true;
+            countdownLabel.Text = remainingSeconds.ToString();
+            countdownLabel.Visible = true;
+            UpdateCountdownLabelPosition();
+            remainingSeconds--;
+            countdownTimer.Start();
+        }
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            if (remainingSeconds > 0)
+            {
+                countdownLabel.Text = remainingSeconds.ToString();
+                remainingSeconds--;
+            }
+            else
+            {
+                countdownTimer.Stop();
+                countdownLabel.Text = "START!";
+                // START! 잠시 보여주고
+                Task.Delay(500).ContinueWith(_ =>
+                    this.Invoke((Action)(() =>
+                    {
+                        countdownLabel.Visible = false;
+                        isCountdownRunning = false;
+                        animationTimer.Start();
+                    }))
+                );
+            }
+
+            // 매 틱마다 화면 중앙에 갱신
+            UpdateCountdownLabelPosition();
         }
 
         private void DrawTransparentImage(Graphics g, Image image, Rectangle destRect, float alpha)
@@ -299,6 +378,9 @@ namespace WindowsFormsApp4
 
         private void AnimateCharacter(object sender, EventArgs e)
         {
+            if (isCountdownRunning)
+                return;
+
             if (pressedKeys.Count == 0) return;
 
             int dx = 0, dy = 0;
@@ -381,7 +463,7 @@ namespace WindowsFormsApp4
         private void AddOrUpdateCharacter(int playerId, int x, int y, bool isLocal = false)
         {
             if (InvokeRequired)
-            {
+            {  
                 BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, isLocal)));
                 return;
             }

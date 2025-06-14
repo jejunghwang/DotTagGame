@@ -79,7 +79,7 @@
             this.lbl_manual.AutoSize = true;
             this.lbl_manual.BackColor = System.Drawing.Color.Transparent;
             this.lbl_manual.Font = new System.Drawing.Font("휴먼매직체", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_manual.Location = new System.Drawing.Point(64, 363);
+            this.lbl_manual.Location = new System.Drawing.Point(54, 372);
             this.lbl_manual.Name = "lbl_manual";
             this.lbl_manual.Size = new System.Drawing.Size(0, 36);
             this.lbl_manual.TabIndex = 2;
