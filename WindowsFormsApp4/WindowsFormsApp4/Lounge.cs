@@ -31,12 +31,12 @@ namespace WindowsFormsApp4
         private int moveSpeed = 7;
 
         // 캐릭터 애니메이션 이미지 (방향별)
-        private List<Image> upFrames = new List<Image>();
+       /* private List<Image> upFrames = new List<Image>();
         private List<Image> downFrames = new List<Image>();
         private List<Image> leftFrames = new List<Image>();
         private List<Image> rightFrames = new List<Image>();
         private int frameIndex = 0;
-        private List<Image> frames;
+        private List<Image> frames;*/
 
         
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
@@ -160,12 +160,14 @@ namespace WindowsFormsApp4
                     };
                     game_start.ShowDialog();
                     break;
-
+                case PacketType.characterSelect:
+                    var sel = CharacterSelectPacket.FromBytes(body);
+                    Players.players[sel.playerTag]?.SetCharacter(sel.characterIndex);
+                    break;
                 default:
                     break;
             }
         }
-
 
         private async void Lounge_Shown(object sender, EventArgs e)
         {
@@ -195,8 +197,8 @@ namespace WindowsFormsApp4
                 //mainForm.Hide();      // MainForm 숨김
             }
 
-            LoadCharacterFrames();
-            frames = downFrames; // 기본 방향
+            //LoadCharacterFrames();
+            //frames = downFrames; // 기본 방향
             //UpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
 /*            var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
@@ -219,7 +221,7 @@ namespace WindowsFormsApp4
             //btn_start.Enabled = false;
         }
 
-        private void LoadCharacterFrames()
+ /*       private void LoadCharacterFrames()
         {
             upFrames.AddRange(new[] {
                 Properties.Resources.pang1_back_1, // front와 back 위치 바꿈
@@ -245,7 +247,7 @@ namespace WindowsFormsApp4
                 Properties.Resources.pang1_right_3,
                 Properties.Resources.pang1_right_4
             });
-        }
+        }*/
 
         // -------------------- 채팅 -----------------------
         private void SendMessage(string message)
@@ -329,12 +331,12 @@ namespace WindowsFormsApp4
             if (pressedKeys.Count == 0) return;
 
             int dx = 0, dy = 0;
-            frames = downFrames; // 기본
+            //frames = downFrames; // 기본
 
-            if (pressedKeys.Contains(Keys.W)) { dy = -1; frames = upFrames; }
-            if (pressedKeys.Contains(Keys.S)) { dy = 1; frames = downFrames; }
-            if (pressedKeys.Contains(Keys.A)) { dx = -1; frames = leftFrames; }
-            if (pressedKeys.Contains(Keys.D)) { dx = 1; frames = rightFrames; }
+            if (pressedKeys.Contains(Keys.W)) { dy = -1; }
+            if (pressedKeys.Contains(Keys.S)) { dy = 1; }
+            if (pressedKeys.Contains(Keys.A)) { dx = -1; }
+            if (pressedKeys.Contains(Keys.D)) { dx = 1; }
 
             if (dx == 0 && dy == 0) return; // 눌린 키가 없으면 return
 
@@ -346,11 +348,11 @@ namespace WindowsFormsApp4
             // UpdateCharacter(AppState.CurrentUserId, dx, dy, true);
 
             //if (player.TryGetValue(AppState.CurrentUserId, out var pic))
-            if (Players.players[AppState.CurrentUserId] != null)
+         /*   if (Players.players[AppState.CurrentUserId] != null)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
                 Players.players[AppState.CurrentUserId].Pbox.Image = frames[frameIndex];
-            }
+            }*/
         }
 
         private void AddCharacter(WelcomeResponsePacket packet)
@@ -367,7 +369,7 @@ namespace WindowsFormsApp4
 
                 if (isNew)
                 {
-                    Players.add_player(playerTag, playerId);
+                    Players.add_player(playerTag, playerId, 1);
                     this.Controls.Add(Players.players[playerTag].Pbox);
                     this.Controls.Add(Players.players[playerTag].NameLabel);
                     this.Controls.Add(Players.players[playerTag].BubbleBox);
@@ -377,11 +379,11 @@ namespace WindowsFormsApp4
 
                 Players.players[playerTag].SetPosition(x, y);
 
-                if (playerTag == AppState.CurrentUserId)
+               /* if (playerTag == AppState.CurrentUserId)
                 {
                     frameIndex = (frameIndex + 1) % frames.Count;
                     Players.players[playerTag].Pbox.Image = frames[frameIndex];
-                }
+                }*/
             }
         }
 
@@ -392,41 +394,48 @@ namespace WindowsFormsApp4
                 BeginInvoke((MethodInvoker)(() => UpdateCharacter(playerTag, x, y, isLocal)));
                 return;
             }
-
+            var ch = Players.players[playerTag];
+            if (ch == null)
+            {
+                Debug.WriteLine($"[UpdateCharacter] Unknown playerTag: {playerTag}");
+                return; // 널이면 무시
+            }
             //if (!player.ContainsKey(playerTag))
             //{
-                //var newPlayer = new Character(playerId);
-                //Players.add_player(playerTag, playerId);
-                /*
-                var pic = new PictureBox {
-                    Size = new Size(100, 100),
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Image = Properties.Resources.pang1_front_1,
-                    Location = new Point(x, y),
-                    BackColor = Color.Transparent
-                };
-                player[playerTag] = pic;
-                this.Controls.Add(pic);  
-                */
-                //this.Controls.Add(Players.players[playerTag].Pbox);
+            //var newPlayer = new Character(playerId);
+            //Players.add_player(playerTag, playerId);
+            /*
+            var pic = new PictureBox {
+                Size = new Size(100, 100),
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Image = Properties.Resources.pang1_front_1,
+                Location = new Point(x, y),
+                BackColor = Color.Transparent
+            };
+            player[playerTag] = pic;
+            this.Controls.Add(pic);  
+            */
+            //this.Controls.Add(Players.players[playerTag].Pbox);
             //}
             //else
             //{
-                //player[playerTag].Location = new Point(x, y);
-                // Players.players[playerTag].Move(x, y);
+            //player[playerTag].Location = new Point(x, y);
+            // Players.players[playerTag].Move(x, y);
             //}
 
             if (isLocal)
             {
+                ch.Move(x - ch.X, y - ch.Y);
                 /*//var pic = player[playerTag];
                 //frameIndex = (frameIndex + 1) % frames.Count;
                 //pic.Image = frames[frameIndex];
                 frameIndex = (frameIndex + 1) % frames.Count;
                 Players.players[playerTag].Pbox.Image = frames[frameIndex];*/
-                return;
+                //return;
             }
 
-            Players.players[playerTag].SetPosition(x, y);
+            //Players.players[playerTag].SetPosition(x, y);
+            ch.SetPosition(x, y);
         }
 
   
@@ -489,17 +498,53 @@ namespace WindowsFormsApp4
             }
         }
 
-        private void btn_select_Click(object sender, EventArgs e)
+        private async void btn_select_Click(object sender, EventArgs e)
         {
+            animationTimer.Stop();
+            pressedKeys.Clear();
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            Pick pick = new Pick();
+            /*Pick pick = new Pick();
             pick.Owner = this;
             pick.StartPosition = FormStartPosition.CenterParent;
-            pick.ShowDialog();
+            pick.ShowDialog();*/
+            using (var pick = new Pick())
+            {
+                pick.Owner = this;
+                pick.StartPosition = FormStartPosition.CenterParent;
+                if (pick.ShowDialog() == DialogResult.OK)
+                {
+                    int idx = pick.SelectedCharacter;
+                    // ① 서버로 전송
+                    var packet = new CharacterSelectPacket
+                    {
+                        playerTag = AppState.CurrentUserId,
+                        characterIndex = idx
+                    };
+                    //AppState.Connection.Stream.Write(packet.ToBytes(), 0, packet.ToBytes().Length);
+                    await AppState.Connection.Stream.WriteAsync(packet.ToBytes(), 0, packet.ToBytes().Length);
 
+                    // 로컬 즉시 반영
+                    ApplyCharacterSelection(AppState.CurrentUserId, idx);
+                }
+            }
             overlayPanel.Visible = false;
+            pressedKeys.Clear();
+            animationTimer.Start();
         }
+        public void ApplyCharacterSelection(int playerTag, int newIdx)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)(() => ApplyCharacterSelection(playerTag, newIdx)));
+                return;
+            }
+
+            var ch = Players.players[playerTag];
+            if (ch != null)
+                ch.SetCharacter(newIdx);
+        }
+
     }
 }

@@ -9,18 +9,20 @@ using Guna.UI2.WinForms;
 
 namespace WindowsFormsApp4
 {
+    public enum Direction { Up, Down, Right, Left }
     public static class Players
     {
         public static Character[] players = new Character[100];
         
-        public static void add_player(int playerTag, string name)
+        public static void add_player(int playerTag, string name, int charIdx)
         {
-            players[playerTag] = new Character(name, playerTag);
+            players[playerTag] = new Character(name, playerTag, charIdx);
         }
     }
     public class Character
     {
         public string Name { get; set; }
+        public int CharacterIndex { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int HP { get; set; }
@@ -31,10 +33,14 @@ namespace WindowsFormsApp4
         public PictureBox BubbleBox { get; private set; }
 
         public bool isReady = false;
+        private Dictionary<Direction, List<Image>> frames = new Dictionary<Direction, List<Image>>();
+        private int animIndex = 0;
+        private Direction dir = Direction.Down;
 
-        public Character(string name, int x= 937, int y= 270, int hp=100, int speed=5)
+        public Character(string name, int charIdx, int x= 937, int y= 270, int hp=100, int speed=5)
         {
             Name = name;
+            CharacterIndex = (charIdx >= 1 && charIdx <= 4) ? charIdx : 1;
             X = x;
             Y = y;
             HP = hp;
@@ -44,7 +50,7 @@ namespace WindowsFormsApp4
             Pbox = new PictureBox
             {
                 SizeMode = PictureBoxSizeMode.StretchImage,
-                Image = Properties.Resources.pang1_front_1,
+                //Image = Properties.Resources.pang1_front_1,
                 BackColor = Color.Transparent,
                 Size = new Size(100, 100),
                 Location = new Point(X, Y)
@@ -81,14 +87,23 @@ namespace WindowsFormsApp4
             };
 
             BubbleBox.Controls.Add(ReadyBubble);
+            LoadAllFrames();
+            Pbox.Image = frames[dir][0];
+            UpdateControls();
         }
 
         public void Move(int dx, int dy)
         {
+            if (dx < 0) dir = Direction.Left;
+            else if (dx > 0) dir = Direction.Right;
+            else if (dy < 0) dir = Direction.Up;
+            else if (dy > 0) dir = Direction.Down;
+
             X += dx * Speed;
             Y += dy * Speed;
             //Pbox.Location = new Point(X, Y);
             UpdateControls();
+            Animate();
         }
 
         public void SetPosition(int x, int y)
@@ -96,6 +111,7 @@ namespace WindowsFormsApp4
             X = x; Y = y;
             //Pbox.Location = new Point(X, Y);
             UpdateControls();
+            Animate();
         }
 
         private void UpdateControls()
@@ -118,6 +134,43 @@ namespace WindowsFormsApp4
               (BubbleBox.Width - ReadyBubble.Width) / 2,
               (BubbleBox.Height - ReadyBubble.Height) / 2
             );
+        }
+        public void SetCharacter(int newIdx)
+        {
+            CharacterIndex = newIdx;
+            LoadAllFrames();
+            dir = Direction.Down;
+            animIndex = 0;
+            Pbox.Image = frames[dir][animIndex];
+        }
+        private void LoadAllFrames()
+        {
+            frames.Clear();
+            var map = new Dictionary<Direction, string>
+            {
+                [Direction.Up] = "back",
+                [Direction.Down] = "front",
+                [Direction.Left] = "left",
+                [Direction.Right] = "right"
+            };
+            foreach (var kv in map)
+            {
+                var list = new List<Image>();
+                for (int i = 1; i <= 4; i++)
+                {
+                    string key = $"pang{CharacterIndex}_{kv.Value}_{i}";
+                    var img = Properties.Resources.ResourceManager.GetObject(key) as Image;
+                    if (img != null) list.Add(img);
+                }
+                frames[kv.Key] = list;
+            }
+        }
+        private void Animate()
+        {
+            var list = frames[dir];
+            if (list.Count == 0) return;
+            animIndex = (animIndex + 1) % list.Count;
+            Pbox.Image = list[animIndex];
         }
     }
 }

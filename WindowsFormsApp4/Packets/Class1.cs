@@ -399,17 +399,25 @@ public class StartPacket : pHeader
     }
 }
 
-public class CharacterSelectPacket
+public class CharacterSelectPacket : pHeader
 {
+    public PacketType Type => PacketType.characterSelect;
+    int packetLen = 9;
     public int playerTag;        // 누가 선택했는지
     public int characterIndex;   // 1~4 중 어떤 캐릭터인지
 
     public byte[] ToBytes()
     {
-        var buf = new List<byte> { (byte)PacketType.characterSelect };
+        byte[] buffer = new byte[4 + packetLen];
+        BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+        buffer[4] = (byte)Type;
+        BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+        BitConverter.GetBytes(characterIndex).CopyTo(buffer, 9);
+        return buffer;
+/*        var buf = new List<byte> { (byte)PacketType.characterSelect };
         buf.AddRange(BitConverter.GetBytes(playerTag));
         buf.AddRange(BitConverter.GetBytes(characterIndex));
-        return buf.ToArray();
+        return buf.ToArray();*/
     }
     public static CharacterSelectPacket FromBytes(byte[] data)
     {
