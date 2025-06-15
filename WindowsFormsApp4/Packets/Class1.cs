@@ -285,14 +285,14 @@ namespace Packets
     public class WelcomeResponsePacket : pHeader
     {
         public PacketType Type => PacketType.welcomeResponse;
-        public List<(string playerId, (int playerTag, int x, int y))> Entries { get; } = new List<(string, (int, int, int))>();
+        public List<(string playerId, (int playerTag, int x, int y, int characterIndex))> Entries { get; } = new List<(string, (int, int, int, int))>();
         public byte[] ToBytes()
         {
             int count = Entries.Count;
             List<int> idLen = new List<int>();
             for (int i = 0; i < Entries.Count; i++)
                 idLen.Add(Entries[i].Item1.Length);
-            int bodyLen = 1 + 4 + count * 16 + idLen.Sum();
+            int bodyLen = 1 + 4 + count * 20 + idLen.Sum();
             byte[] buffer = new byte[4 + bodyLen];
 
             BitConverter.GetBytes(bodyLen).CopyTo(buffer, 0);
@@ -300,7 +300,7 @@ namespace Packets
             BitConverter.GetBytes(count).CopyTo(buffer, 5);
 
             int offset = 9;
-            foreach (var (id, (tag, x, y)) in Entries)
+            foreach (var (id, (tag, x, y, charIdx)) in Entries)
             {
                 byte[] idBytes = Encoding.UTF8.GetBytes(id);
                 BitConverter.GetBytes(idBytes.Length).CopyTo(buffer, offset);
@@ -313,8 +313,8 @@ namespace Packets
                 offset += 4;
                 BitConverter.GetBytes(y).CopyTo(buffer, offset);
                 offset += 4;
-
-
+                BitConverter.GetBytes(charIdx).CopyTo(buffer, offset);
+                offset += 4;
             }
             return buffer;
         }
@@ -331,10 +331,15 @@ namespace Packets
                 string id = Encoding.UTF8.GetString(buffer, offset, idLen);
                 offset += idLen;
                 int tag = BitConverter.ToInt32(buffer, offset);
-                int x = BitConverter.ToInt32(buffer, offset + 4);
-                int y = BitConverter.ToInt32(buffer, offset + 8);
-                welcomePacket.Entries.Add((id, (tag, x, y)));
-                offset += 12;
+                offset += 4;
+                int x = BitConverter.ToInt32(buffer, offset);
+                offset += 4;
+                int y = BitConverter.ToInt32(buffer, offset);
+                offset += 4;
+                int charIdx = BitConverter.ToInt32(buffer, offset);
+                offset += 4;
+                welcomePacket.Entries.Add((id, (tag, x, y, charIdx)));
+                //offset += 16;
             }
             return welcomePacket;
         }
@@ -421,11 +426,9 @@ public class CharacterSelectPacket : pHeader
     }
     public static CharacterSelectPacket FromBytes(byte[] data)
     {
-        int tag   = BitConverter.ToInt32(data, 1);
-        int idx   = BitConverter.ToInt32(data, 5);
         return new CharacterSelectPacket {
-            playerTag      = tag,
-            characterIndex = idx
+            playerTag      = BitConverter.ToInt32(data, 1),
+            characterIndex = BitConverter.ToInt32(data, 5)
         };
     }
 }

@@ -16,7 +16,7 @@ namespace WindowsFormsApp4
         
         public static void add_player(int playerTag, string name, int charIdx)
         {
-            players[playerTag] = new Character(name, playerTag, charIdx);
+            players[playerTag] = new Character(name, charIdx);
         }
     }
     public class Character

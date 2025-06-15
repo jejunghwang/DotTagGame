@@ -25,7 +25,7 @@ namespace WindowsFormsApp4
         private int frameIndex = 0;
         private List<Image> frames;
         private Dictionary<int, Point> characterPositions = new Dictionary<int, Point>();
-
+        private Dictionary<int, int> characterIndices = new Dictionary<int, int>();
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
@@ -180,16 +180,17 @@ namespace WindowsFormsApp4
             {
                 case PacketType.welcomeResponse:
                     var welcome = WelcomeResponsePacket.FromBytes(body);
-                    foreach (var (id, (tag, px, py)) in welcome.Entries)
+                    foreach (var (id, (tag, px, py, charIdx)) in welcome.Entries)
                     {
-                        AddOrUpdateCharacter(tag, (int)px, (int)py, tag == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px, (int)py, charIdx, tag == AppState.CurrentUserId);
                     }
                     break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
                     if (mv.playerId != AppState.CurrentUserId)
                     {
-                        AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, mv.playerId == AppState.CurrentUserId);
+                        int charIdx = characterIndices.TryGetValue(mv.playerId, out var idx) ? idx : 1;
+                        AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, charIdx, mv.playerId == AppState.CurrentUserId);
                     }
                     break;
                 default:
@@ -361,16 +362,21 @@ namespace WindowsFormsApp4
                 float alpha = isOnTile3 ? 0.4f : 1.0f; // 투명도 설정
 
                 Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
+                Image spriteToDraw;
 
                 if (playerId == AppState.CurrentUserId && frames.Count > 0)
                 {
-                    DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
+                    // DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
+                    spriteToDraw = frames[frameIndex];
                 }
                 else
                 {
-                    DrawTransparentImage(e.Graphics, Properties.Resources.pang1_front_1, destRect, alpha);
+                    //DrawTransparentImage(e.Graphics, Properties.Resources.pang1_front_1, destRect, alpha);
+                    int ci = characterIndices.TryGetValue(playerId, out var idx) ? idx : 1;
+                    string key = $"pang{ci}_front_1";
+                    spriteToDraw = Properties.Resources.ResourceManager.GetObject(key) as Image ?? Properties.Resources.pang1_front_1;
                 }
-
+                DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
             }
         }
 
@@ -436,7 +442,9 @@ namespace WindowsFormsApp4
             playerX = nextX;
             playerY = nextY;
 
-            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
+            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
+
+            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, ci, true);
             SendPlayerPosition(playerX, playerY);
             UpdateCameraPosition();
             this.Invalidate();
@@ -460,18 +468,18 @@ namespace WindowsFormsApp4
 
             this.AutoScrollPosition = new Point(centerX, centerY);
         }
-        private void AddOrUpdateCharacter(int playerId, int x, int y, bool isLocal = false)
+        private void AddOrUpdateCharacter(int playerId, int x, int y, int charIdx, bool isLocal = false)
         {
             if (InvokeRequired)
             {  
-                BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, isLocal)));
+                BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, charIdx, isLocal)));
                 return;
             }
 
             // 월드 좌표 저장
             characterPositions[playerId] = new Point(x, y);
+            characterIndices[playerId] = charIdx;
 
-            
             if (isLocal)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;

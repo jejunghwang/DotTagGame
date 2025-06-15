@@ -363,21 +363,24 @@ namespace WindowsFormsApp4
                 return;
             }
 
-            foreach (var (playerId, (playerTag, x, y)) in packet.Entries)
+            foreach (var (playerId, (playerTag, x, y, charIdx)) in packet.Entries)
             {
                 bool isNew = (Players.players[playerTag] == null);
 
                 if (isNew)
                 {
-                    Players.add_player(playerTag, playerId, 1);
+                    Players.add_player(playerTag, playerId, charIdx);
                     this.Controls.Add(Players.players[playerTag].Pbox);
                     this.Controls.Add(Players.players[playerTag].NameLabel);
                     this.Controls.Add(Players.players[playerTag].BubbleBox);
                   
                     AppendChatLog($"[시스템] {Players.players[playerTag].Name}님이 입장하였습니다");
                 }
-
-                Players.players[playerTag].SetPosition(x, y);
+                else
+                {
+                    Players.players[playerTag].SetCharacter(charIdx);
+                }
+                    Players.players[playerTag].SetPosition(x, y);
 
                /* if (playerTag == AppState.CurrentUserId)
                 {

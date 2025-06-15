@@ -22,6 +22,7 @@ namespace Server
         private static ConcurrentDictionary<int, (int x, int y)> Positions = new ConcurrentDictionary<int, (int x, int y)>();
         private static bool[] readyStatus = new bool[100];
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
+        private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -61,6 +62,8 @@ namespace Server
                                 userId = loginRequest.id;
                                 SessionMap[userTag] = stream;
                                 TagToId[userTag] = userId;
+                                TagToCharIdx[userTag] = 1;
+
                                 buffer = new LoginResponsePacket
                                 {
                                     successLogin = true,
@@ -101,13 +104,13 @@ namespace Server
                                 foreach (var kv in Positions)
                                 {
                                     if (kv.Key == userTag) continue;
-                                    welcome.Entries.Add((TagToId[kv.Key], (kv.Key, kv.Value.x, kv.Value.y)));
+                                    welcome.Entries.Add((TagToId[kv.Key], (kv.Key, kv.Value.x, kv.Value.y, TagToCharIdx[kv.Key])));
                                 }
 
                                 int startX = 937, startY = 270;
                                 Positions[userTag] = (startX, startY);
 
-                                welcome.Entries.Add((userId, (userTag, startX, startY)));
+                                welcome.Entries.Add((userId, (userTag, startX, startY, TagToCharIdx[userTag])));
 
                                 Console.WriteLine($"[Server] Sending WelcomeResponse to user {userTag}, entries={welcome.Entries.Count}");
                                 //await stream.WriteAsync(welcome.ToBytes(), 0, welcome.ToBytes().Length);
@@ -169,6 +172,7 @@ namespace Server
 
                             case PacketType.characterSelect:
                                 var cs = CharacterSelectPacket.FromBytes(packet);
+                                TagToCharIdx[cs.playerTag] = cs.characterIndex;
                                 Console.WriteLine($"[CHAR_SELECT] Tag={cs.playerTag} Index={cs.characterIndex}");
 
                                 byte[] toSend = new byte[4 + packet.Length];
