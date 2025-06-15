@@ -172,5 +172,26 @@ namespace WindowsFormsApp4
             animIndex = (animIndex + 1) % list.Count;
             Pbox.Image = list[animIndex];
         }
+
+        // 원격에서 이동
+        public void MoveAbsolute(int newX, int newY)
+        {
+            int dx = newX - X;
+            int dy = newY - Y;
+
+            // 방향 갱신
+            if (dx < 0) dir = Direction.Left;
+            else if (dx > 0) dir = Direction.Right;
+            else if (dy < 0) dir = Direction.Up;
+            else if (dy > 0) dir = Direction.Down;
+
+            // 위치 갱신
+            X = newX;
+            Y = newY;
+
+            UpdateControls();
+            Animate();
+        }
+
     }
 }

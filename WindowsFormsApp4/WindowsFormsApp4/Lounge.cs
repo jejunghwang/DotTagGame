@@ -435,7 +435,11 @@ namespace WindowsFormsApp4
             }
 
             //Players.players[playerTag].SetPosition(x, y);
-            ch.SetPosition(x, y);
+            //ch.SetPosition(x, y);
+            else
+            {
+                ch.MoveAbsolute(x, y);
+            }
         }
 
   
