@@ -126,9 +126,9 @@
             // 
             this.pang2.Image = global::WindowsFormsApp4.Properties.Resources.pang2_front_1;
             this.pang2.ImageRotate = 0F;
-            this.pang2.Location = new System.Drawing.Point(240, 135);
+            this.pang2.Location = new System.Drawing.Point(243, 135);
             this.pang2.Name = "pang2";
-            this.pang2.Size = new System.Drawing.Size(118, 100);
+            this.pang2.Size = new System.Drawing.Size(109, 100);
             this.pang2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pang2.TabIndex = 1;
             this.pang2.TabStop = false;

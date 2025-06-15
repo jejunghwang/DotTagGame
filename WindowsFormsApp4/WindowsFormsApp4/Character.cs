@@ -9,7 +9,7 @@ using Guna.UI2.WinForms;
 
 namespace WindowsFormsApp4
 {
-    public enum Direction { Up, Down, Right, Left }
+    public enum Direction { up, down, right, left }
     public static class Players
     {
         public static Character[] players = new Character[100];
@@ -35,7 +35,7 @@ namespace WindowsFormsApp4
         public bool isReady = false;
         private Dictionary<Direction, List<Image>> frames = new Dictionary<Direction, List<Image>>();
         private int animIndex = 0;
-        private Direction dir = Direction.Down;
+        private Direction dir = Direction.down;
 
         public Character(string name, int charIdx, int x= 937, int y= 270, int hp=100, int speed=5)
         {
@@ -94,10 +94,10 @@ namespace WindowsFormsApp4
 
         public void Move(int dx, int dy)
         {
-            if (dx < 0) dir = Direction.Left;
-            else if (dx > 0) dir = Direction.Right;
-            else if (dy < 0) dir = Direction.Up;
-            else if (dy > 0) dir = Direction.Down;
+            if (dx < 0) dir = Direction.left;
+            else if (dx > 0) dir = Direction.right;
+            else if (dy < 0) dir = Direction.up;
+            else if (dy > 0) dir = Direction.down;
 
             X += dx * Speed;
             Y += dy * Speed;
@@ -139,7 +139,7 @@ namespace WindowsFormsApp4
         {
             CharacterIndex = newIdx;
             LoadAllFrames();
-            dir = Direction.Down;
+            dir = Direction.down;
             animIndex = 0;
             Pbox.Image = frames[dir][animIndex];
         }
@@ -148,10 +148,10 @@ namespace WindowsFormsApp4
             frames.Clear();
             var map = new Dictionary<Direction, string>
             {
-                [Direction.Up] = "back",
-                [Direction.Down] = "front",
-                [Direction.Left] = "left",
-                [Direction.Right] = "right"
+                [Direction.up] = "back",
+                [Direction.down] = "front",
+                [Direction.left] = "left",
+                [Direction.right] = "right"
             };
             foreach (var kv in map)
             {
@@ -180,10 +180,10 @@ namespace WindowsFormsApp4
             int dy = newY - Y;
 
             // 방향 갱신
-            if (dx < 0) dir = Direction.Left;
-            else if (dx > 0) dir = Direction.Right;
-            else if (dy < 0) dir = Direction.Up;
-            else if (dy > 0) dir = Direction.Down;
+            if (dx < 0) dir = Direction.left;
+            else if (dx > 0) dir = Direction.right;
+            else if (dy < 0) dir = Direction.up;
+            else if (dy > 0) dir = Direction.down;
 
             // 위치 갱신
             X = newX;
