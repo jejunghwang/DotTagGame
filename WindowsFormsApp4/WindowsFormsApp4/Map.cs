@@ -120,9 +120,9 @@ namespace WindowsFormsApp4
         }
 
 
-        private void LoadCharacterFrames()
+        private void LoadCharacterFrames(int charIdx)
         {
-            upFrames.AddRange(new[] {
+            /*upFrames.AddRange(new[] {
                 Properties.Resources.pang1_back_1, // front와 back 위치 바꿈
                 Properties.Resources.pang1_back_2,
                 Properties.Resources.pang1_back_3,
@@ -145,7 +145,36 @@ namespace WindowsFormsApp4
                 Properties.Resources.pang1_right_2,
                 Properties.Resources.pang1_right_3,
                 Properties.Resources.pang1_right_4
-            });
+            });*/
+            upFrames.Clear(); downFrames.Clear();
+            leftFrames.Clear(); rightFrames.Clear();
+
+            // keyMap: Direction → 리소스 suffix
+            var map = new Dictionary<Direction, string>
+            {
+                [Direction.up] = "back",
+                [Direction.down] = "front",
+                [Direction.left] = "left",
+                [Direction.right] = "right"
+            };
+
+            foreach (var kv in map)
+            {
+                for (int i = 1; i <= 4; i++)
+                {
+                    string key = $"pang{charIdx}_{kv.Value}_{i}";
+                    var img = Properties.Resources.ResourceManager.GetObject(key) as Image;
+                    if (img == null) continue;
+
+                    switch (kv.Key)
+                    {
+                        case Direction.up: upFrames.Add(img); break;
+                        case Direction.down: downFrames.Add(img); break;
+                        case Direction.left: leftFrames.Add(img); break;
+                        case Direction.right: rightFrames.Add(img); break;
+                    }
+                }
+            }
         }
 
         private void LoadTileImage()
@@ -183,6 +212,12 @@ namespace WindowsFormsApp4
                     foreach (var (id, (tag, px, py, charIdx)) in welcome.Entries)
                     {
                         AddOrUpdateCharacter(tag, (int)px, (int)py, charIdx, tag == AppState.CurrentUserId);
+                    }
+                    if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
+                    {
+                        LoadCharacterFrames(myCi);
+                        frames = downFrames;
+                        frameIndex = 0;
                     }
                     break;
                 case PacketType.move:
@@ -222,7 +257,8 @@ namespace WindowsFormsApp4
         }
         private void Map_Load(object sender, EventArgs e)
         {
-            LoadCharacterFrames();
+            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
+            LoadCharacterFrames(ci);
             frames = downFrames; // 기본 방향
 
             animationTimer.Interval = 16; // 밀리초 단위: 100ms마다 프레임 변경
