@@ -325,9 +325,6 @@
     <None Include="Resources\pang3_right_3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\pang3_right_4.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\pang4_back_1.png" />
   </ItemGroup>
   <ItemGroup>
@@ -485,6 +482,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\bubble.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pang3_back_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pang3_right_4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
