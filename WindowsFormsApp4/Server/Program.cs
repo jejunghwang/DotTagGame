@@ -332,7 +332,7 @@ namespace Server
                 int x2, y2;
                 (x2, y2) = position.Value;
                 if (playerTag == position.Key) continue;
-                if (charSize > Math.Abs(x2 - x1) + Math.Abs(y2 - y1))
+                if (charSize > Math.Abs((x2 + charSize / 2) - (x1 + charSize / 2)) + Math.Abs((y2 + charSize / 2) - (y1 + charSize / 2)));
                 {
                     Console.WriteLine($"[{playerTag}] Collision {position.Key}");
                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = position.Key }.ToBytes());
