@@ -489,5 +489,17 @@
   <ItemGroup>
     <None Include="Resources\pang3_right_4.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tagger_front.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tagger_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tagger_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tagger_back.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
