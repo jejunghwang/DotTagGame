@@ -31,9 +31,11 @@ namespace WindowsFormsApp4
         public Label NameLabel { get; private set; }
         public Label ReadyBubble { get; private set; }
         public PictureBox BubbleBox { get; private set; }
+        public bool isTagger = false;
 
         public bool isReady = false;
         private Dictionary<Direction, List<Image>> frames = new Dictionary<Direction, List<Image>>();
+        private Dictionary<Direction, List<Image>> tagger_frames = new Dictionary<Direction, List<Image>>();
         private int animIndex = 0;
         private Direction dir = Direction.down;
 
