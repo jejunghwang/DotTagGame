@@ -90,6 +90,7 @@ namespace WindowsFormsApp4
 
             BubbleBox.Controls.Add(ReadyBubble);
             LoadAllFrames();
+            LoadTaggerFrames();
             Pbox.Image = frames[dir][0];
             UpdateControls();
         }
@@ -167,9 +168,30 @@ namespace WindowsFormsApp4
                 frames[kv.Key] = list;
             }
         }
+        private void LoadTaggerFrames()
+        {
+            tagger_frames.Clear();
+            var map = new Dictionary<Direction, string>
+            {
+                [Direction.up] = "tagger_back",
+                [Direction.down] = "tagger_front",
+                [Direction.left] = "tagger_left",
+                [Direction.right] = "tagger_right"
+            };
+            foreach (var kv in map)
+            {
+                var list = new List<Image>();
+                string key = kv.Value;
+                if (Properties.Resources.ResourceManager.GetObject(key) is Image img)
+                    list.Add(img);
+                tagger_frames[kv.Key] = list;
+            }
+        }
+
         private void Animate()
         {
-            var list = frames[dir];
+            var dict = isTagger ? tagger_frames : frames;
+            var list = dict[dir];
             if (list.Count == 0) return;
             animIndex = (animIndex + 1) % list.Count;
             Pbox.Image = list[animIndex];
