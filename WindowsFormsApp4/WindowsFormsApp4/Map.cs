@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static CharacterSelectPacket;
 
 namespace WindowsFormsApp4
 {
@@ -227,6 +228,17 @@ namespace WindowsFormsApp4
                         int charIdx = characterIndices.TryGetValue(mv.playerId, out var idx) ? idx : 1;
                         AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, charIdx, mv.playerId == AppState.CurrentUserId);
                     }
+                    break;
+                case PacketType.changeTagger:
+                    var packet = ChangeTaggerPacket.FromBytes(body);
+                    foreach(var player in Players.players)
+                    {
+                        if (player.isTagger)
+                        {
+                            player.isTagger = false;
+                        }
+                    }
+                    Players.players[packet.playerTag].isTagger = true;
                     break;
                 default:
                     break;
