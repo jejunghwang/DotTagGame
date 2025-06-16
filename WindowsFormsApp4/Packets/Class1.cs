@@ -23,7 +23,8 @@ namespace Packets
         ready,
         disconnect,
         start,
-        characterSelect
+        characterSelect,
+        changeTagger
     }
 
     public interface pHeader
@@ -430,5 +431,27 @@ public class CharacterSelectPacket : pHeader
             playerTag      = BitConverter.ToInt32(data, 1),
             characterIndex = BitConverter.ToInt32(data, 5)
         };
+    }
+
+    public class ChangeTaggerPacket : pHeader
+    {
+        public PacketType Type => PacketType.changeTagger;
+        int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+
+            return buffer;
+        }
+
+        public static ChangeTaggerPacket FromBytes(byte[] buffer)
+        {
+            return new ChangeTaggerPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
+        }
     }
 }
