@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -537,6 +538,22 @@ namespace WindowsFormsApp4
             this.Invalidate();
         }
 
+        private async void Hp_handling_Tick(object sender, EventArgs e)
+        {
+            for(int i=0; i<Players.players.Length; i++)
+            {
+                var player = Players.players[i];
+                if (player != null && player.isTagger)
+                {
+                    player.HP--;
+                    if(player.HP == 0)
+                    {
+                        byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
+                        await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                }
+            }
+        }
 
         private void SendPlayerPosition(int x, int y)
         {

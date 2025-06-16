@@ -24,7 +24,8 @@ namespace Packets
         disconnect,
         start,
         characterSelect,
-        changeTagger
+        changeTagger,
+        death
     }
 
     public interface pHeader
@@ -452,6 +453,28 @@ public class CharacterSelectPacket : pHeader
         public static ChangeTaggerPacket FromBytes(byte[] buffer)
         {
             return new ChangeTaggerPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
+        }
+    }
+
+    public class DeathPacket : pHeader
+    {
+        public PacketType Type => PacketType.death;
+        int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+
+            return buffer;
+        }
+
+        public static DeathPacket FromBytes(byte[] buffer)
+        {
+            return new DeathPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
         }
     }
 }
