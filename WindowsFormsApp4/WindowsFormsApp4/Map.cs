@@ -233,7 +233,7 @@ namespace WindowsFormsApp4
                     var packet = ChangeTaggerPacket.FromBytes(body);
                     foreach(var player in Players.players)
                     {
-                        if (player.isTagger)
+                        if (player != null && player.isTagger)
                         {
                             player.isTagger = false;
                         }
