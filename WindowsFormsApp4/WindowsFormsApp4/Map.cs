@@ -327,6 +327,7 @@ namespace WindowsFormsApp4
                         animationTimer.Start();
                     }))
                 );
+                hp_handling.Enabled = true;
             }
 
             // 매 틱마다 화면 중앙에 갱신
