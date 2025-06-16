@@ -538,7 +538,7 @@ namespace WindowsFormsApp4
             this.Invalidate();
         }
 
-        private async void Hp_handling_Tick(object sender, EventArgs e)
+        private async void hp_handling_Tick(object sender, EventArgs e)
         {
             for(int i=0; i<Players.players.Length; i++)
             {
