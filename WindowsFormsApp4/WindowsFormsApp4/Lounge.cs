@@ -145,8 +145,13 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.start:
                     foreach (var player in Players.players)
+                    {
                         if(player != null)
+                        {
                             player.isReady = false;
+                            player.BubbleBox.Visible = false;
+                        }
+                    }
 
                     btn_ready.Text = "준비";
                     btn_ready.ForeColor = Color.White;
