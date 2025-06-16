@@ -195,6 +195,10 @@ namespace Server
 
                                 await BroadCastAsync(toSend);
                                 break;
+                            case PacketType.death:
+                                var death_packet = DeathPacket.FromBytes(packet);
+                                Console.WriteLine($"[DEATH]: {death_packet.playerTag}");
+                                break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
                                 break;
