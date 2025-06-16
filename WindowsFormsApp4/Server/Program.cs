@@ -3,12 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Packets;
+using static CharacterSelectPacket;
 
 namespace Server
 {
@@ -16,6 +19,8 @@ namespace Server
     {
         private const int MaxUsr = 100;
         private int curUserNum = 0;
+        private static int charSize = 32;
+        private static int curTagger = 0;
         private static ConcurrentDictionary<string, int> IpToUserTag = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedTag = new bool[MaxUsr];
@@ -23,6 +28,7 @@ namespace Server
         private static bool[] readyStatus = new bool[100];
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
         private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
+        
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -132,6 +138,8 @@ namespace Server
                                 Console.WriteLine($"[MOVE] {mv.playerId}: ({Positions[mv.playerId].x},{Positions[mv.playerId].y})");
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
+                                if(curTagger == mv.playerId)
+                                    await CheckCollision(mv.playerId);
                                 break;
 
                             case PacketType.chat:
@@ -164,6 +172,12 @@ namespace Server
                                     }
                                     
                                     await BroadCastAsync(new StartPacket().ToBytes());
+                                    Random rand = new Random();
+                                    do
+                                    {
+                                        curTagger = rand.Next(0, 100);
+                                    } while(!UsedTag[curTagger]);
+                                    await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                 }
                                 break;
 
@@ -309,6 +323,23 @@ namespace Server
             }
         }
 
+        private static async Task CheckCollision(int playerTag)
+        {
+            int x1, y1;
+            (x1, y1) = Positions[playerTag];
+            foreach (var position in Positions)
+            {
+                int x2, y2;
+                (x2, y2) = position.Value;
+                if (playerTag == position.Key) continue;
+                if (charSize > Math.Abs(x2 - x1) + Math.Abs(y2 - y1))
+                {
+                    Console.WriteLine($"[{playerTag}] Collision {position.Key}");
+                    await BroadCastAsync(new ChangeTaggerPacket { playerTag = position.Key }.ToBytes());
+                    curTagger = position.Key;
+                }
+            }
+        }
 
     }
 }
