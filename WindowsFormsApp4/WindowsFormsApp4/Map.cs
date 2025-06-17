@@ -81,6 +81,11 @@ namespace WindowsFormsApp4
         private int tileSize = 32;
         int characterSize = 32; // 캐릭터 크기
 
+        private int[,] bushZones; 
+        private int nextZoneId = 1;
+
+        private List<Point> itemPositions = new List<Point>(); // 아이템 위치
+        private Image itemImage = Properties.Resources.item;   // 아이템 이미지
         public Map()
         {
             InitializeComponent();
@@ -122,6 +127,7 @@ namespace WindowsFormsApp4
             taggerSprites[Direction.down] = Properties.Resources.tagger_front;
             taggerSprites[Direction.left] = Properties.Resources.tagger_left;
             taggerSprites[Direction.right] = Properties.Resources.tagger_right;
+            AssignBushZones();
         }
 
         private void UpdateCountdownLabelPosition()
@@ -201,6 +207,56 @@ namespace WindowsFormsApp4
 
         }
 
+        private void AssignBushZones()
+        {
+            int rows = map.GetLength(0);
+            int cols = map.GetLength(1);
+            bushZones = new int[rows, cols];
+            bool[,] visited = new bool[rows, cols];
+
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < cols; x++)
+                {
+                    if (map[y, x] == 3 && !visited[y, x])
+                    {
+                        MarkZone(x, y, nextZoneId++, visited);
+                    }
+                }
+            }
+        }
+
+        private void MarkZone(int startX, int startY, int zoneId, bool[,] visited)
+        {
+            Queue<Point> queue = new Queue<Point>();
+            queue.Enqueue(new Point(startX, startY));
+            visited[startY, startX] = true;
+            bushZones[startY, startX] = zoneId;
+
+            int[] dx = { -1, 1, 0, 0 };
+            int[] dy = { 0, 0, -1, 1 };
+
+            while (queue.Count > 0)
+            {
+                var p = queue.Dequeue();
+                for (int i = 0; i < 4; i++)
+                {
+                    int nx = p.X + dx[i];
+                    int ny = p.Y + dy[i];
+
+                    if (nx >= 0 && ny >= 0 && nx < map.GetLength(1) && ny < map.GetLength(0))
+                    {
+                        if (map[ny, nx] == 3 && !visited[ny, nx])
+                        {
+                            visited[ny, nx] = true;
+                            bushZones[ny, nx] = zoneId;
+                            queue.Enqueue(new Point(nx, ny));
+                        }
+                    }
+                }
+            }
+        }
+
         private void OnPacketReceived(byte[] body)
         {
             if (InvokeRequired)
@@ -261,6 +317,28 @@ namespace WindowsFormsApp4
                         hasInitialCountdownRun = true;
                     }
                     this.Invalidate();
+                    break;
+                case PacketType.itemSpawn: // 아이템은 서버에서 생성
+                    var spawn = ItemSpawnPacket.FromBytes(body);
+                    itemPositions.Add(new Point(spawn.x, spawn.y));
+                    this.Invalidate();
+                    break;
+
+                case PacketType.itemPickUp:
+                    var pickup = ItemPickupPacket.FromBytes(body);
+                    itemPositions.RemoveAll(p => p.X == pickup.x && p.Y == pickup.y);
+                    this.Invalidate();
+                    break;
+                case PacketType.itemEffect:
+                    var effect = ItemEffectPacket.FromBytes(body);
+                    if (effect.playerId == AppState.CurrentUserId)
+                    {
+                        // 효과 추가
+                    }
+                    else
+                    {
+                        // 효과 추가
+                    }
                     break;
                 default:
                     break;
@@ -429,33 +507,96 @@ namespace WindowsFormsApp4
                 int tileCol = centerX / tileSize;
                 int tileRow = centerY / tileSize;
 
-                bool isOnTile3 = (tileRow >= 0 && tileRow < map.GetLength(0) &&
-                                  tileCol >= 0 && tileCol < map.GetLength(1) &&
-                                  map[tileRow, tileCol] == 3);
-
-                float alpha = isOnTile3 ? 0.4f : 1.0f; // 투명도 설정
-
-                Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
-                Image spriteToDraw;
-
-                if (playerId == currentTaggerId)
+                // 상대 캐릭터의 숲 zone ID
+                int targetZone = 0;
+                if (tileRow >= 0 && tileRow < map.GetLength(0) &&
+                    tileCol >= 0 && tileCol < map.GetLength(1))
                 {
-                    var dir = characterDirections.TryGetValue(playerId, out var d) ? d : Direction.down;
-                    spriteToDraw = taggerSprites[dir];
+                    targetZone = bushZones[tileRow, tileCol];
                 }
-                else if (playerId == AppState.CurrentUserId && frames.Count > 0)
+
+                // 현재 플레이어의 숲 zone ID
+                int myZone = 0;
+                if (characterPositions.TryGetValue(AppState.CurrentUserId, out var mePos))
                 {
-                    // DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
-                    spriteToDraw = frames[frameIndex];
+                    int meCol = (mePos.X + characterSize / 2) / tileSize;
+                    int meRow = (mePos.Y + characterSize / 2) / tileSize;
+
+                    if (meRow >= 0 && meRow < map.GetLength(0) &&
+                        meCol >= 0 && meCol < map.GetLength(1))
+                    {
+                        myZone = bushZones[meRow, meCol];
+                    }
                 }
-                else
+
+                bool isInBush = targetZone > 0;
+                bool meInBush = myZone > 0;
+
+                bool shouldDraw = true;
+                float alpha = 1.0f;
+
+                if (isInBush)
                 {
-                    //DrawTransparentImage(e.Graphics, Properties.Resources.pang1_front_1, destRect, alpha);
-                    int ci = characterIndices.TryGetValue(playerId, out var idx) ? idx : 1;
-                    string key = $"pang{ci}_front_1";
-                    spriteToDraw = Properties.Resources.ResourceManager.GetObject(key) as Image ?? Properties.Resources.pang1_front_1;
+                    if (meInBush && myZone == targetZone)
+                    {
+                        alpha = 0.4f; // 같은 풀숲 zone일 경우 반투명
+                    }
+                    else
+                    {
+                        shouldDraw = false; // 다른 zone 또는 숲 밖이면 안 보임
+                    }
                 }
-                DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
+
+                if (shouldDraw)
+                {
+                    Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
+                    Image spriteToDraw;
+
+                    if (playerId == currentTaggerId)
+                    {
+                        var dir = characterDirections.TryGetValue(playerId, out var d) ? d : Direction.down;
+                        spriteToDraw = taggerSprites[dir];
+                    }
+                    else if (playerId == AppState.CurrentUserId && frames.Count > 0)
+                    {
+                        // DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
+                        spriteToDraw = frames[frameIndex];
+                    }
+                    // 원격
+                    else
+                    {
+                        string prefix;
+                        if (playerId == currentTaggerId)
+                            prefix = "tagger";
+                        else
+                        {
+                            int ci = characterIndices.TryGetValue(playerId, out var idx) ? idx : 1;
+                            prefix = $"pang{ci}";
+                        }
+                        var dir = characterDirections.TryGetValue(playerId, out var d) ? d : Direction.down;
+                        string suffix;
+                        switch (dir)
+                        {
+                            case Direction.up: suffix = "back"; break;
+                            case Direction.down: suffix = "front"; break;
+                            case Direction.left: suffix = "left"; break;
+                            case Direction.right: suffix = "right"; break;
+                            default: suffix = "front"; break;
+                        }
+                        string key = $"{prefix}_{suffix}_1";
+                        spriteToDraw = Properties.Resources.ResourceManager.GetObject(key) as Image ?? Properties.Resources.pang1_front_1;
+                    }
+
+                    DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
+                }
+            }
+            // 아이템 맵에 추가
+            foreach (var itemPos in itemPositions)
+            {
+                int drawX = itemPos.X + offset.X;
+                int drawY = itemPos.Y + offset.Y;
+                Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
+                e.Graphics.DrawImage(itemImage, itemRect);
             }
         }
 
