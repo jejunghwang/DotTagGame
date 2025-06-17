@@ -177,6 +177,7 @@ namespace Server
                                     {
                                         curTagger = rand.Next(0, 100);
                                     } while(!UsedTag[curTagger]);
+                                    Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                 }
                                 break;

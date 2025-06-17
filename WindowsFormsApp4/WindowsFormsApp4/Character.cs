@@ -146,6 +146,18 @@ namespace WindowsFormsApp4
             animIndex = 0;
             Pbox.Image = frames[dir][animIndex];
         }
+
+        public void SetTagger(bool tagger)
+        {
+            isTagger = tagger;
+            animIndex = 0; 
+            dir = Direction.down;  
+                                 
+            Pbox.Image = (isTagger
+                ? tagger_frames[dir][0]
+                : frames[dir][0]);
+        }
+
         private void LoadAllFrames()
         {
             frames.Clear();

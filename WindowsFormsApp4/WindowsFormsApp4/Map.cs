@@ -26,6 +26,7 @@ namespace WindowsFormsApp4
         private List<Image> rightFrames = new List<Image>();
         private int frameIndex = 0;
         private List<Image> frames;
+        private string initialTaggerName = "unknown";
         private Dictionary<int, Point> characterPositions = new Dictionary<int, Point>();
         private Dictionary<int, int> characterIndices = new Dictionary<int, int>();
 
@@ -36,7 +37,7 @@ namespace WindowsFormsApp4
 
         private Label countdownLabel = new Label();
         private Timer countdownTimer = new Timer();
-        private bool isCountdownRunning = true;
+        private bool isCountdownRunning = false;
         private int remainingSeconds;
         private Point lockedScrollPosition;
 
@@ -221,6 +222,7 @@ namespace WindowsFormsApp4
                         frames = downFrames;
                         frameIndex = 0;
                     }
+
                     break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
@@ -232,14 +234,19 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.changeTagger:
                     var packet = ChangeTaggerPacket.FromBytes(body);
-                    foreach(var player in Players.players)
+                    /*foreach(var player in Players.players)
                     {
                         if (player != null && player.isTagger)
                         {
                             player.isTagger = false;
                         }
-                    }
+                    }*/
+                    foreach (var p in Players.players.Where(p => p != null && p.isTagger))
+                        p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
+                    initialTaggerName = Players.players[packet.playerTag].Name;
+                    if (!isCountdownRunning)
+                        StartCountdown(5);
                     break;
                 default:
                     break;
@@ -252,6 +259,9 @@ namespace WindowsFormsApp4
             var req = new WelcomeRequestPacket();
             var buf = req.ToBytes();
             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
+
+            var readyPkt = new ReadyPacket { playerTag = AppState.CurrentUserId };
+            await AppState.Connection.Stream.WriteAsync(readyPkt.ToBytes(), 0, readyPkt.ToBytes().Length);
         }
 
         private void Map_KeyDown(object sender, KeyEventArgs e)
@@ -282,7 +292,7 @@ namespace WindowsFormsApp4
 
             lockedScrollPosition = new Point(-AutoScrollPosition.X, -AutoScrollPosition.Y);
             this.Scroll += Map_Scroll;
-            StartCountdown(3);
+            //StartCountdown(5);
         }
 
         private void Map_Scroll(object sender, ScrollEventArgs e)
@@ -301,7 +311,7 @@ namespace WindowsFormsApp4
         {
             remainingSeconds = seconds;
             isCountdownRunning = true;
-            countdownLabel.Text = remainingSeconds.ToString();
+            countdownLabel.Text = $"술래: {initialTaggerName}\n{remainingSeconds}";
             countdownLabel.Visible = true;
             UpdateCountdownLabelPosition();
             remainingSeconds--;
@@ -311,13 +321,13 @@ namespace WindowsFormsApp4
         {
             if (remainingSeconds > 0)
             {
-                countdownLabel.Text = remainingSeconds.ToString();
+                countdownLabel.Text = $"술래: {initialTaggerName}\n{remainingSeconds}";
                 remainingSeconds--;
             }
             else
             {
                 countdownTimer.Stop();
-                countdownLabel.Text = "START!";
+                countdownLabel.Text = $"술래: {initialTaggerName}\nSTART!";
                 // START! 잠시 보여주고
                 Task.Delay(500).ContinueWith(_ =>
                     this.Invoke((Action)(() =>
