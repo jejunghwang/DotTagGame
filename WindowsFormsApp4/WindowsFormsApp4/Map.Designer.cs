@@ -40,12 +40,13 @@
             // 
             // Map
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(881, 496);
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.ClientSize = new System.Drawing.Size(1259, 744);
+            this.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
             this.Name = "Map";
             this.Text = "Map";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Map_FormClosed);
             this.Load += new System.EventHandler(this.Map_Load);
             this.ResumeLayout(false);
 
