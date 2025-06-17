@@ -27,9 +27,11 @@ namespace WindowsFormsApp4
         private int frameIndex = 0;
         private List<Image> frames;
         private string initialTaggerName = "unknown";
+        private int currentTaggerId = -1;
         private Dictionary<int, Point> characterPositions = new Dictionary<int, Point>();
         private Dictionary<int, int> characterIndices = new Dictionary<int, int>();
-
+        private Dictionary<int, Direction> characterDirections = new Dictionary<int, Direction>();
+        private Dictionary<Direction, Image> taggerSprites = new Dictionary<Direction, Image>();
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
 
@@ -115,6 +117,11 @@ namespace WindowsFormsApp4
 
             countdownTimer.Interval = 1000;
             countdownTimer.Tick += CountdownTimer_Tick;
+
+            taggerSprites[Direction.up] = Properties.Resources.tagger_back;
+            taggerSprites[Direction.down] = Properties.Resources.tagger_front;
+            taggerSprites[Direction.left] = Properties.Resources.tagger_left;
+            taggerSprites[Direction.right] = Properties.Resources.tagger_right;
         }
 
         private void UpdateCountdownLabelPosition()
@@ -235,6 +242,7 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.changeTagger:
                     var packet = ChangeTaggerPacket.FromBytes(body);
+                    currentTaggerId = packet.playerTag;
                     /*foreach(var player in Players.players)
                     {
                         if (player != null && player.isTagger)
@@ -251,7 +259,8 @@ namespace WindowsFormsApp4
                     {
                         StartCountdown(5);
                         hasInitialCountdownRun = true;
-                    }  
+                    }
+                    this.Invalidate();
                     break;
                 default:
                     break;
@@ -429,7 +438,12 @@ namespace WindowsFormsApp4
                 Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
                 Image spriteToDraw;
 
-                if (playerId == AppState.CurrentUserId && frames.Count > 0)
+                if (playerId == currentTaggerId)
+                {
+                    var dir = characterDirections.TryGetValue(playerId, out var d) ? d : Direction.down;
+                    spriteToDraw = taggerSprites[dir];
+                }
+                else if (playerId == AppState.CurrentUserId && frames.Count > 0)
                 {
                     // DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
                     spriteToDraw = frames[frameIndex];
@@ -539,6 +553,26 @@ namespace WindowsFormsApp4
             {  
                 BeginInvoke((MethodInvoker)(() => AddOrUpdateCharacter(playerId, x, y, charIdx, isLocal)));
                 return;
+            }
+
+            // 이전 위치가 있으면 방향 계산해서 저장
+            if (characterPositions.TryGetValue(playerId, out var oldPos))
+            {
+                int dx = x - oldPos.X;
+                int dy = y - oldPos.Y;
+
+                Direction dir = Direction.down;
+                if (dx < 0) dir = Direction.left;
+                else if (dx > 0) dir = Direction.right;
+                else if (dy < 0) dir = Direction.up;
+                else if (dy > 0) dir = Direction.down;
+
+                characterDirections[playerId] = dir;
+            }
+            else if (!characterDirections.ContainsKey(playerId))
+            {
+                // 첫 등장인 경우 기본 방향 세팅
+                characterDirections[playerId] = Direction.down;
             }
 
             // 월드 좌표 저장
