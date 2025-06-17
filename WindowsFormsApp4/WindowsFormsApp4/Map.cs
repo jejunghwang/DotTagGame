@@ -38,6 +38,7 @@ namespace WindowsFormsApp4
         private Label countdownLabel = new Label();
         private Timer countdownTimer = new Timer();
         private bool isCountdownRunning = false;
+        private bool hasInitialCountdownRun = false;
         private int remainingSeconds;
         private Point lockedScrollPosition;
 
@@ -244,9 +245,13 @@ namespace WindowsFormsApp4
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
+
                     initialTaggerName = Players.players[packet.playerTag].Name;
-                    if (!isCountdownRunning)
+                    if (!isCountdownRunning && !hasInitialCountdownRun)
+                    {
                         StartCountdown(5);
+                        hasInitialCountdownRun = true;
+                    }  
                     break;
                 default:
                     break;
