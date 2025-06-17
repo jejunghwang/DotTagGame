@@ -25,9 +25,14 @@ namespace Packets
         start,
         characterSelect,
         changeTagger,
-        death
+        death,
+        itemSpawn,
+        itemRemove,
+        itemPickUp,
+        itemEffect
     }
-
+    
+    public enum ItemType { }
     public interface pHeader
     {
         PacketType Type { get; }
@@ -475,6 +480,125 @@ public class CharacterSelectPacket : pHeader
         public static DeathPacket FromBytes(byte[] buffer)
         {
             return new DeathPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
+        }
+    }
+    public class ItemSpawnPacket : pHeader
+    {
+        public PacketType Type => PacketType.itemSpawn;
+        public int packetLen = 13;
+        public int ItemId;
+        public int x, y;
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(ItemId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(x).CopyTo(buffer, 9);
+            BitConverter.GetBytes(y).CopyTo(buffer, 13);
+
+            return buffer;
+        }
+
+
+        public static ItemSpawnPacket FromBytes(byte[] buffer)
+        {
+            return new ItemSpawnPacket
+            {
+                ItemId = BitConverter.ToInt32(buffer, 1),
+                x = BitConverter.ToInt32(buffer, 5),
+                y = BitConverter.ToInt32(buffer, 9)
+            };
+        }
+    }
+    public class ItemRemovePacket : pHeader
+    {
+        public PacketType Type => PacketType.itemRemove;
+        public int packetLen = 5;
+        public int ItemId;
+        public byte[] ToBytes()
+        {
+
+            byte[] buffer = new byte[4 + packetLen];
+
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(ItemId).CopyTo(buffer, 5);
+
+            return buffer;
+        }
+
+        public static ItemRemovePacket FromBytes(byte[] buffer)
+        {
+            return new ItemRemovePacket
+            {
+                ItemId = BitConverter.ToInt32(buffer, 1)
+            };
+        }
+    }
+
+    public class ItemPickupPacket : pHeader
+    {
+        public PacketType Type => PacketType.itemPickUp;
+
+        public int playerId;
+        public int x, y;
+
+        public byte[] ToBytes()
+        {
+            int packetLen = 13;
+            byte[] buffer = new byte[4 + packetLen];
+
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(x).CopyTo(buffer, 9);
+            BitConverter.GetBytes(y).CopyTo(buffer, 13);
+
+            return buffer;
+        }
+
+        public static ItemPickupPacket FromBytes(byte[] buffer)
+        {
+            return new ItemPickupPacket
+            {
+                playerId = BitConverter.ToInt32(buffer, 1),
+                x = BitConverter.ToInt32(buffer, 5),
+                y = BitConverter.ToInt32(buffer, 9)
+            };
+        }
+    }
+
+    public class ItemEffectPacket : pHeader
+    {
+        public PacketType Type => PacketType.itemEffect;
+        public int packetLen = 17;
+        public int playerId;
+        public ItemType effectType;
+        public int x, y;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[packetLen + 4];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            BitConverter.GetBytes((int)effectType).CopyTo(buffer, 9);
+            BitConverter.GetBytes(x).CopyTo(buffer, 13);
+            BitConverter.GetBytes(y).CopyTo(buffer, 17);
+            return buffer;
+        }
+
+        public static ItemEffectPacket FromBytes(byte[] buffer)
+        {
+            return new ItemEffectPacket
+            {
+                playerId = BitConverter.ToInt32(buffer, 1),
+                effectType = (ItemType)BitConverter.ToInt32(buffer, 5),
+                x = BitConverter.ToInt32(buffer, 9),
+                y = BitConverter.ToInt32(buffer, 13)
+            };
         }
     }
 }
