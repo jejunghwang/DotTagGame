@@ -448,11 +448,28 @@ namespace WindowsFormsApp4
                     // DrawTransparentImage(e.Graphics, frames[frameIndex], destRect, alpha);
                     spriteToDraw = frames[frameIndex];
                 }
+                // 원격
                 else
                 {
-                    //DrawTransparentImage(e.Graphics, Properties.Resources.pang1_front_1, destRect, alpha);
-                    int ci = characterIndices.TryGetValue(playerId, out var idx) ? idx : 1;
-                    string key = $"pang{ci}_front_1";
+                    string prefix;
+                    if (playerId == currentTaggerId)
+                        prefix = "tagger";
+                    else
+                    {
+                        int ci = characterIndices.TryGetValue(playerId, out var idx) ? idx : 1;
+                        prefix = $"pang{ci}";        
+                    }
+                    var dir = characterDirections.TryGetValue(playerId, out var d) ? d : Direction.down;
+                    string suffix;
+                    switch (dir)
+                    {
+                        case Direction.up: suffix = "back"; break;
+                        case Direction.down: suffix = "front"; break;
+                        case Direction.left: suffix = "left"; break;
+                        case Direction.right: suffix = "right"; break;
+                        default: suffix = "front"; break;
+                    }
+                    string key = $"{prefix}_{suffix}_1";
                     spriteToDraw = Properties.Resources.ResourceManager.GetObject(key) as Image ?? Properties.Resources.pang1_front_1;
                 }
                 DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);

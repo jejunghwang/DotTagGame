@@ -150,7 +150,8 @@ namespace WindowsFormsApp4
         public void SetTagger(bool tagger)
         {
             isTagger = tagger;
-            animIndex = 0; 
+            animIndex = 0;
+            LoadTaggerFrames();
             dir = Direction.down;  
                                  
             Pbox.Image = (isTagger
