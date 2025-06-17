@@ -83,6 +83,9 @@ namespace WindowsFormsApp4
 
         private int[,] bushZones; 
         private int nextZoneId = 1;
+
+        private List<Point> itemPositions = new List<Point>(); // 아이템 위치
+        private Image itemImage = Properties.Resources.item;   // 아이템 이미지
         public Map()
         {
             InitializeComponent();
@@ -314,6 +317,28 @@ namespace WindowsFormsApp4
                         hasInitialCountdownRun = true;
                     }
                     this.Invalidate();
+                    break;
+                case PacketType.itemSpawn: // 아이템은 서버에서 생성
+                    var spawn = ItemSpawnPacket.FromBytes(body);
+                    itemPositions.Add(new Point(spawn.x, spawn.y));
+                    this.Invalidate();
+                    break;
+
+                case PacketType.itemPickUp:
+                    var pickup = ItemPickupPacket.FromBytes(body);
+                    itemPositions.RemoveAll(p => p.X == pickup.x && p.Y == pickup.y);
+                    this.Invalidate();
+                    break;
+                case PacketType.itemEffect:
+                    var effect = ItemEffectPacket.FromBytes(body);
+                    if (effect.playerId == AppState.CurrentUserId)
+                    {
+                        // 효과 추가
+                    }
+                    else
+                    {
+                        // 효과 추가
+                    }
                     break;
                 default:
                     break;
@@ -564,6 +589,14 @@ namespace WindowsFormsApp4
 
                     DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
                 }
+            }
+            // 아이템 맵에 추가
+            foreach (var itemPos in itemPositions)
+            {
+                int drawX = itemPos.X + offset.X;
+                int drawY = itemPos.Y + offset.Y;
+                Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
+                e.Graphics.DrawImage(itemImage, itemRect);
             }
         }
 

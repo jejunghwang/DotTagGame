@@ -501,5 +501,8 @@
   <ItemGroup>
     <None Include="Resources\tagger_back.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\master.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
