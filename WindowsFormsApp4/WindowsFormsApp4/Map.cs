@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Media;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,8 @@ namespace WindowsFormsApp4
         private Dictionary<Direction, Image> taggerSprites = new Dictionary<Direction, Image>();
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
+        private SoundPlayer countDownBgm;
+        private SoundPlayer gameBgmPlayer;
 
         private readonly HashSet<int> walkableTiles = new HashSet<int> {-16,-15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5};
 
@@ -128,6 +131,9 @@ namespace WindowsFormsApp4
             taggerSprites[Direction.left] = Properties.Resources.tagger_left;
             taggerSprites[Direction.right] = Properties.Resources.tagger_right;
             AssignBushZones();
+
+            countDownBgm = new SoundPlayer(Properties.Resources.count_down);
+            gameBgmPlayer = new SoundPlayer(Properties.Resources.map_bgm);
         }
 
         private void UpdateCountdownLabelPosition()
@@ -403,6 +409,7 @@ namespace WindowsFormsApp4
         {
             remainingSeconds = seconds;
             isCountdownRunning = true;
+            countDownBgm.PlayLooping();
             countdownLabel.Text = $"술래: {initialTaggerName}\n{remainingSeconds}";
             countdownLabel.Visible = true;
             UpdateCountdownLabelPosition();
@@ -419,6 +426,10 @@ namespace WindowsFormsApp4
             else
             {
                 countdownTimer.Stop();
+
+                countDownBgm.Stop();
+                gameBgmPlayer.PlayLooping();
+
                 countdownLabel.Text = $"술래: {initialTaggerName}\nSTART!";
                 // START! 잠시 보여주고
                 Task.Delay(500).ContinueWith(_ =>
@@ -744,6 +755,11 @@ namespace WindowsFormsApp4
                     }
                 }
             }
+        }
+
+        private void Map_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            gameBgmPlayer.Stop();
         }
 
         private void SendPlayerPosition(int x, int y)

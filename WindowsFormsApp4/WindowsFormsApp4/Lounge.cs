@@ -43,6 +43,10 @@ namespace WindowsFormsApp4
 
         private Panel overlayPanel;
 
+        private System.Media.SoundPlayer loungeBgmPlayer;
+        private System.Media.SoundPlayer buttonSoundPlayer;
+        private bool isBgmPlaying = false;
+
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -144,6 +148,7 @@ namespace WindowsFormsApp4
                     c.SetPosition(c.X, c.Y);
                     break;
                 case PacketType.start:
+                    loungeBgmPlayer?.Stop();
                     foreach (var player in Players.players)
                     {
                         if(player != null)
@@ -202,12 +207,16 @@ namespace WindowsFormsApp4
                 //mainForm.Hide();      // MainForm 숨김
             }
 
+            loungeBgmPlayer = new System.Media.SoundPlayer(Properties.Resources.lounge_bgm);
+            loungeBgmPlayer.PlayLooping();
+            isBgmPlaying = true;
+
             //LoadCharacterFrames();
             //frames = downFrames; // 기본 방향
             //UpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-/*            var req = new WelcomeRequestPacket();
-            var buf = req.ToBytes();
-            AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
+            /*            var req = new WelcomeRequestPacket();
+                        var buf = req.ToBytes();
+                        AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
 
@@ -479,10 +488,16 @@ namespace WindowsFormsApp4
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
 
             AppState.Connection.Stream.Close();
+
+            loungeBgmPlayer?.Stop();
         }
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
+            loungeBgmPlayer?.Stop();
+            isBgmPlaying = false;
+            PlayButtonSound();
+
             if (Players.players[AppState.CurrentUserId].isReady)
             {
                 btn_ready.Text = "준비";
@@ -512,15 +527,15 @@ namespace WindowsFormsApp4
 
         private async void btn_select_Click(object sender, EventArgs e)
         {
+            loungeBgmPlayer?.Stop();
+            isBgmPlaying = false;
+            PlayButtonSound();
+
             animationTimer.Stop();
             pressedKeys.Clear();
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            /*Pick pick = new Pick();
-            pick.Owner = this;
-            pick.StartPosition = FormStartPosition.CenterParent;
-            pick.ShowDialog();*/
             using (var pick = new Pick())
             {
                 pick.Owner = this;
@@ -544,7 +559,11 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = false;
             pressedKeys.Clear();
             animationTimer.Start();
+
+            loungeBgmPlayer?.PlayLooping();
+            isBgmPlaying = true;
         }
+
         public void ApplyCharacterSelection(int playerTag, int newIdx)
         {
             if (InvokeRequired)
@@ -556,6 +575,20 @@ namespace WindowsFormsApp4
             var ch = Players.players[playerTag];
             if (ch != null)
                 ch.SetCharacter(newIdx);
+        }
+
+        private async void PlayButtonSound()
+        {
+            var stream = new MemoryStream();
+            Properties.Resources.buttonClick.CopyTo(stream);
+            stream.Position = 0;
+
+            var clickSound = new System.Media.SoundPlayer(stream);
+            clickSound.Play();
+
+            await Task.Delay(500);
+
+            stream.Dispose();
         }
 
     }

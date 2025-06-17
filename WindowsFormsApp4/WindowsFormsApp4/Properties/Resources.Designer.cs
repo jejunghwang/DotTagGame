@@ -169,6 +169,15 @@ namespace WindowsFormsApp4.Properties {
         }
         
         /// <summary>
+        ///   System.IO.MemoryStream과(와) 유사한 System.IO.UnmanagedMemoryStream 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream count_down {
+            get {
+                return ResourceManager.GetStream("count_down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
         internal static System.Drawing.Bitmap deco {
@@ -219,6 +228,15 @@ namespace WindowsFormsApp4.Properties {
         }
         
         /// <summary>
+        ///   System.IO.MemoryStream과(와) 유사한 System.IO.UnmanagedMemoryStream 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream lounge_bgm {
+            get {
+                return ResourceManager.GetStream("lounge_bgm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
         internal static System.Drawing.Bitmap lounge1 {
@@ -235,6 +253,15 @@ namespace WindowsFormsApp4.Properties {
             get {
                 object obj = ResourceManager.GetObject("manual", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.IO.MemoryStream과(와) 유사한 System.IO.UnmanagedMemoryStream 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream map_bgm {
+            get {
+                return ResourceManager.GetStream("map_bgm", resourceCulture);
             }
         }
         

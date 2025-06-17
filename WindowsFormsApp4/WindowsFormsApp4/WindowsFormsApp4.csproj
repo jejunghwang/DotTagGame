@@ -504,5 +504,14 @@
   <ItemGroup>
     <None Include="Resources\master.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lounge_bgm.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\count_down.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\map_bgm.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
