@@ -109,6 +109,8 @@ namespace WindowsFormsApp4
             Animate();
         }
 
+
+
         public void SetPosition(int x, int y)
         {
             X = x; Y = y;

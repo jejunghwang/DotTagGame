@@ -16,8 +16,6 @@ namespace WindowsFormsApp4
 {
     public partial class Map : Form
     {
-        private int playerX = 937, playerY = 270;
-        private int moveSpeed = 5;
 
         // 캐릭터 애니메이션 이미지 (방향별)
         private List<Image> upFrames = new List<Image>();
@@ -90,7 +88,8 @@ namespace WindowsFormsApp4
         {
             InitializeComponent();
             init();
-
+            Players.players[AppState.CurrentUserId].X = 937;
+            Players.players[AppState.CurrentUserId].Y = 270;
         }
         private void init()
         {
@@ -278,7 +277,12 @@ namespace WindowsFormsApp4
                     var welcome = WelcomeResponsePacket.FromBytes(body);
                     foreach (var (id, (tag, px, py, charIdx)) in welcome.Entries)
                     {
-                        AddOrUpdateCharacter(tag, (int)px, (int)py, charIdx, tag == AppState.CurrentUserId);
+                        int temp = (int)py;
+                        if (px == 937 && py == 270)
+                        {
+                            temp += tag * 50;
+                        }
+                        AddOrUpdateCharacter(tag, (int)px, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
                     {
@@ -340,6 +344,9 @@ namespace WindowsFormsApp4
                         // 효과 추가
                     }
                     break;
+                case PacketType.death:
+                    //var die = DeathPacket.FromBytes(body);
+                    //Players.players[die.playerTag].X = 
                 default:
                     break;
             }
@@ -600,37 +607,28 @@ namespace WindowsFormsApp4
             }
         }
 
-       
+
 
         private void AnimateCharacter(object sender, EventArgs e)
         {
-            if (isCountdownRunning)
-                return;
-
             if (pressedKeys.Count == 0) return;
 
-            int dx = 0, dy = 0;
-            frames = downFrames; // 기본 방향
+            int dirX = 0, dirY = 0;
+            if (pressedKeys.Contains(Keys.W)) dirY = -1;
+            if (pressedKeys.Contains(Keys.S)) dirY = +1;
+            if (pressedKeys.Contains(Keys.A)) dirX = -1;
+            if (pressedKeys.Contains(Keys.D)) dirX = +1;
+            if (dirX == 0 && dirY == 0) return;
 
-            // 방향별 속도 및 애니메이션 프레임 설정
-            if (pressedKeys.Contains(Keys.W)) { dy -= moveSpeed; frames = upFrames; }
-            if (pressedKeys.Contains(Keys.S)) { dy += moveSpeed; frames = downFrames; }
-            if (pressedKeys.Contains(Keys.A)) { dx -= moveSpeed; frames = leftFrames; }
-            if (pressedKeys.Contains(Keys.D)) { dx += moveSpeed; frames = rightFrames; }
+            var me = Players.players[AppState.CurrentUserId];
+            if (me == null) return;
+            int speed = me.Speed;
 
-            // 대각선 이동 시 속도 보정
-            if (dx != 0 && dy != 0)
-            {
-                double factor = 1 / Math.Sqrt(2);
-                dx = (int)(dx * factor);
-                dy = (int)(dy * factor);
-            }
-            // 충돌 감지
-            int nextX = playerX + dx;
-            int nextY = playerY + dy;
+            int nextX = me.X + dirX * speed;
+            int nextY = me.Y + dirY * speed;
 
-            int hitboxMargin = 6; // 캐릭터 이미지 여유 공간
-            Rectangle hitbox = new Rectangle(
+            int hitboxMargin = 6;
+            var hitbox = new Rectangle(
                 nextX + hitboxMargin,
                 nextY + hitboxMargin,
                 tileSize - 2 * hitboxMargin,
@@ -638,46 +636,43 @@ namespace WindowsFormsApp4
             );
 
             bool canMove = true;
-            for (int y = hitbox.Top / tileSize; y <= hitbox.Bottom / tileSize; y++)
+            for (int ty = hitbox.Top / tileSize; ty <= hitbox.Bottom / tileSize; ty++)
             {
-                for (int x = hitbox.Left / tileSize; x <= hitbox.Right / tileSize; x++)
+                for (int tx = hitbox.Left / tileSize; tx <= hitbox.Right / tileSize; tx++)
                 {
-                    if (y < 0 || y >= map.GetLength(0) || x < 0 || x >= map.GetLength(1))
+                    if (ty < 0 || ty >= map.GetLength(0) || tx < 0 || tx >= map.GetLength(1))
                     {
                         canMove = false;
                         break;
                     }
-
-                    if (!walkableTiles.Contains(map[y, x]))
+                    if (!walkableTiles.Contains(map[ty, tx]))
                     {
                         canMove = false;
                         break;
                     }
                 }
+                if (!canMove) break;
             }
-            if (!canMove)
-                return;
 
-            // 이동 허용
-            playerX = nextX;
-            playerY = nextY;
-
-            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
-
-            AddOrUpdateCharacter(AppState.CurrentUserId, playerX, playerY, ci, true);
-            SendPlayerPosition(playerX, playerY);
-            UpdateCameraPosition();
-            this.Invalidate();
-
-            frameIndex = (frameIndex + 1) % frames.Count;
-
+            if (canMove)
+            {
+                me.SetPosition(nextX, nextY);
+                int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
+                AddOrUpdateCharacter(AppState.CurrentUserId, me.X, me.Y, ci, true);
+                SendPlayerPosition(me.X, me.Y);    
+                UpdateCameraPosition();             
+                frameIndex = (frameIndex + 1) % frames.Count;
+                Invalidate();             
+            }
         }
+
 
         // 카메라(스크롤) 위치를 캐릭터 중심으로 업데이트
         private void UpdateCameraPosition()
         {
-            int centerX = playerX - this.ClientSize.Width / 2 / tileSize * tileSize;
-            int centerY = playerY - this.ClientSize.Height / 2 / tileSize * tileSize;
+            var me = Players.players[AppState.CurrentUserId];
+            int centerX = me.X - this.ClientSize.Width / 2 / tileSize * tileSize;
+            int centerY = me.Y - this.ClientSize.Height / 2 / tileSize * tileSize;
 
             // 맵 경계 체크
             int maxScrollX = (map.GetLength(1) * tileSize) - this.ClientSize.Width;
