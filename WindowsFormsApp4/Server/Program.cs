@@ -209,9 +209,14 @@ namespace Server
                                 await BroadCastAsync(toSend);
                                 break;
                             case PacketType.death:
-                                var death_packet = DeathPacket.FromBytes(packet);
-                                Console.WriteLine($"[DEATH]: {death_packet.playerTag}");
-                                await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+                                var ddp = DeathPacket.FromBytes(packet);
+                                Console.WriteLine($"[DEATH]: {ddp.playerTag}");
+                                byte[] wBuf = new byte[4 + packet.Length];
+                                BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
+                                packet.CopyTo(wBuf, 4);
+                                await BroadCastAsync(wBuf);
+                                break;
+
 
                                 break;
                             case PacketType.itemRemove:
