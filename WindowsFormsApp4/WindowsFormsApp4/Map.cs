@@ -35,8 +35,10 @@ namespace WindowsFormsApp4
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
         private SoundPlayer countDownBgm;
         private SoundPlayer gameBgmPlayer;
+        private HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
+        private HashSet<(int, int)> boxes = new HashSet<(int, int)>();
 
-        private readonly HashSet<int> walkableTiles = new HashSet<int> {-16,-15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5};
+        private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
 
         private Label countdownLabel = new Label();
         private Timer countdownTimer = new Timer();
@@ -678,6 +680,20 @@ namespace WindowsFormsApp4
             if (pressedKeys.Contains(Keys.D)) dirX = +1;
             if (dirX == 0 && dirY == 0) return;
 
+            Direction dir = Direction.down;
+            if (dirX < 0) dir = Direction.left;
+            else if (dirX > 0) dir = Direction.right;
+            else if (dirY < 0) dir = Direction.up;
+            else if (dirY > 0) dir = Direction.down;
+
+            switch (dir)
+            {
+                case Direction.up: frames = upFrames; break;
+                case Direction.down: frames = downFrames; break;
+                case Direction.left: frames = leftFrames; break;
+                case Direction.right: frames = rightFrames; break;
+            }
+
             var me = Players.players[AppState.CurrentUserId];
             if (me == null) return;
             int speed = me.Speed;
@@ -773,10 +789,10 @@ namespace WindowsFormsApp4
             characterPositions[playerId] = new Point(x, y);
             characterIndices[playerId] = charIdx;
 
-            if (isLocal)
+            /*if (isLocal)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
-            }
+            }*/
 
             
             this.Invalidate();
@@ -816,7 +832,21 @@ namespace WindowsFormsApp4
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
 
-        
+        private bool sqawnItem(int x, int y)
+        {
+            if (canPlaceTile.Contains(map[y, x]) && !boxes.Contains((x,y)))
+            {
+                PictureBox box = new PictureBox();
 
+                return true;
+            }
+
+            return false;
+        }
+
+        private void spawn_timer_Tick(object sender, EventArgs e)
+        {
+
+        }
     }
 }
