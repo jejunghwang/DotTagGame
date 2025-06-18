@@ -33,7 +33,6 @@ namespace Packets
         usingCurseItem
     }
     
-    public enum ItemType { }
     public interface pHeader
     {
         PacketType Type { get; }
@@ -601,7 +600,7 @@ public class CharacterSelectPacket : pHeader
         public PacketType Type => PacketType.itemEffect;
         public int packetLen = 17;
         public int playerId;
-        public ItemType effectType;
+        public int effectType;
         public int x, y;
 
         public byte[] ToBytes()
@@ -610,7 +609,7 @@ public class CharacterSelectPacket : pHeader
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
             BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
-            BitConverter.GetBytes((int)effectType).CopyTo(buffer, 9);
+            BitConverter.GetBytes(effectType).CopyTo(buffer, 9);
             BitConverter.GetBytes(x).CopyTo(buffer, 13);
             BitConverter.GetBytes(y).CopyTo(buffer, 17);
             return buffer;
@@ -621,7 +620,7 @@ public class CharacterSelectPacket : pHeader
             return new ItemEffectPacket
             {
                 playerId = BitConverter.ToInt32(buffer, 1),
-                effectType = (ItemType)BitConverter.ToInt32(buffer, 5),
+                effectType = (int)BitConverter.ToInt32(buffer, 5),
                 x = BitConverter.ToInt32(buffer, 9),
                 y = BitConverter.ToInt32(buffer, 13)
             };
