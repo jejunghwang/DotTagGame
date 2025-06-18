@@ -37,6 +37,8 @@ namespace WindowsFormsApp4
         private SoundPlayer countDownBgm;
         private SoundPlayer gameBgmPlayer;
         private bool canMove = true;
+        private bool showTaggerMessage = false;
+        private Timer taggerMessageTimer = new Timer();
         private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
 
         private Label countdownLabel = new Label();
@@ -137,6 +139,13 @@ namespace WindowsFormsApp4
 
             countDownBgm = new SoundPlayer(Properties.Resources.count_down);
             gameBgmPlayer = new SoundPlayer(Properties.Resources.map_bgm);
+
+            taggerMessageTimer.Interval = 3000; 
+            taggerMessageTimer.Tick += (s, e) => {
+                showTaggerMessage = false;
+                taggerMessageTimer.Stop();
+                this.Invalidate();  // 메시지 사라진 뒤 갱신
+            };
         }
 
         private void UpdateCountdownLabelPosition()
@@ -329,13 +338,7 @@ namespace WindowsFormsApp4
                 case PacketType.changeTagger:
                     var packet = ChangeTaggerPacket.FromBytes(body);
                     currentTaggerId = packet.playerTag;
-                    /*foreach(var player in Players.players)
-                    {
-                        if (player != null && player.isTagger)
-                        {
-                            player.isTagger = false;
-                        }
-                    }*/
+                   
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
@@ -350,6 +353,10 @@ namespace WindowsFormsApp4
                     {
                         StartCountdown(5);
                         hasInitialCountdownRun = true;
+                    }
+                    else
+                    {
+                        StartTaggerMessage();
                     }
                     this.Invalidate();
                     break;
@@ -409,7 +416,7 @@ namespace WindowsFormsApp4
 
                     if (Tag == AppState.CurrentUserId)
                         UpdateCameraPosition();
-
+                    Players.players[Tag].isTagger = false;
                     this.Invalidate();
                     break;
 
@@ -515,9 +522,10 @@ namespace WindowsFormsApp4
                         countdownLabel.Visible = false;
                         isCountdownRunning = false;
                         animationTimer.Start();
+                        hp_handling.Enabled = true;
+                        StartTaggerMessage();
                     }))
                 );
-                hp_handling.Enabled = true;
             }
 
             // 매 틱마다 화면 중앙에 갱신
@@ -805,8 +813,43 @@ namespace WindowsFormsApp4
                 }
                 barY += frameRect.Height + gap;
             }
-        }
 
+            if (showTaggerMessage && currentTaggerId >= 0)
+            {
+                string taggerName = Players.players[currentTaggerId]?.Name ?? "알 수 없음";
+                string title = $"{taggerName} 님이 술래가 되었습니다";
+
+                bool isMe = currentTaggerId == AppState.CurrentUserId;
+                string instruction = isMe ? "상대를 쫓아가세요!" : "도망치세요!";
+                Brush instructionBrush = isMe ? Brushes.LimeGreen : Brushes.Red;
+
+                using (var titleFont = new Font("맑은 고딕", 24, FontStyle.Bold))
+                using (var instFont = new Font("맑은 고딕", 20, FontStyle.Bold))
+                {
+                    SizeF titleSize = e.Graphics.MeasureString(title, titleFont);
+                    SizeF instSize = e.Graphics.MeasureString(instruction, instFont);
+
+                    float xTitle = (ClientSize.Width - titleSize.Width) / 2;
+                    float yTitle = ClientSize.Height - titleSize.Height - instSize.Height - 20; // 여유 20px
+
+                    float xInst = (ClientSize.Width - instSize.Width) / 2;
+                    float yInst = yTitle + titleSize.Height + 5; // 타이틀 바로 아래 5px
+
+                    using (var bgBrush = new SolidBrush(Color.FromArgb(128, 0, 0, 0)))
+                    {
+                        var bgRect = new RectangleF(
+                            xTitle - 10, yTitle - 5,
+                            Math.Max(titleSize.Width, instSize.Width) + 20,
+                            titleSize.Height + instSize.Height + 15
+                        );
+                        e.Graphics.FillRectangle(bgBrush, bgRect);
+                    }
+
+                    e.Graphics.DrawString(title, titleFont, Brushes.White, xTitle, yTitle);
+                    e.Graphics.DrawString(instruction, instFont, instructionBrush, xInst, yInst);
+                }
+            }
+        }
 
 
         private void AnimateCharacter(object sender, EventArgs e)
@@ -1016,6 +1059,14 @@ namespace WindowsFormsApp4
                 byte[] buffer = packet.ToBytes();
                 AppState.Connection.Stream.Write(buffer, 0, buffer.Length);
             }
+        }
+
+        private void StartTaggerMessage()
+        {
+            showTaggerMessage = true;
+            taggerMessageTimer.Stop();
+            taggerMessageTimer.Start();
+            this.Invalidate();  // 즉시 DrawMap 호출
         }
     }
 }
