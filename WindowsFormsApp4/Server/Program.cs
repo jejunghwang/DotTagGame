@@ -103,6 +103,8 @@ namespace Server
                         if (packet == null || (PacketType)packet[0] == PacketType.disconnect) break;
                         byte[] wBuffer = new byte[4 + packet.Length];
                         BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
+                        Random rand = new Random();
+
                         switch ((PacketType)packet[0])
                         {
                             case PacketType.welcomeRequest:
@@ -184,14 +186,15 @@ namespace Server
                                     }
                                     
                                     await BroadCastAsync(new StartPacket().ToBytes());
-                                    Random rand = new Random();
                                     do
                                     {
                                         curTagger = rand.Next(0, 100);
                                     } while(!UsedTag[curTagger]);
                                     Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
+                                    UsedTag[curTagger] = false;
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
-                                    _ = Task.Run(() => spawn_items());
+                                    for(int i=0; i<5; i++)
+                                        _ = Task.Run(() => spawn_items());
                                 }
                                 break;
 
@@ -216,6 +219,15 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
                                 packet.CopyTo(wBuf, 4);
                                 await BroadCastAsync(wBuf);
+                                do
+                                {
+                                    curTagger = rand.Next(0, 100);
+                                } while (!UsedTag[curTagger]);
+
+                                UsedTag[curTagger] = false;
+                                await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+                                Console.WriteLine($"[SERVER] New Tagger = user {curTagger}");
+
                                 break;
                             case PacketType.itemRemove:
                                 var rp = ItemRemovePacket.FromBytes(packet);
@@ -224,6 +236,11 @@ namespace Server
                                 {
                                     boxes.Remove((rp.x, rp.y));
                                 }
+                                wBuf = new byte[4 + packet.Length];
+                                BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
+                                _ = Task.Run(() => spawn_items());
                                 break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
@@ -407,34 +424,21 @@ namespace Server
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7}
             };
-            int tileSize = 32, row = map.GetLength(0), col = map.GetLength(1);
+            int row = map.GetLength(0), col = map.GetLength(1);
             HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
             
             Random rand = new Random();
-            while (true)
+            int x, y, itemType;
+            do
             {
-                foreach(var prevItem in boxes)
-                {
-                    ItemRemovePacket pk = new ItemRemovePacket { x = prevItem.Item1, y = prevItem.Item2 };
-                    await BroadCastAsync(pk.ToBytes());
-                }
-                for(int i=0; i<5; i++)
-                {
-                    int x, y, itemType;
-                    do
-                    {
-                        y = rand.Next(0, row);
-                        x = rand.Next(0, col);
+                y = rand.Next(0, row);
+                x = rand.Next(0, col);
 
-                    } while (!canPlaceTile.Contains(map[y, x]) || boxes.Contains((x, y)));
-                    boxes.Add((x, y));
-                    itemType = rand.Next(0, 1);
-                    ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
-                    await BroadCastAsync(item.ToBytes());
-                }
-                Console.WriteLine("Items spawn");
-                await Task.Delay(10000);
-            }
+            } while (!canPlaceTile.Contains(map[y, x]) || boxes.Contains((x, y)));
+            boxes.Add((x, y));
+            itemType = rand.Next(0, 1);
+            ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
+            await BroadCastAsync(item.ToBytes());
         }
     }
 }

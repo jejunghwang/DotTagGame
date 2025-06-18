@@ -47,6 +47,7 @@ namespace WindowsFormsApp4
         private bool hasInitialCountdownRun = false;
         private int remainingSeconds;
         private Point lockedScrollPosition;
+        Rectangle intersection;
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -89,6 +90,8 @@ namespace WindowsFormsApp4
         private int nextZoneId = 1;
 
         private List<Point> itemPositions = new List<Point>(); // 아이템 위치
+        private List<Rectangle> itemBoxes = new List<Rectangle>();
+        private Dictionary<Rectangle, int> itemType = new Dictionary<Rectangle, int>();
         private Image itemImage = Properties.Resources.item;   // 아이템 이미지
         public Map()
         {
@@ -218,7 +221,7 @@ namespace WindowsFormsApp4
             dict[1] = Properties.Resources.tree; dict[2] = Properties.Resources.tile; dict[3] = Properties.Resources.grass; dict[4] = Properties.Resources.water;
             dict[5] = Properties.Resources.bridge5; dict[6] = Properties.Resources.water1; dict[7] = Properties.Resources.water2; dict[8] = Properties.Resources.water3;
             dict[9] = Properties.Resources.water4; dict[10] = Properties.Resources.water5; dict[11] = Properties.Resources.water6; dict[12] = Properties.Resources.water7;
-            dict[13] = Properties.Resources.water8; dict[100] = Properties.Resources.frame;
+            dict[13] = Properties.Resources.water8; dict[100] = Properties.Resources.itemBox;
 
         }
 
@@ -310,10 +313,26 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.move:
                     var mv = MovePacket.FromBytes(body);
+
                     if (mv.playerId != AppState.CurrentUserId)
                     {
                         int charIdx = characterIndices.TryGetValue(mv.playerId, out var idx) ? idx : 1;
                         AddOrUpdateCharacter(mv.playerId, (int)mv.x, (int)mv.y, charIdx, mv.playerId == AppState.CurrentUserId);
+                    }
+                    else
+                    {
+                        Rectangle me = new Rectangle(mv.x, mv.y, characterSize, characterSize);
+                        if(itemBoxes != null && !item_get.Enabled)
+                        {
+                            foreach(var box in itemBoxes)
+                            {
+                                if (box.IntersectsWith(me))
+                                {
+                                    intersection = box;
+                                    item_get.Enabled = true;
+                                }
+                            }
+                        }
                     }
                     break;
                 case PacketType.changeTagger:
@@ -344,6 +363,9 @@ namespace WindowsFormsApp4
                 case PacketType.itemSpawn: // 아이템은 서버에서 생성
                     var spawn = ItemSpawnPacket.FromBytes(body);
                     itemPositions.Add(new Point(spawn.x, spawn.y));
+                    Rectangle itemBox = new Rectangle(spawn.x * tileSize, spawn.y * tileSize, tileSize, tileSize);
+                    itemBoxes.Add(itemBox);
+                    itemType[itemBox] = spawn.ItemId;
                     //drawItemBox();
                     this.Invalidate();
                     break;
@@ -367,7 +389,9 @@ namespace WindowsFormsApp4
                 case PacketType.itemRemove:
                     var remove = ItemRemovePacket.FromBytes(body);
                     int x = remove.x, y = remove.y;
-                    itemPositions.Remove(new Point(x, y));
+                    itemPositions.Remove(new Point(x/tileSize, y/tileSize));
+                    itemBoxes.Remove(new Rectangle(x, y, tileSize, tileSize));
+                    this.Invalidate();
                     break;
                 case PacketType.death:
                     var die = DeathPacket.FromBytes(body);
@@ -392,7 +416,7 @@ namespace WindowsFormsApp4
 
                     if (Tag == AppState.CurrentUserId)
                         UpdateCameraPosition();
-
+                    Players.players[Tag].isTagger = false;
                     this.Invalidate();
                     break;
 
@@ -421,13 +445,17 @@ namespace WindowsFormsApp4
                 if (!pressedKeys.Contains(e.KeyCode))
                     pressedKeys.Add(e.KeyCode);
             }
-            else if(e.KeyCode == Keys.Space)
+            else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
-                if (Players.players[AppState.CurrentUserId].item != -1)
+                var me = Players.players[AppState.CurrentUserId];
+                if (me.item < 100)
                 {
-                    var me = Players.players[AppState.CurrentUserId];
-                    var itemPkt = new ItemEffectPacket { effectType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
+                    var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                }
+                else
+                {
+                    //아이템 사용 준비
                 }
             }
         }
@@ -435,6 +463,10 @@ namespace WindowsFormsApp4
         private void Map_KeyUp(object sender, KeyEventArgs e)
         {
             pressedKeys.Remove(e.KeyCode);
+            if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item >= 100)
+            {
+                //아이템 사용
+            }
         }
         private void Map_Load(object sender, EventArgs e)
         {
@@ -663,13 +695,14 @@ namespace WindowsFormsApp4
                 }
             }
             // 아이템 맵에 추가
-            foreach (var itemPos in itemPositions)
+            foreach(var itemPos in itemBoxes)
             {
-                int drawX = itemPos.X *tileSize + offset.X;
-                int drawY = itemPos.Y *tileSize+ offset.Y;
-                Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
-                e.Graphics.DrawImage(dict[100], drawX, drawY, tileSize, tileSize);
-                //e.Graphics.DrawImage(dict[100], itemRect);
+                Rectangle pos = new Rectangle();
+                pos.X = itemPos.X + offset.X;
+                pos.Y = itemPos.Y + offset.Y;
+                pos.Width = itemPos.Width;
+                pos.Height = itemPos.Height;
+                e.Graphics.DrawImage(dict[100], pos);
             }
 
             // 내 캐릭터 액자 프레임
@@ -1000,11 +1033,30 @@ namespace WindowsFormsApp4
                 canMove = false;
             }
         }
-        
-        private void drawItemBox()
+        int interCount = 0;
+        private void item_get_Tick(object sender, EventArgs e)
         {
-            Point offset = this.AutoScrollPosition;
+            Rectangle me = new Rectangle(Players.players[AppState.CurrentUserId].X, Players.players[AppState.CurrentUserId].Y, characterSize, characterSize);
+            if (intersection.IntersectsWith(me))
+            {
+                interCount++;
+            }
+            else
+            {
+                item_get.Enabled = false;
+                interCount = 0;
+            }
 
+            if(interCount == 100)
+            {
+                item_get.Enabled = false;
+                interCount = 0;
+                Players.players[AppState.CurrentUserId].item = itemType[intersection];
+
+                ItemRemovePacket packet = new ItemRemovePacket { x = intersection.X, y = intersection.Y };
+                byte[] buffer = packet.ToBytes();
+                AppState.Connection.Stream.Write(buffer, 0, buffer.Length);
+            }
         }
 
         private void StartTaggerMessage()
