@@ -92,11 +92,12 @@
             // 
             // music_toggle
             // 
+            this.music_toggle.BackColor = System.Drawing.Color.Transparent;
             this.music_toggle.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.music_toggle.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.music_toggle.CheckedState.InnerBorderColor = System.Drawing.Color.White;
             this.music_toggle.CheckedState.InnerColor = System.Drawing.Color.White;
-            this.music_toggle.Location = new System.Drawing.Point(154, 225);
+            this.music_toggle.Location = new System.Drawing.Point(188, 220);
             this.music_toggle.Name = "music_toggle";
             this.music_toggle.Size = new System.Drawing.Size(123, 48);
             this.music_toggle.TabIndex = 9;
@@ -112,7 +113,7 @@
             this.lbl_bgm.BackColor = System.Drawing.Color.Transparent;
             this.lbl_bgm.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_bgm.ForeColor = System.Drawing.SystemColors.Control;
-            this.lbl_bgm.Location = new System.Drawing.Point(164, 187);
+            this.lbl_bgm.Location = new System.Drawing.Point(80, 231);
             this.lbl_bgm.Name = "lbl_bgm";
             this.lbl_bgm.Size = new System.Drawing.Size(102, 25);
             this.lbl_bgm.TabIndex = 10;
@@ -124,7 +125,7 @@
             this.bgm_toggle.BackColor = System.Drawing.Color.Transparent;
             this.bgm_toggle.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.bgm_toggle.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.bgm_toggle.Location = new System.Drawing.Point(187, 289);
+            this.bgm_toggle.Location = new System.Drawing.Point(221, 284);
             this.bgm_toggle.Name = "bgm_toggle";
             this.bgm_toggle.Size = new System.Drawing.Size(54, 25);
             this.bgm_toggle.TabIndex = 11;
@@ -136,7 +137,7 @@
             this.lbl_mode.BackColor = System.Drawing.Color.Transparent;
             this.lbl_mode.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_mode.ForeColor = System.Drawing.SystemColors.Control;
-            this.lbl_mode.Location = new System.Drawing.Point(433, 186);
+            this.lbl_mode.Location = new System.Drawing.Point(354, 231);
             this.lbl_mode.Name = "lbl_mode";
             this.lbl_mode.Size = new System.Drawing.Size(118, 25);
             this.lbl_mode.TabIndex = 13;
@@ -148,7 +149,7 @@
             this.lbl_mode_toggle.BackColor = System.Drawing.Color.Transparent;
             this.lbl_mode_toggle.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_mode_toggle.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_mode_toggle.Location = new System.Drawing.Point(437, 288);
+            this.lbl_mode_toggle.Location = new System.Drawing.Point(490, 283);
             this.lbl_mode_toggle.Name = "lbl_mode_toggle";
             this.lbl_mode_toggle.Size = new System.Drawing.Size(102, 25);
             this.lbl_mode_toggle.TabIndex = 14;
@@ -156,11 +157,12 @@
             // 
             // mode_toggle
             // 
+            this.mode_toggle.BackColor = System.Drawing.Color.Transparent;
             this.mode_toggle.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.mode_toggle.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.mode_toggle.CheckedState.InnerBorderColor = System.Drawing.Color.White;
             this.mode_toggle.CheckedState.InnerColor = System.Drawing.Color.White;
-            this.mode_toggle.Location = new System.Drawing.Point(428, 225);
+            this.mode_toggle.Location = new System.Drawing.Point(478, 220);
             this.mode_toggle.Name = "mode_toggle";
             this.mode_toggle.Size = new System.Drawing.Size(123, 48);
             this.mode_toggle.TabIndex = 12;
@@ -179,7 +181,7 @@
             this.other.FillColor = System.Drawing.Color.Crimson;
             this.other.Font = new System.Drawing.Font("휴먼둥근헤드라인", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.other.ForeColor = System.Drawing.Color.White;
-            this.other.Location = new System.Drawing.Point(567, 225);
+            this.other.Location = new System.Drawing.Point(608, 217);
             this.other.Name = "other";
             this.other.Size = new System.Drawing.Size(94, 48);
             this.other.TabIndex = 15;
@@ -190,7 +192,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlText;
+            this.BackColor = System.Drawing.SystemColors.GrayText;
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.setting;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
