@@ -406,7 +406,7 @@ namespace WindowsFormsApp4
             await AppState.Connection.Stream.WriteAsync(readyPkt.ToBytes(), 0, readyPkt.ToBytes().Length);
         }
 
-        private async Task Map_KeyDown(object sender, KeyEventArgs e)
+        private async void Map_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.W || e.KeyCode == Keys.A ||
                e.KeyCode == Keys.S || e.KeyCode == Keys.D)
