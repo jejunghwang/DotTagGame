@@ -1082,6 +1082,7 @@ namespace WindowsFormsApp4
             if(speedup_timer.Enabled)
             {
                 Players.players[AppState.CurrentUserId].Speed = 5;
+                Players.players[AppState.CurrentUserId].item = -1;
                 speedup_timer.Enabled = false;
             }
         }
