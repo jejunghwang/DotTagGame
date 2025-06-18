@@ -92,7 +92,7 @@ namespace WindowsFormsApp4
             InitializeComponent();
             init();
             Players.players[AppState.CurrentUserId].X = 937;
-            Players.players[AppState.CurrentUserId].Y = 270;
+            Players.players[AppState.CurrentUserId].Y = 270 + AppState.CurrentUserId * 50;
         }
         private void init()
         {
@@ -284,10 +284,10 @@ namespace WindowsFormsApp4
                     foreach (var (id, (tag, px, py, charIdx)) in welcome.Entries)
                     {
                         int temp = (int)py;
-                        if (px == 937 && py == 270)
+                        /*if (px == 937 && py == 270)
                         {
                             temp += tag * 50;
-                        }
+                        }*/
                         AddOrUpdateCharacter(tag, (int)px, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
@@ -351,8 +351,33 @@ namespace WindowsFormsApp4
                     }
                     break;
                 case PacketType.death:
-                    //var die = DeathPacket.FromBytes(body);
-                    //Players.players[die.playerTag].X = 
+                    var die = DeathPacket.FromBytes(body);
+                    int Tag = die.playerTag;         
+                    Point respawnPos = new Point(1217, 400);
+
+                    characterPositions[Tag] = respawnPos;
+                    characterDirections[Tag] = Direction.down;
+                    if (Tag == AppState.CurrentUserId)
+                    {
+                        int ci = characterIndices.TryGetValue(Tag, out var idx) ? idx : 1;
+                        LoadCharacterFrames(ci);
+                        frames = downFrames;
+                        frameIndex = 0;
+                    }
+
+                    var obj = Players.players[Tag];
+                    if (obj != null)
+                    {
+                        obj.SetPosition(respawnPos.X, respawnPos.Y);
+                    }
+
+                    if (Tag == AppState.CurrentUserId)
+                        UpdateCameraPosition();
+
+                    this.Invalidate();
+                    break;
+
+
                 default:
                     break;
             }
