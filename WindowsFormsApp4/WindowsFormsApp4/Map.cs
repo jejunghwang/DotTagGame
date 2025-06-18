@@ -448,7 +448,12 @@ namespace WindowsFormsApp4
             else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
                 var me = Players.players[AppState.CurrentUserId];
-                if (me.item < 100)
+                if(me.item == 0)
+                {
+                    Players.players[AppState.CurrentUserId].Speed = 10;
+                    speedup_timer.Enabled = true;
+                }
+                else if (me.item < 100)
                 {
                     var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
@@ -1065,6 +1070,15 @@ namespace WindowsFormsApp4
             taggerMessageTimer.Stop();
             taggerMessageTimer.Start();
             this.Invalidate();  // 즉시 DrawMap 호출
+        }
+
+        private void speedup_timer_Tick(object sender, EventArgs e)
+        {
+            if(speedup_timer.Enabled)
+            {
+                Players.players[AppState.CurrentUserId].Speed = 5;
+                speedup_timer.Enabled = false;
+            }
         }
     }
 }

@@ -191,7 +191,7 @@ namespace Server
                                         curTagger = rand.Next(0, 100);
                                     } while(!UsedTag[curTagger]);
                                     Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
-                                    UsedTag[curTagger] = false;
+                                    //UsedTag[curTagger] = false;
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                     for(int i=0; i<5; i++)
                                         _ = Task.Run(() => spawn_items());
@@ -439,6 +439,7 @@ namespace Server
             itemType = rand.Next(0, 1);
             ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
             await BroadCastAsync(item.ToBytes());
+            Console.WriteLine("spawn item");
         }
     }
 }
