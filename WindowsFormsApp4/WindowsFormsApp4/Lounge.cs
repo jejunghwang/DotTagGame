@@ -46,6 +46,7 @@ namespace WindowsFormsApp4
         private System.Media.SoundPlayer loungeBgmPlayer;
         private System.Media.SoundPlayer buttonSoundPlayer;
         private bool isBgmPlaying = false;
+        private bool isAlternateBackground = false;
         private Label transitionLabel;
 
         public Lounge(Main mainForm)
@@ -608,6 +609,29 @@ namespace WindowsFormsApp4
 
             stream.Dispose();
         }
+
+        private void btn_setting_Click(object sender, EventArgs e)
+        {
+            PlayButtonSound();
+
+            animationTimer.Stop();
+            pressedKeys.Clear();
+            overlayPanel.Visible = true;
+            overlayPanel.BringToFront();
+
+            using (var set = new lbl_bgm_toggle(isBgmPlaying, isAlternateBackground))
+            {
+                set.Owner = this;  // Owner가 Lounge임을 알려주고
+                set.StartPosition = FormStartPosition.CenterParent;
+                set.ShowDialog();
+            }
+
+            overlayPanel.Visible = false;
+            pressedKeys.Clear();
+            animationTimer.Start();
+
+        }
+
         private Task ShowTransitionAsync(string message, int delayMs)
         {
             int dotCount = 0;
@@ -662,6 +686,32 @@ namespace WindowsFormsApp4
                     transitionLabel.Visible = false;
                 }));
             });
+        }
+
+        public void ToggleBgm(bool play)
+        {
+            if (play)
+                loungeBgmPlayer?.PlayLooping();
+            else
+                loungeBgmPlayer?.Stop();
+            isBgmPlaying = play;
+        }
+
+        public void SetBackgroundMode(bool alternate)
+        {
+            isAlternateBackground = alternate;
+
+            this.BackgroundImage = alternate
+                ? Properties.Resources.night   
+                : Properties.Resources.lounge1;    
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+        }
+
+        public void SetCustomBackgroundColor(Color color)
+        {
+            // 배경 이미지 대신 단색으로 칠할 경우
+            this.BackgroundImage = null;
+            this.BackColor = color;
         }
     }
 }

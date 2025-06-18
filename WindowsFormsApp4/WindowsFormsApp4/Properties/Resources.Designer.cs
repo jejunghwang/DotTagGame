@@ -240,6 +240,16 @@ namespace WindowsFormsApp4.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap itemBox {
+            get {
+                object obj = ResourceManager.GetObject("itemBox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap itemFrame {
             get {
                 object obj = ResourceManager.GetObject("itemFrame", resourceCulture);
@@ -302,6 +312,16 @@ namespace WindowsFormsApp4.Properties {
         internal static System.IO.UnmanagedMemoryStream map_bgm {
             get {
                 return ResourceManager.GetStream("map_bgm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap night {
+            get {
+                object obj = ResourceManager.GetObject("night", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -1071,6 +1091,36 @@ namespace WindowsFormsApp4.Properties {
         internal static System.Drawing.Bitmap select {
             get {
                 object obj = ResourceManager.GetObject("select", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap setting {
+            get {
+                object obj = ResourceManager.GetObject("setting", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap settingButton {
+            get {
+                object obj = ResourceManager.GetObject("settingButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap settingString {
+            get {
+                object obj = ResourceManager.GetObject("settingString", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
