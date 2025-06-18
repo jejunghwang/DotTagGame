@@ -199,6 +199,8 @@ namespace Server
                             case PacketType.death:
                                 var death_packet = DeathPacket.FromBytes(packet);
                                 Console.WriteLine($"[DEATH]: {death_packet.playerTag}");
+                                await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+
                                 break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");

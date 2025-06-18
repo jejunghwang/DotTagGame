@@ -43,6 +43,11 @@ namespace WindowsFormsApp4
 
         private Panel overlayPanel;
 
+        private System.Media.SoundPlayer loungeBgmPlayer;
+        private System.Media.SoundPlayer buttonSoundPlayer;
+        private bool isBgmPlaying = false;
+        private Label transitionLabel;
+
         public Lounge(Main mainForm)
         {
             InitializeComponent();
@@ -84,6 +89,25 @@ namespace WindowsFormsApp4
             this.DoubleBuffered = true;
             this.Load += Lounge_Load;
             this.Shown += Lounge_Shown;
+
+            overlayPanel = new Panel();
+            overlayPanel.Dock = DockStyle.Fill;
+            overlayPanel.BackColor = Color.FromArgb(150, 0, 0, 0); // 반투명 검정
+            overlayPanel.Visible = false;
+            overlayPanel.BringToFront();
+
+            this.Controls.Add(overlayPanel);
+
+            transitionLabel = new Label
+            {
+                AutoSize = true,
+                Font = new Font("맑은 고딕", 24, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent
+            };
+            overlayPanel.Controls.Add(transitionLabel);
+            transitionLabel.Location = new Point((overlayPanel.Width - transitionLabel.Width) / 2, (overlayPanel.Height - transitionLabel.Height) / 2
+);
         }
 
         private void OnPacketReceived(byte[] body)
@@ -144,26 +168,31 @@ namespace WindowsFormsApp4
                     c.SetPosition(c.X, c.Y);
                     break;
                 case PacketType.start:
-                    foreach (var player in Players.players)
+                    ShowTransitionAsync("술래 준비 중...", 3000).ContinueWith(_ =>
                     {
-                        if(player != null)
-                        {
-                            player.isReady = false;
-                            player.BubbleBox.Visible = false;
-                        }
-                    }
-
-                    btn_ready.Text = "준비";
-                    btn_ready.ForeColor = Color.White;
-
-                    AppState.Connection.PacketReceived -= OnPacketReceived; // 먼저 끊어주기
-                    Map game_start = new Map();
-                    game_start.Owner = this;
-                    game_start.FormClosed += (s, k) => {
-                        this.Show();
-                        AppState.Connection.PacketReceived += OnPacketReceived; // 다시 연결
-                    };
-                    game_start.ShowDialog();
+                        this.BeginInvoke(new Action(() => {
+                            
+                            foreach (var p in Players.players.Where(p => p != null))
+                            {
+                                p.isReady = false;
+                                p.BubbleBox.Visible = false;
+                            }
+                            btn_ready.Text = "준비";
+                            btn_ready.ForeColor = Color.White;
+                            
+                            AppState.Connection.PacketReceived -= OnPacketReceived;
+                            using (var gameForm = new Map())
+                            {
+                                loungeBgmPlayer?.Stop();
+                                gameForm.Owner = this;
+                                gameForm.FormClosed += (s, e) => {
+                                    this.Show();
+                                    AppState.Connection.PacketReceived += OnPacketReceived;
+                                };
+                                gameForm.ShowDialog();
+                            }
+                        }));
+                    });
                     break;
                 case PacketType.characterSelect:
                     var sel = CharacterSelectPacket.FromBytes(body);
@@ -202,12 +231,16 @@ namespace WindowsFormsApp4
                 //mainForm.Hide();      // MainForm 숨김
             }
 
+            loungeBgmPlayer = new System.Media.SoundPlayer(Properties.Resources.lounge_bgm);
+            loungeBgmPlayer.PlayLooping();
+            isBgmPlaying = true;
+
             //LoadCharacterFrames();
             //frames = downFrames; // 기본 방향
             //UpdateCharacter(AppState.CurrentUserId, playerX, playerY, true);
-/*            var req = new WelcomeRequestPacket();
-            var buf = req.ToBytes();
-            AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
+            /*            var req = new WelcomeRequestPacket();
+                        var buf = req.ToBytes();
+                        AppState.Connection.Stream.Write(buf, 0, buf.Length);*/
 
             inputBox.TabStop = false; // 처음에 채팅 입력 박스 포커싱 비활성화
 
@@ -216,13 +249,7 @@ namespace WindowsFormsApp4
             animationTimer.Tick += AnimateCharacter;
             animationTimer.Start();
 
-            overlayPanel = new Panel();
-            overlayPanel.Dock = DockStyle.Fill;
-            overlayPanel.BackColor = Color.FromArgb(150, 0, 0, 0); // 반투명 검정
-            overlayPanel.Visible = false;
-            overlayPanel.BringToFront();
-
-            this.Controls.Add(overlayPanel);
+            
             //btn_start.Enabled = false;
         }
 
@@ -479,10 +506,16 @@ namespace WindowsFormsApp4
             AppState.Connection.Stream.Write(disconnection, 0, disconnection.Length);
 
             AppState.Connection.Stream.Close();
+
+            loungeBgmPlayer?.Stop();
         }
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
+            loungeBgmPlayer?.Stop();
+            isBgmPlaying = false;
+            PlayButtonSound();
+
             if (Players.players[AppState.CurrentUserId].isReady)
             {
                 btn_ready.Text = "준비";
@@ -512,15 +545,15 @@ namespace WindowsFormsApp4
 
         private async void btn_select_Click(object sender, EventArgs e)
         {
+            loungeBgmPlayer?.Stop();
+            isBgmPlaying = false;
+            PlayButtonSound();
+
             animationTimer.Stop();
             pressedKeys.Clear();
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            /*Pick pick = new Pick();
-            pick.Owner = this;
-            pick.StartPosition = FormStartPosition.CenterParent;
-            pick.ShowDialog();*/
             using (var pick = new Pick())
             {
                 pick.Owner = this;
@@ -544,7 +577,11 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = false;
             pressedKeys.Clear();
             animationTimer.Start();
+
+            loungeBgmPlayer?.PlayLooping();
+            isBgmPlaying = true;
         }
+
         public void ApplyCharacterSelection(int playerTag, int newIdx)
         {
             if (InvokeRequired)
@@ -558,5 +595,73 @@ namespace WindowsFormsApp4
                 ch.SetCharacter(newIdx);
         }
 
+        private async void PlayButtonSound()
+        {
+            var stream = new MemoryStream();
+            Properties.Resources.buttonClick.CopyTo(stream);
+            stream.Position = 0;
+
+            var clickSound = new System.Media.SoundPlayer(stream);
+            clickSound.Play();
+
+            await Task.Delay(500);
+
+            stream.Dispose();
+        }
+        private Task ShowTransitionAsync(string message, int delayMs)
+        {
+            int dotCount = 0;
+            var dotTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            dotTimer.Tick += (s, e) =>
+            {
+                dotCount = (dotCount + 1) % 4;  // 0,1,2,3
+                string dots = new string('.', dotCount);
+                this.BeginInvoke(new Action(() =>
+                {
+                    transitionLabel.Text = message + dots;
+                    int cw = this.ClientSize.Width;
+                    int ch = this.ClientSize.Height;
+                    int lw = transitionLabel.PreferredWidth;
+                    int lh = transitionLabel.PreferredHeight;
+
+                    transitionLabel.Location = new Point(
+                        (cw - lw) / 2,
+                        (ch - lh) / 2
+                    );
+                }));
+            };
+
+            this.BeginInvoke(new Action(() =>
+            {
+                overlayPanel.BringToFront();
+                transitionLabel.BringToFront();
+
+                transitionLabel.Text = message;
+                overlayPanel.Visible = true;
+                transitionLabel.Visible = true;
+                int cw = this.ClientSize.Width;
+                int ch = this.ClientSize.Height;
+                int lw = transitionLabel.PreferredWidth;
+                int lh = transitionLabel.PreferredHeight;
+
+                transitionLabel.Location = new Point(
+                    (cw - lw) / 2,
+                    (ch - lh) / 2
+                );
+                dotTimer.Start();
+            }));
+
+            return Task.Delay(delayMs).ContinueWith(_ =>
+            {
+                dotTimer.Stop();
+                dotTimer.Dispose();
+
+                this.BeginInvoke(new Action(() =>
+                {
+                    overlayPanel.Visible = false;
+                    transitionLabel.Visible = false;
+                }));
+            });
+        }
     }
 }
