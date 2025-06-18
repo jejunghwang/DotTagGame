@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.btn_pick = new Guna.UI2.WinForms.Guna2Button();
             this.pang4 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pang3 = new Guna.UI2.WinForms.Guna2PictureBox();
@@ -47,44 +43,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pang1)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(102, 254);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 18);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "label1";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(274, 253);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 18);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "label2";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(444, 253);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 18);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "label3";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(613, 254);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(54, 18);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "label4";
-            // 
             // btn_pick
             // 
+            this.btn_pick.BackColor = System.Drawing.Color.Transparent;
             this.btn_pick.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.pick;
             this.btn_pick.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btn_pick.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -94,17 +55,18 @@
             this.btn_pick.FillColor = System.Drawing.Color.Transparent;
             this.btn_pick.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_pick.ForeColor = System.Drawing.Color.Black;
-            this.btn_pick.Location = new System.Drawing.Point(289, 288);
+            this.btn_pick.Location = new System.Drawing.Point(279, 283);
             this.btn_pick.Name = "btn_pick";
-            this.btn_pick.Size = new System.Drawing.Size(200, 100);
+            this.btn_pick.Size = new System.Drawing.Size(213, 100);
             this.btn_pick.TabIndex = 4;
             this.btn_pick.Text = "PICK";
             // 
             // pang4
             // 
+            this.pang4.BackColor = System.Drawing.Color.Transparent;
             this.pang4.Image = global::WindowsFormsApp4.Properties.Resources.pang4_front_1;
             this.pang4.ImageRotate = 0F;
-            this.pang4.Location = new System.Drawing.Point(592, 135);
+            this.pang4.Location = new System.Drawing.Point(597, 152);
             this.pang4.Name = "pang4";
             this.pang4.Size = new System.Drawing.Size(94, 100);
             this.pang4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -113,9 +75,10 @@
             // 
             // pang3
             // 
+            this.pang3.BackColor = System.Drawing.Color.Transparent;
             this.pang3.Image = global::WindowsFormsApp4.Properties.Resources.pang3_front_1;
             this.pang3.ImageRotate = 0F;
-            this.pang3.Location = new System.Drawing.Point(421, 135);
+            this.pang3.Location = new System.Drawing.Point(426, 152);
             this.pang3.Name = "pang3";
             this.pang3.Size = new System.Drawing.Size(100, 100);
             this.pang3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -124,9 +87,10 @@
             // 
             // pang2
             // 
+            this.pang2.BackColor = System.Drawing.Color.Transparent;
             this.pang2.Image = global::WindowsFormsApp4.Properties.Resources.pang2_front_1;
             this.pang2.ImageRotate = 0F;
-            this.pang2.Location = new System.Drawing.Point(243, 135);
+            this.pang2.Location = new System.Drawing.Point(248, 152);
             this.pang2.Name = "pang2";
             this.pang2.Size = new System.Drawing.Size(109, 100);
             this.pang2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -135,9 +99,10 @@
             // 
             // pang1
             // 
+            this.pang1.BackColor = System.Drawing.Color.Transparent;
             this.pang1.Image = global::WindowsFormsApp4.Properties.Resources.pang1_front_1;
             this.pang1.ImageRotate = 0F;
-            this.pang1.Location = new System.Drawing.Point(78, 135);
+            this.pang1.Location = new System.Drawing.Point(83, 152);
             this.pang1.Name = "pang1";
             this.pang1.Size = new System.Drawing.Size(100, 100);
             this.pang1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -160,20 +125,21 @@
             this.btn_cancel.FillColor = System.Drawing.Color.Transparent;
             this.btn_cancel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_cancel.ForeColor = System.Drawing.Color.White;
-            this.btn_cancel.Location = new System.Drawing.Point(682, 3);
+            this.btn_cancel.Location = new System.Drawing.Point(676, -7);
             this.btn_cancel.Name = "btn_cancel";
-            this.btn_cancel.Size = new System.Drawing.Size(84, 89);
+            this.btn_cancel.Size = new System.Drawing.Size(100, 100);
             this.btn_cancel.TabIndex = 9;
             this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
             // 
             // lbl_title
             // 
             this.lbl_title.AutoSize = true;
-            this.lbl_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_title.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_title.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_title.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbl_title.Location = new System.Drawing.Point(283, 43);
+            this.lbl_title.Location = new System.Drawing.Point(229, 82);
             this.lbl_title.Name = "lbl_title";
-            this.lbl_title.Size = new System.Drawing.Size(207, 25);
+            this.lbl_title.Size = new System.Drawing.Size(324, 25);
             this.lbl_title.TabIndex = 10;
             this.lbl_title.Text = "!!! 캐릭터를 선택하세요 !!!";
             // 
@@ -181,19 +147,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.PeachPuff;
+            this.BackColor = System.Drawing.Color.SaddleBrown;
+            this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.setting;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(778, 444);
             this.Controls.Add(this.lbl_title);
             this.Controls.Add(this.btn_cancel);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_pick);
             this.Controls.Add(this.pang4);
             this.Controls.Add(this.pang3);
             this.Controls.Add(this.pang2);
             this.Controls.Add(this.pang1);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Pick";
             this.Text = "Pick";
@@ -213,10 +178,6 @@
         private Guna.UI2.WinForms.Guna2PictureBox pang3;
         private Guna.UI2.WinForms.Guna2PictureBox pang4;
         private Guna.UI2.WinForms.Guna2Button btn_pick;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private Guna.UI2.WinForms.Guna2Elipse guna2Elipse1;
         private Guna.UI2.WinForms.Guna2Button btn_cancel;
         private System.Windows.Forms.Label lbl_title;
