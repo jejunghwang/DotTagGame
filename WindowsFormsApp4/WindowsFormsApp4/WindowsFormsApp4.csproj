@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="AppState.cs" />
     <Compile Include="Character.cs" />
-    <Compile Include="Item.cs" />
     <Compile Include="Loading.cs">
       <SubType>Form</SubType>
     </Compile>
