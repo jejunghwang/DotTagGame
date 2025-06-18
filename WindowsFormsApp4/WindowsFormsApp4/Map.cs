@@ -420,6 +420,11 @@ namespace WindowsFormsApp4
                     this.Invalidate();
                     break;
 
+                case PacketType.end:
+                    var information = EndPacket.FromBytes(body);
+                    int winnerTag = information.playerId;
+                    gameEnd(winnerTag);
+                    break;
 
                 default:
                     break;
@@ -1079,6 +1084,11 @@ namespace WindowsFormsApp4
                 Players.players[AppState.CurrentUserId].Speed = 5;
                 speedup_timer.Enabled = false;
             }
+        }
+
+        private void gameEnd(int winnerId)
+        {
+
         }
     }
 }
