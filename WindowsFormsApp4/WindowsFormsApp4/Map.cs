@@ -631,6 +631,20 @@ namespace WindowsFormsApp4
             if (pressedKeys.Contains(Keys.D)) dirX = +1;
             if (dirX == 0 && dirY == 0) return;
 
+            Direction dir = Direction.down;
+            if (dirX < 0) dir = Direction.left;
+            else if (dirX > 0) dir = Direction.right;
+            else if (dirY < 0) dir = Direction.up;
+            else if (dirY > 0) dir = Direction.down;
+
+            switch (dir)
+            {
+                case Direction.up: frames = upFrames; break;
+                case Direction.down: frames = downFrames; break;
+                case Direction.left: frames = leftFrames; break;
+                case Direction.right: frames = rightFrames; break;
+            }
+
             var me = Players.players[AppState.CurrentUserId];
             if (me == null) return;
             int speed = me.Speed;
@@ -726,10 +740,10 @@ namespace WindowsFormsApp4
             characterPositions[playerId] = new Point(x, y);
             characterIndices[playerId] = charIdx;
 
-            if (isLocal)
+            /*if (isLocal)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
-            }
+            }*/
 
             
             this.Invalidate();
