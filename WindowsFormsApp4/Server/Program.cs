@@ -21,6 +21,7 @@ namespace Server
         private int curUserNum = 0;
         private static int charSize = 32;
         private static int curTagger = 0;
+        private static HashSet<int> alivePlayers = new HashSet<int>();
         private static ConcurrentDictionary<string, int> IpToUserTag = new ConcurrentDictionary<string, int>();
         private static ConcurrentDictionary<int, NetworkStream> SessionMap = new ConcurrentDictionary<int, NetworkStream>();
         private static bool[] UsedTag = new bool[MaxUsr];
@@ -66,6 +67,7 @@ namespace Server
                             if (isValidCredential(loginRequest))
                             {
                                 userTag = RegisterClient(ip);
+                                alivePlayers.Add(userTag);
                                 userId = loginRequest.id;
                                 SessionMap[userTag] = stream;
                                 TagToId[userTag] = userId;
@@ -216,9 +218,12 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
                                 packet.CopyTo(wBuf, 4);
                                 await BroadCastAsync(wBuf);
+                                alivePlayers.Remove(ddp.playerTag);
                                 Positions[curTagger] = (1217, 400);
                                 var ActiveTags = SessionMap.Keys.ToList();
-                                int index = new Random().Next(ActiveTags.Count);
+                                var candidates = SessionMap.Keys.Where(t => alivePlayers.Contains(t)).ToList();
+                                int index = new Random().Next(candidates.Count);
+
                                 curTagger = ActiveTags[index];
                                 await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                 Console.WriteLine($"[SERVER] New Tagger = user {curTagger}");
