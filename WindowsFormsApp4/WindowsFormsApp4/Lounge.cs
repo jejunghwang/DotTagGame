@@ -618,7 +618,7 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            using (var set = new Setting(isBgmPlaying))
+            using (var set = new lbl_bgm_toggle(isBgmPlaying))
             {
                 set.Owner = this;  // Owner가 Lounge임을 알려주고
                 set.StartPosition = FormStartPosition.CenterParent;
