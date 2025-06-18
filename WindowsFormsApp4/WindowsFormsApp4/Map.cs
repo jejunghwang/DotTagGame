@@ -408,6 +408,10 @@ namespace WindowsFormsApp4
                 if (!pressedKeys.Contains(e.KeyCode))
                     pressedKeys.Add(e.KeyCode);
             }
+            else if(e.KeyCode == Keys.Space)
+            {
+
+            }
         }
 
         private void Map_KeyUp(object sender, KeyEventArgs e)
@@ -875,7 +879,7 @@ namespace WindowsFormsApp4
                 var player = Players.players[i];
                 if (player != null && player.isTagger)
                 {
-                    player.HP--;
+                    player.HP-=2;
                     if(player.HP == 0)
                     {
                         byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
