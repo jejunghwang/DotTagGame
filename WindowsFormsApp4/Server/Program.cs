@@ -179,20 +179,18 @@ namespace Server
                                 }
                                 if (isAllReady)
                                 {
-                                    
-                                    for(int i=0; i<100; i++)
+
+                                    for (int i = 0; i < 100; i++)
                                     {
                                         readyStatus[i] = false;
                                     }
-                                    
+
                                     await BroadCastAsync(new StartPacket().ToBytes());
-                                    do
-                                    {
-                                        curTagger = rand.Next(0, 100);
-                                    } while(!UsedTag[curTagger]);
-                                    Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
-                                    UsedTag[curTagger] = false;
+                                    var activeTags = SessionMap.Keys.ToList();
+                                    int idx = new Random().Next(activeTags.Count);
+                                    curTagger = activeTags[idx];
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+
                                     _ = Task.Run(() => spawn_items());
                                 }
                                 break;
@@ -218,12 +216,10 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
                                 packet.CopyTo(wBuf, 4);
                                 await BroadCastAsync(wBuf);
-                                do
-                                {
-                                    curTagger = rand.Next(0, 100);
-                                } while (!UsedTag[curTagger]);
-
-                                UsedTag[curTagger] = false;
+                                Positions[curTagger] = (1217, 400);
+                                var ActiveTags = SessionMap.Keys.ToList();
+                                int index = new Random().Next(ActiveTags.Count);
+                                curTagger = ActiveTags[index];
                                 await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                 Console.WriteLine($"[SERVER] New Tagger = user {curTagger}");
 
@@ -381,6 +377,7 @@ namespace Server
                 }
             }
         }
+
 
         private static async Task spawn_items()
         {
