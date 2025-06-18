@@ -699,7 +699,7 @@ namespace WindowsFormsApp4
             var hpInfo = new Rectangle(150, 60, 300, 100);
             e.Graphics.DrawImage(Properties.Resources.info, hpInfo);
             var me = Players.players[AppState.CurrentUserId];
-            string hpText = $"{me.HP} / 50";
+            string hpText = $"{me.HP} / 100";
             using (var hpFont = new Font("맑은 고딕", 20, FontStyle.Regular))
             using (var sf2 = new StringFormat
             {
