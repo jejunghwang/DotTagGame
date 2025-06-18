@@ -191,6 +191,7 @@ namespace Server
                                     } while(!UsedTag[curTagger]);
                                     Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+                                    _ = Task.Run(() => spawn_items());
                                 }
                                 break;
 
@@ -215,9 +216,6 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
                                 packet.CopyTo(wBuf, 4);
                                 await BroadCastAsync(wBuf);
-                                break;
-
-
                                 break;
                             case PacketType.itemRemove:
                                 var rp = ItemRemovePacket.FromBytes(packet);
@@ -373,7 +371,7 @@ namespace Server
             }
         }
 
-        private async Task spawn_items()
+        private static async Task spawn_items()
         {
             int[,] map = {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -434,6 +432,7 @@ namespace Server
                     ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
                     await BroadCastAsync(item.ToBytes());
                 }
+                Console.WriteLine("Items spawn");
                 await Task.Delay(10000);
             }
         }

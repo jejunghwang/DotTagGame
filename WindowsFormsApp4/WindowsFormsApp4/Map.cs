@@ -209,7 +209,7 @@ namespace WindowsFormsApp4
             dict[1] = Properties.Resources.tree; dict[2] = Properties.Resources.tile; dict[3] = Properties.Resources.grass; dict[4] = Properties.Resources.water;
             dict[5] = Properties.Resources.bridge5; dict[6] = Properties.Resources.water1; dict[7] = Properties.Resources.water2; dict[8] = Properties.Resources.water3;
             dict[9] = Properties.Resources.water4; dict[10] = Properties.Resources.water5; dict[11] = Properties.Resources.water6; dict[12] = Properties.Resources.water7;
-            dict[13] = Properties.Resources.water8;
+            dict[13] = Properties.Resources.water8; dict[100] = Properties.Resources.frame;
 
         }
 
@@ -337,6 +337,7 @@ namespace WindowsFormsApp4
                 case PacketType.itemSpawn: // 아이템은 서버에서 생성
                     var spawn = ItemSpawnPacket.FromBytes(body);
                     itemPositions.Add(new Point(spawn.x, spawn.y));
+                    //drawItemBox();
                     this.Invalidate();
                     break;
 
@@ -355,6 +356,11 @@ namespace WindowsFormsApp4
                     {
                         // 효과 추가
                     }
+                    break;
+                case PacketType.itemRemove:
+                    var remove = ItemRemovePacket.FromBytes(body);
+                    int x = remove.x, y = remove.y;
+                    itemPositions.Remove(new Point(x, y));
                     break;
                 case PacketType.death:
                     var die = DeathPacket.FromBytes(body);
@@ -642,10 +648,11 @@ namespace WindowsFormsApp4
             // 아이템 맵에 추가
             foreach (var itemPos in itemPositions)
             {
-                int drawX = itemPos.X + offset.X;
-                int drawY = itemPos.Y + offset.Y;
+                int drawX = itemPos.X *tileSize + offset.X;
+                int drawY = itemPos.Y *tileSize+ offset.Y;
                 Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
-                e.Graphics.DrawImage(itemImage, itemRect);
+                e.Graphics.DrawImage(dict[100], drawX, drawY, tileSize, tileSize);
+                //e.Graphics.DrawImage(dict[100], itemRect);
             }
 
             // 내 캐릭터 액자 프레임
@@ -874,6 +881,12 @@ namespace WindowsFormsApp4
                 this.KeyUp -= Map_KeyUp;
                 canMove = false;
             }
+        }
+        
+        private void drawItemBox()
+        {
+            Point offset = this.AutoScrollPosition;
+
         }
     }
 }
