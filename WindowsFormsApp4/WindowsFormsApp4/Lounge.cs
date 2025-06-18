@@ -171,7 +171,7 @@ namespace WindowsFormsApp4
                     ShowTransitionAsync("술래 준비 중...", 3000).ContinueWith(_ =>
                     {
                         this.BeginInvoke(new Action(() => {
-                            
+                            this.Hide();
                             foreach (var p in Players.players.Where(p => p != null))
                             {
                                 p.isReady = false;

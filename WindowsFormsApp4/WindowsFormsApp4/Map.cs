@@ -677,7 +677,51 @@ namespace WindowsFormsApp4
                 }
             }
 
-            // HP 바
+            // 이름 프레임 (화면 상단 왼쪽)
+            var nameInfo = new Rectangle(150, 10, 300, 100);
+            e.Graphics.DrawImage(Properties.Resources.info, nameInfo);
+            if (characterIndices.TryGetValue(AppState.CurrentUserId, out int myIdx2))
+            {
+                string myName = Players.players[AppState.CurrentUserId].Name;
+                using (var nameFont = new Font("맑은 고딕", 20, FontStyle.Bold))
+                using (var sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    e.Graphics.DrawString(
+                        myName,
+                        nameFont,
+                        Brushes.White, 
+                        nameInfo,
+                        sf
+                    );
+                }
+            }
+
+            // hp 프레임 (화면 상단 왼쪽)
+            var hpInfo = new Rectangle(150, 60, 300, 100);
+            e.Graphics.DrawImage(Properties.Resources.info, hpInfo);
+            var me = Players.players[AppState.CurrentUserId];
+            string hpText = $"{me.HP} / 100";
+            using (var hpFont = new Font("맑은 고딕", 20, FontStyle.Regular))
+            using (var sf2 = new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            })
+            {
+                e.Graphics.DrawString(
+                    hpText,
+                    hpFont,
+                    Brushes.White,
+                    hpInfo,
+                    sf2
+                );
+            }
+
+            // HP 바 (화면 상단 오른쪽)
             int frameW = Properties.Resources.hpBar.Width;
             int frameH = Properties.Resources.hpBar.Height;
             int gap = 0;
@@ -698,6 +742,21 @@ namespace WindowsFormsApp4
                 var fillRect = new Rectangle(gaugeX, gaugeY, fillW, gaugeHeight);
                 using (var brush = new SolidBrush(Color.Red))
                     e.Graphics.FillRectangle(brush, fillRect);
+                using (var nameFont = new Font("맑은 고딕", 10, FontStyle.Bold))
+                using (var sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    e.Graphics.DrawString(
+                        player.Name,
+                        nameFont,
+                        Brushes.White,
+                        frameRect,
+                        sf
+                    );
+                }
                 barY += frameRect.Height + gap;
             }
         }
