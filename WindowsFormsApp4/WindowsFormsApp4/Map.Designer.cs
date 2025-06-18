@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.hp_handling = new System.Windows.Forms.Timer(this.components);
-            this.spawn_timer = new System.Windows.Forms.Timer(this.components);
             this.stun = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
@@ -39,11 +38,6 @@
             // 
             this.hp_handling.Interval = 1000;
             this.hp_handling.Tick += new System.EventHandler(this.hp_handling_Tick);
-            // 
-            // spawn_timer
-            // 
-            this.spawn_timer.Interval = 10000;
-            this.spawn_timer.Tick += new System.EventHandler(this.spawn_timer_Tick);
             // 
             // stun
             // 
@@ -68,7 +62,6 @@
 
         private System.Windows.Forms.Timer animationTimer;
         private System.Windows.Forms.Timer hp_handling;
-        private System.Windows.Forms.Timer spawn_timer;
         private System.Windows.Forms.Timer stun;
     }
 }

@@ -28,7 +28,8 @@ namespace Server
         private static bool[] readyStatus = new bool[100];
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
         private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
-        
+        private static HashSet<(int, int)> boxes = new HashSet<(int, int)>();
+
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -212,6 +213,14 @@ namespace Server
                                 Console.WriteLine($"[DEATH]: {death_packet.playerTag}");
                                 await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
 
+                                break;
+                            case PacketType.itemRemove:
+                                var rp = ItemRemovePacket.FromBytes(packet);
+                                Console.WriteLine($"[{ip}] got item");
+                                if(boxes != null)
+                                {
+                                    boxes.Remove((rp.x, rp.y));
+                                }
                                 break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
@@ -397,7 +406,7 @@ namespace Server
             };
             int tileSize = 32, row = map.GetLength(0), col = map.GetLength(1);
             HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
-            HashSet<(int, int)> boxes = new HashSet<(int, int)>();
+            
             Random rand = new Random();
             while (true)
             {

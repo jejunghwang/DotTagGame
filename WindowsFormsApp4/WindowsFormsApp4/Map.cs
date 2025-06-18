@@ -834,23 +834,6 @@ namespace WindowsFormsApp4
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
 
-        private bool sqawnItem(int x, int y)
-        {
-            if (canPlaceTile.Contains(map[y, x]) && !boxes.Contains((x,y)))
-            {
-                PictureBox box = new PictureBox();
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private void spawn_timer_Tick(object sender, EventArgs e)
-        {
-
-        }
-
         private void stun_Tick(object sender, EventArgs e)
         {
             if (!canMove)
