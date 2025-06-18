@@ -27,6 +27,8 @@ namespace WindowsFormsApp4
         public int Y { get; set; }
         public int HP { get; set; }
         public int Speed { get; set; }
+
+        public int item { get; set; }
         public PictureBox Pbox { get; private set; }
         public Label NameLabel { get; private set; }
         public Label ReadyBubble { get; private set; }

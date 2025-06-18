@@ -285,10 +285,10 @@ namespace WindowsFormsApp4
                     foreach (var (id, (tag, px, py, charIdx)) in welcome.Entries)
                     {
                         int temp = (int)py;
-                        /*if (px == 937 && py == 270)
+                        if (px == 937 && py == 270)
                         {
                             temp += tag * 50;
-                        }*/
+                        }
                         AddOrUpdateCharacter(tag, (int)px, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
@@ -400,7 +400,7 @@ namespace WindowsFormsApp4
             await AppState.Connection.Stream.WriteAsync(readyPkt.ToBytes(), 0, readyPkt.ToBytes().Length);
         }
 
-        private void Map_KeyDown(object sender, KeyEventArgs e)
+        private async Task Map_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.W || e.KeyCode == Keys.A ||
                e.KeyCode == Keys.S || e.KeyCode == Keys.D)
@@ -410,7 +410,12 @@ namespace WindowsFormsApp4
             }
             else if(e.KeyCode == Keys.Space)
             {
-
+                if (Players.players[AppState.CurrentUserId].item != -1)
+                {
+                    var me = Players.players[AppState.CurrentUserId];
+                    var itemPkt = new ItemEffectPacket { effectType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
+                    await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                }
             }
         }
 
