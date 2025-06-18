@@ -30,6 +30,7 @@ namespace Server
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
         private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
         private static HashSet<(int, int)> boxes = new HashSet<(int, int)>();
+        private static int stunTag = -1;
 
         static async Task Main(string[] args) => await RunAsync();
 
@@ -140,6 +141,10 @@ namespace Server
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
                                 Positions[mv.playerId] = (mv.x, mv.y);
+                                if(mv.playerId == stunTag)
+                                {
+                                    break;
+                                }
                                 Console.WriteLine($"[MOVE] {mv.playerId}: ({Positions[mv.playerId].x},{Positions[mv.playerId].y})");
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
@@ -376,7 +381,13 @@ namespace Server
                 }
             }
         }
-
+        private static async Task stun(int playerTag)
+        {
+            stunTag = playerTag;
+            Console.WriteLine($"[{stunTag}] stun");
+            await Task.Delay(2000);
+            stunTag = -1;
+        }
         private static async Task CheckCollision(int playerTag)
         {
             int x1, y1;
@@ -388,6 +399,7 @@ namespace Server
                 if (playerTag == position.Key) continue;
                 if (charSize > Math.Abs((x2 + charSize / 2) - (x1 + charSize / 2)) + Math.Abs((y2 + charSize / 2) - (y1 + charSize / 2)))
                 {
+                    _ = Task.Run(() => stun(position.Key));
                     Console.WriteLine($"[{playerTag}] Collision {position.Key}");
                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = position.Key }.ToBytes());
                     curTagger = position.Key;

@@ -1034,7 +1034,6 @@ namespace WindowsFormsApp4
             pressedKeys.Clear();
             if (!canMove)
             {
-                Players.players[AppState.CurrentUserId].Speed = 5;
                 canMove = true;
                 this.KeyDown += Map_KeyDown;
                 this.KeyUp += Map_KeyUp;
