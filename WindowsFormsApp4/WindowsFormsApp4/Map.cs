@@ -1076,6 +1076,7 @@ namespace WindowsFormsApp4
         {
             if(speedup_timer.Enabled)
             {
+                Players.players[AppState.CurrentUserId].Speed = 5;
                 speedup_timer.Enabled = false;
             }
         }
