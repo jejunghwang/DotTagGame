@@ -46,6 +46,7 @@ namespace WindowsFormsApp4
         private System.Media.SoundPlayer loungeBgmPlayer;
         private System.Media.SoundPlayer buttonSoundPlayer;
         private bool isBgmPlaying = false;
+        private bool isAlternateBackground = false;
         private Label transitionLabel;
 
         public Lounge(Main mainForm)
@@ -618,7 +619,7 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = true;
             overlayPanel.BringToFront();
 
-            using (var set = new lbl_bgm_toggle(isBgmPlaying))
+            using (var set = new lbl_bgm_toggle(isBgmPlaying, isAlternateBackground))
             {
                 set.Owner = this;  // Owner가 Lounge임을 알려주고
                 set.StartPosition = FormStartPosition.CenterParent;
@@ -694,6 +695,23 @@ namespace WindowsFormsApp4
             else
                 loungeBgmPlayer?.Stop();
             isBgmPlaying = play;
+        }
+
+        public void SetBackgroundMode(bool alternate)
+        {
+            isAlternateBackground = alternate;
+
+            this.BackgroundImage = alternate
+                ? Properties.Resources.night   
+                : Properties.Resources.lounge1;    
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+        }
+
+        public void SetCustomBackgroundColor(Color color)
+        {
+            // 배경 이미지 대신 단색으로 칠할 경우
+            this.BackgroundImage = null;
+            this.BackColor = color;
         }
     }
 }
