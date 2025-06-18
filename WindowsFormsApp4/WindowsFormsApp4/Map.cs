@@ -445,13 +445,17 @@ namespace WindowsFormsApp4
                 if (!pressedKeys.Contains(e.KeyCode))
                     pressedKeys.Add(e.KeyCode);
             }
-            else if(e.KeyCode == Keys.Space)
+            else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
-                if (Players.players[AppState.CurrentUserId].item != -1)
+                var me = Players.players[AppState.CurrentUserId];
+                if (me.item < 100)
                 {
-                    var me = Players.players[AppState.CurrentUserId];
-                    var itemPkt = new ItemEffectPacket { effectType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
+                    var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                }
+                else
+                {
+                    //아이템 사용 준비
                 }
             }
         }
@@ -459,6 +463,10 @@ namespace WindowsFormsApp4
         private void Map_KeyUp(object sender, KeyEventArgs e)
         {
             pressedKeys.Remove(e.KeyCode);
+            if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item >= 100)
+            {
+                //아이템 사용
+            }
         }
         private void Map_Load(object sender, EventArgs e)
         {
@@ -687,16 +695,6 @@ namespace WindowsFormsApp4
                 }
             }
             // 아이템 맵에 추가
-            /*
-            foreach (var itemPos in itemPositions)
-            {
-                int drawX = itemPos.X *tileSize + offset.X;
-                int drawY = itemPos.Y *tileSize+ offset.Y;
-                Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
-                e.Graphics.DrawImage(dict[100], drawX, drawY, tileSize, tileSize);
-                //e.Graphics.DrawImage(dict[100], itemRect);
-            }
-            */
             foreach(var itemPos in itemBoxes)
             {
                 Rectangle pos = new Rectangle();

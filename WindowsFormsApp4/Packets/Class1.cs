@@ -598,10 +598,11 @@ public class CharacterSelectPacket : pHeader
     public class ItemEffectPacket : pHeader
     {
         public PacketType Type => PacketType.itemEffect;
-        public int packetLen = 17;
+        public int packetLen = 21;
         public int playerId;
-        public int effectType;
+        public int itemType;
         public int x, y;
+        public int dir = -1;
 
         public byte[] ToBytes()
         {
@@ -609,9 +610,10 @@ public class CharacterSelectPacket : pHeader
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
             buffer[4] = (byte)Type;
             BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
-            BitConverter.GetBytes(effectType).CopyTo(buffer, 9);
+            BitConverter.GetBytes(itemType).CopyTo(buffer, 9);
             BitConverter.GetBytes(x).CopyTo(buffer, 13);
             BitConverter.GetBytes(y).CopyTo(buffer, 17);
+            BitConverter.GetBytes(dir).CopyTo(buffer, 21);
             return buffer;
         }
 
@@ -620,9 +622,10 @@ public class CharacterSelectPacket : pHeader
             return new ItemEffectPacket
             {
                 playerId = BitConverter.ToInt32(buffer, 1),
-                effectType = (int)BitConverter.ToInt32(buffer, 5),
+                itemType = (int)BitConverter.ToInt32(buffer, 5),
                 x = BitConverter.ToInt32(buffer, 9),
-                y = BitConverter.ToInt32(buffer, 13)
+                y = BitConverter.ToInt32(buffer, 13),
+                dir = BitConverter.ToInt32(buffer, 17)
             };
         }
     }
