@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static CharacterSelectPacket;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace WindowsFormsApp4
 {
@@ -35,8 +36,8 @@ namespace WindowsFormsApp4
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
         private SoundPlayer countDownBgm;
         private SoundPlayer gameBgmPlayer;
-
-        private readonly HashSet<int> walkableTiles = new HashSet<int> {-16,-15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5};
+        private bool canMove = true;
+        private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
 
         private Label countdownLabel = new Label();
         private Timer countdownTimer = new Timer();
@@ -319,6 +320,11 @@ namespace WindowsFormsApp4
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
+
+                    if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
+                    {
+                        stun.Enabled = true;
+                    }
 
                     initialTaggerName = Players.players[packet.playerTag].Name;
                     if (!isCountdownRunning && !hasInitialCountdownRun)
@@ -641,6 +647,50 @@ namespace WindowsFormsApp4
                 Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
                 e.Graphics.DrawImage(itemImage, itemRect);
             }
+
+            // 내 캐릭터 액자 프레임
+            var frameDest = new Rectangle(10, 10, 150, 150);
+            e.Graphics.DrawImage(Properties.Resources.frame, frameDest);
+            if (characterIndices.TryGetValue(AppState.CurrentUserId, out int myIdx))
+            {
+                string key = $"pang{myIdx}_front_1";
+                var avatar = Properties.Resources.ResourceManager.GetObject(key) as Image;
+                if (avatar != null)
+                {
+                    // 액자 안쪽에 살짝 여백(10px) 남기고 그리기
+                    var avatarRect = new Rectangle(
+                        frameDest.X + 20,
+                        frameDest.Y + 20,
+                        frameDest.Width - 40,
+                        frameDest.Height - 40
+                    );
+                    e.Graphics.DrawImage(avatar, avatarRect);
+                }
+            }
+
+            // HP 바
+            int frameW = Properties.Resources.hpBar.Width;
+            int frameH = Properties.Resources.hpBar.Height;
+            int gap = 0;
+            int barX = this.ClientSize.Width - frameW - 10;
+            int barY = 10;
+
+            foreach (var player in Players.players.Where(p => p != null))
+            {
+                var frameRect = new Rectangle(barX, barY, frameW, frameH);
+                e.Graphics.DrawImage(Properties.Resources.hpBar, frameRect);
+                int gaugeHeight = 25; 
+                int innerPaddingX = 4; // 분홍 영역 안쪽 여백
+                int gaugeY = barY + (frameH - gaugeHeight) / 2;
+                int gaugeX = barX + 62 + innerPaddingX;
+                int gaugeMaxW = frameW - 70 - innerPaddingX * 2;
+                double ratio = Math.Max(0, Math.Min(1, player.HP / 100.0));
+                int fillW = (int)(gaugeMaxW * ratio);
+                var fillRect = new Rectangle(gaugeX, gaugeY, fillW, gaugeHeight);
+                using (var brush = new SolidBrush(Color.Red))
+                    e.Graphics.FillRectangle(brush, fillRect);
+                barY += frameRect.Height + gap;
+            }
         }
 
 
@@ -655,6 +705,20 @@ namespace WindowsFormsApp4
             if (pressedKeys.Contains(Keys.A)) dirX = -1;
             if (pressedKeys.Contains(Keys.D)) dirX = +1;
             if (dirX == 0 && dirY == 0) return;
+
+            Direction dir = Direction.down;
+            if (dirX < 0) dir = Direction.left;
+            else if (dirX > 0) dir = Direction.right;
+            else if (dirY < 0) dir = Direction.up;
+            else if (dirY > 0) dir = Direction.down;
+
+            switch (dir)
+            {
+                case Direction.up: frames = upFrames; break;
+                case Direction.down: frames = downFrames; break;
+                case Direction.left: frames = leftFrames; break;
+                case Direction.right: frames = rightFrames; break;
+            }
 
             var me = Players.players[AppState.CurrentUserId];
             if (me == null) return;
@@ -751,10 +815,10 @@ namespace WindowsFormsApp4
             characterPositions[playerId] = new Point(x, y);
             characterIndices[playerId] = charIdx;
 
-            if (isLocal)
+            /*if (isLocal)
             {
                 frameIndex = (frameIndex + 1) % frames.Count;
-            }
+            }*/
 
             
             this.Invalidate();
@@ -775,6 +839,7 @@ namespace WindowsFormsApp4
                     }
                 }
             }
+            this.Invalidate();
         }
 
         private void Map_FormClosed(object sender, FormClosedEventArgs e)
@@ -794,7 +859,38 @@ namespace WindowsFormsApp4
             _ = AppState.Connection.Stream.WriteAsync(data, 0, data.Length);
         }
 
-        
+        private bool sqawnItem(int x, int y)
+        {
+            if (canPlaceTile.Contains(map[y, x]) && !boxes.Contains((x,y)))
+            {
+                PictureBox box = new PictureBox();
 
+                return true;
+            }
+
+            return false;
+        }
+
+        private void spawn_timer_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void stun_Tick(object sender, EventArgs e)
+        {
+            if (!canMove)
+            {
+                canMove = true;
+                this.KeyUp += Map_KeyUp;
+                this.KeyDown += Map_KeyDown;
+                stun.Enabled = false;
+            }
+            else
+            {
+                this.KeyDown -= Map_KeyDown;
+                this.KeyUp -= Map_KeyUp;
+                canMove = false;
+            }
+        }
     }
 }
