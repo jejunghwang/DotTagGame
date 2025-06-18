@@ -392,7 +392,7 @@ namespace WindowsFormsApp4
 
                     if (Tag == AppState.CurrentUserId)
                         UpdateCameraPosition();
-
+                    Players.players[Tag].isTagger = false;
                     this.Invalidate();
                     break;
 

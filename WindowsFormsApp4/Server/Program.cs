@@ -103,6 +103,8 @@ namespace Server
                         if (packet == null || (PacketType)packet[0] == PacketType.disconnect) break;
                         byte[] wBuffer = new byte[4 + packet.Length];
                         BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
+                        Random rand = new Random();
+
                         switch ((PacketType)packet[0])
                         {
                             case PacketType.welcomeRequest:
@@ -184,12 +186,12 @@ namespace Server
                                     }
                                     
                                     await BroadCastAsync(new StartPacket().ToBytes());
-                                    Random rand = new Random();
                                     do
                                     {
                                         curTagger = rand.Next(0, 100);
                                     } while(!UsedTag[curTagger]);
                                     Console.WriteLine($"[SERVER] Initial Tagger = user {curTagger}");
+                                    UsedTag[curTagger] = false;
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
                                     _ = Task.Run(() => spawn_items());
                                 }
@@ -216,6 +218,15 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuf, 0);
                                 packet.CopyTo(wBuf, 4);
                                 await BroadCastAsync(wBuf);
+                                do
+                                {
+                                    curTagger = rand.Next(0, 100);
+                                } while (!UsedTag[curTagger]);
+
+                                UsedTag[curTagger] = false;
+                                await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
+                                Console.WriteLine($"[SERVER] New Tagger = user {curTagger}");
+
                                 break;
                             case PacketType.itemRemove:
                                 var rp = ItemRemovePacket.FromBytes(packet);
