@@ -30,7 +30,8 @@ namespace Packets
         itemRemove,
         itemPickUp,
         itemEffect,
-        usingCurseItem
+        usingCurseItem,
+        end
     }
     
     public interface pHeader
@@ -626,6 +627,30 @@ public class CharacterSelectPacket : pHeader
                 x = BitConverter.ToInt32(buffer, 9),
                 y = BitConverter.ToInt32(buffer, 13),
                 dir = BitConverter.ToInt32(buffer, 17)
+            };
+        }
+
+    }
+
+    public class EndPacket : pHeader
+    {
+        public PacketType Type => PacketType.end;
+        public int packetLen = 5;
+        public int playerId;
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[packetLen + 4];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerId).CopyTo(buffer, 5);
+            return buffer;
+        }
+
+        public static EndPacket FromBytes(byte[] buffer)
+        {
+            return new EndPacket
+            {
+                playerId = BitConverter.ToInt32(buffer, 1)
             };
         }
     }
