@@ -26,11 +26,6 @@ namespace WindowsFormsApp4
             pang3.Image = Properties.Resources.pang3_front_1;
             pang4.Image = Properties.Resources.pang4_front_1;
 
-            label1.Text = "";
-            label2.Text = "";
-            label3.Text = "";
-            label4.Text = "";
-
             // 각 PictureBox 클릭 시 인덱스 설정
             pang1.Click += (s, e) => Highlight(1);
             pang2.Click += (s, e) => Highlight(2);
