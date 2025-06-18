@@ -157,13 +157,24 @@ namespace Server
                                 await BroadCastAsync(wBuffer);
 
                                 readyStatus[ready.playerTag] = !readyStatus[ready.playerTag];
-                                
-                                bool dp = readyStatus[0] ^ UsedTag[0];
-                                for(int i=1; i<100; i++)
+
+                                bool isAllReady = false;
+                                for(int i=0; i<100; i++)
                                 {
-                                    dp = dp | (readyStatus[i] ^ UsedTag[i]);
+                                    if (UsedTag[i])
+                                    {
+                                        if (readyStatus[i])
+                                        {
+                                            isAllReady = true;
+                                        }
+                                        else
+                                        {
+                                            isAllReady = false;
+                                            break;
+                                        }
+                                    }
                                 }
-                                if (!dp)
+                                if (isAllReady)
                                 {
                                     
                                     for(int i=0; i<100; i++)
