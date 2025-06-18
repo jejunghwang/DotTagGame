@@ -616,6 +616,53 @@ namespace WindowsFormsApp4
                 Rectangle itemRect = new Rectangle(drawX, drawY, tileSize, tileSize);
                 e.Graphics.DrawImage(itemImage, itemRect);
             }
+
+            // 내 캐릭터 액자 프레임
+            var frameDest = new Rectangle(10, 10, 150, 150);
+            e.Graphics.DrawImage(Properties.Resources.frame, frameDest);
+            if (characterIndices.TryGetValue(AppState.CurrentUserId, out int myIdx))
+            {
+                string key = $"pang{myIdx}_front_1";
+                var avatar = Properties.Resources.ResourceManager.GetObject(key) as Image;
+                if (avatar != null)
+                {
+                    // 액자 안쪽에 살짝 여백(10px) 남기고 그리기
+                    var avatarRect = new Rectangle(
+                        frameDest.X + 20,
+                        frameDest.Y + 20,
+                        frameDest.Width - 40,
+                        frameDest.Height - 40
+                    );
+                    e.Graphics.DrawImage(avatar, avatarRect);
+                }
+            }
+
+            // HP 바
+            int barW = Properties.Resources.hpBar.Width;
+            int barH = Properties.Resources.hpBar.Height;
+            int gap = 0;
+            int hx = this.ClientSize.Width - barW - 10;
+            int hy = 10;
+
+            foreach (var player in Players.players.Where(p => p != null))
+            {
+                var bgRect = new Rectangle(hx, hy, barW, barH);
+                e.Graphics.DrawImage(Properties.Resources.hpBar, bgRect);
+                double ratio = player.HP / 100;
+                int fillW = (int)(barW * ratio);
+                if (fillW > 0)
+                {
+                    var srcRect = new Rectangle(0, 0, fillW, barH);
+                    var destRect = new Rectangle(hx, hy, fillW, barH);
+                    e.Graphics.DrawImage(
+                        Properties.Resources.hpBar,
+                        destRect,
+                        srcRect,
+                        GraphicsUnit.Pixel
+                    );
+                }
+                hy += bgRect.Height + gap;
+            }
         }
 
 
