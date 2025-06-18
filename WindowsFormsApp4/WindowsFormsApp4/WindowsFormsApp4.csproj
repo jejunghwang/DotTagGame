@@ -513,5 +513,14 @@
   <ItemGroup>
     <None Include="Resources\map_bgm.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hpBar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frame.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
