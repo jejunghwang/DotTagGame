@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static CharacterSelectPacket;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace WindowsFormsApp4
 {
@@ -640,30 +641,27 @@ namespace WindowsFormsApp4
             }
 
             // HP 바
-            int barW = Properties.Resources.hpBar.Width;
-            int barH = Properties.Resources.hpBar.Height;
+            int frameW = Properties.Resources.hpBar.Width;
+            int frameH = Properties.Resources.hpBar.Height;
             int gap = 0;
-            int hx = this.ClientSize.Width - barW - 10;
-            int hy = 10;
+            int barX = this.ClientSize.Width - frameW - 10;
+            int barY = 10;
 
             foreach (var player in Players.players.Where(p => p != null))
             {
-                var bgRect = new Rectangle(hx, hy, barW, barH);
-                e.Graphics.DrawImage(Properties.Resources.hpBar, bgRect);
-                double ratio = player.HP / 100;
-                int fillW = (int)(barW * ratio);
-                if (fillW > 0)
-                {
-                    var srcRect = new Rectangle(0, 0, fillW, barH);
-                    var destRect = new Rectangle(hx, hy, fillW, barH);
-                    e.Graphics.DrawImage(
-                        Properties.Resources.hpBar,
-                        destRect,
-                        srcRect,
-                        GraphicsUnit.Pixel
-                    );
-                }
-                hy += bgRect.Height + gap;
+                var frameRect = new Rectangle(barX, barY, frameW, frameH);
+                e.Graphics.DrawImage(Properties.Resources.hpBar, frameRect);
+                int gaugeHeight = 25; 
+                int innerPaddingX = 4; // 분홍 영역 안쪽 여백
+                int gaugeY = barY + (frameH - gaugeHeight) / 2;
+                int gaugeX = barX + 62 + innerPaddingX;
+                int gaugeMaxW = frameW - 70 - innerPaddingX * 2;
+                double ratio = Math.Max(0, Math.Min(1, player.HP / 100.0));
+                int fillW = (int)(gaugeMaxW * ratio);
+                var fillRect = new Rectangle(gaugeX, gaugeY, fillW, gaugeHeight);
+                using (var brush = new SolidBrush(Color.Red))
+                    e.Graphics.FillRectangle(brush, fillRect);
+                barY += frameRect.Height + gap;
             }
         }
 
@@ -813,6 +811,7 @@ namespace WindowsFormsApp4
                     }
                 }
             }
+            this.Invalidate();
         }
 
         private void Map_FormClosed(object sender, FormClosedEventArgs e)
