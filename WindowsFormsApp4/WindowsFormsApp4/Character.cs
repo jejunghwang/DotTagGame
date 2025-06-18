@@ -39,7 +39,7 @@ namespace WindowsFormsApp4
         private int animIndex = 0;
         private Direction dir = Direction.down;
 
-        public Character(string name, int charIdx, int x= 937, int y= 270, int hp=10, int speed=5)
+        public Character(string name, int charIdx, int x= 937, int y= 270, int hp=50, int speed=5)
         {
             Name = name;
             CharacterIndex = (charIdx >= 1 && charIdx <= 4) ? charIdx : 1;
