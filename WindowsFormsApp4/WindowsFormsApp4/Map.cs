@@ -688,7 +688,7 @@ namespace WindowsFormsApp4
                     e.Graphics.DrawString(
                         myName,
                         nameFont,
-                        Brushes.White,  // 시스템 브러시, using 하지 않습니다
+                        Brushes.White, 
                         nameInfo,
                         sf
                     );
@@ -732,11 +732,26 @@ namespace WindowsFormsApp4
                 int gaugeY = barY + (frameH - gaugeHeight) / 2;
                 int gaugeX = barX + 62 + innerPaddingX;
                 int gaugeMaxW = frameW - 70 - innerPaddingX * 2;
-                double ratio = Math.Max(0, Math.Min(1, player.HP / 50.0));
+                double ratio = Math.Max(0, Math.Min(1, player.HP / 100.0));
                 int fillW = (int)(gaugeMaxW * ratio);
                 var fillRect = new Rectangle(gaugeX, gaugeY, fillW, gaugeHeight);
                 using (var brush = new SolidBrush(Color.Red))
                     e.Graphics.FillRectangle(brush, fillRect);
+                using (var nameFont = new Font("맑은 고딕", 10, FontStyle.Bold))
+                using (var sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    e.Graphics.DrawString(
+                        player.Name,
+                        nameFont,
+                        Brushes.White,
+                        frameRect,
+                        sf
+                    );
+                }
                 barY += frameRect.Height + gap;
             }
         }
