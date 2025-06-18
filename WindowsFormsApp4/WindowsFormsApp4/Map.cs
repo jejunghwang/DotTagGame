@@ -348,6 +348,7 @@ namespace WindowsFormsApp4
                         this.KeyDown -= Map_KeyDown;
                         this.KeyUp -= Map_KeyUp;
                         stun.Enabled = true;
+                        Players.players[packet.playerTag].Speed = 7;
                     }
 
                     initialTaggerName = Players.players[packet.playerTag].Name;
