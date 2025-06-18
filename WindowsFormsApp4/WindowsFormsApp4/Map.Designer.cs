@@ -32,6 +32,7 @@
             this.animationTimer = new System.Windows.Forms.Timer(this.components);
             this.hp_handling = new System.Windows.Forms.Timer(this.components);
             this.spawn_timer = new System.Windows.Forms.Timer(this.components);
+            this.stun = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // hp_handling
@@ -44,12 +45,17 @@
             this.spawn_timer.Interval = 10000;
             this.spawn_timer.Tick += new System.EventHandler(this.spawn_timer_Tick);
             // 
+            // stun
+            // 
+            this.stun.Interval = 2000;
+            this.stun.Tick += new System.EventHandler(this.stun_Tick);
+            // 
             // Map
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(881, 496);
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "Map";
             this.Text = "Map";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Map_FormClosed);
@@ -63,5 +69,6 @@
         private System.Windows.Forms.Timer animationTimer;
         private System.Windows.Forms.Timer hp_handling;
         private System.Windows.Forms.Timer spawn_timer;
+        private System.Windows.Forms.Timer stun;
     }
 }

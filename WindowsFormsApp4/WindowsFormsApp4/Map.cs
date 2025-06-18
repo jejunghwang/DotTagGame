@@ -38,7 +38,7 @@ namespace WindowsFormsApp4
         private SoundPlayer gameBgmPlayer;
         private HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
         private HashSet<(int, int)> boxes = new HashSet<(int, int)>();
-
+        private bool canMove = true;
         private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
 
         private Label countdownLabel = new Label();
@@ -322,6 +322,11 @@ namespace WindowsFormsApp4
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
+
+                    if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
+                    {
+                        stun.Enabled = true;
+                    }
 
                     initialTaggerName = Players.players[packet.playerTag].Name;
                     if (!isCountdownRunning && !hasInitialCountdownRun)
@@ -846,6 +851,23 @@ namespace WindowsFormsApp4
         private void spawn_timer_Tick(object sender, EventArgs e)
         {
 
+        }
+
+        private void stun_Tick(object sender, EventArgs e)
+        {
+            if (!canMove)
+            {
+                canMove = true;
+                this.KeyUp += Map_KeyUp;
+                this.KeyDown += Map_KeyDown;
+                stun.Enabled = false;
+            }
+            else
+            {
+                this.KeyDown -= Map_KeyDown;
+                this.KeyUp -= Map_KeyUp;
+                canMove = false;
+            }
         }
     }
 }
