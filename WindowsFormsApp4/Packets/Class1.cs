@@ -29,7 +29,8 @@ namespace Packets
         itemSpawn,
         itemRemove,
         itemPickUp,
-        itemEffect
+        itemEffect,
+        usingCurseItem
     }
     
     public enum ItemType { }
@@ -426,15 +427,15 @@ public class CharacterSelectPacket : pHeader
         BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
         BitConverter.GetBytes(characterIndex).CopyTo(buffer, 9);
         return buffer;
-/*        var buf = new List<byte> { (byte)PacketType.characterSelect };
-        buf.AddRange(BitConverter.GetBytes(playerTag));
-        buf.AddRange(BitConverter.GetBytes(characterIndex));
-        return buf.ToArray();*/
+        /*        var buf = new List<byte> { (byte)PacketType.characterSelect };
+                buf.AddRange(BitConverter.GetBytes(playerTag));
+                buf.AddRange(BitConverter.GetBytes(characterIndex));
+                return buf.ToArray();*/
     }
     public static CharacterSelectPacket FromBytes(byte[] data)
     {
         return new CharacterSelectPacket {
-            playerTag      = BitConverter.ToInt32(data, 1),
+            playerTag = BitConverter.ToInt32(data, 1),
             characterIndex = BitConverter.ToInt32(data, 5)
         };
     }
@@ -482,6 +483,29 @@ public class CharacterSelectPacket : pHeader
             return new DeathPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
         }
     }
+
+    public class UseCurseItemPacket : pHeader
+    {
+        public PacketType Type => PacketType.usingCurseItem;
+
+        int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[4 + packetLen];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+            return buffer;
+        }
+
+        public static UseCurseItemPacket FromBytes(byte[] buffer)
+        {
+            return new UseCurseItemPacket { playerTag = BitConverter.ToInt32((byte[])buffer, 1) };
+        }
+    }
+
     public class ItemSpawnPacket : pHeader
     {
         public PacketType Type => PacketType.itemSpawn;
@@ -514,8 +538,8 @@ public class CharacterSelectPacket : pHeader
     public class ItemRemovePacket : pHeader
     {
         public PacketType Type => PacketType.itemRemove;
-        public int packetLen = 5;
-        public int ItemId;
+        public int packetLen = 9;
+        public int x, y;
         public byte[] ToBytes()
         {
 
@@ -524,7 +548,8 @@ public class CharacterSelectPacket : pHeader
             BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
 
             buffer[4] = (byte)Type;
-            BitConverter.GetBytes(ItemId).CopyTo(buffer, 5);
+            BitConverter.GetBytes(x).CopyTo(buffer, 5);
+            BitConverter.GetBytes(y).CopyTo(buffer, 9);
 
             return buffer;
         }
@@ -533,7 +558,8 @@ public class CharacterSelectPacket : pHeader
         {
             return new ItemRemovePacket
             {
-                ItemId = BitConverter.ToInt32(buffer, 1)
+                x = BitConverter.ToInt32(buffer, 1),
+                y = BitConverter.ToInt32(buffer, 5)
             };
         }
     }

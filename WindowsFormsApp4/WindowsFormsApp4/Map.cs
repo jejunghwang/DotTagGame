@@ -35,8 +35,6 @@ namespace WindowsFormsApp4
         private Dictionary<int,Image> dict=new Dictionary<int,Image>();
         private SoundPlayer countDownBgm;
         private SoundPlayer gameBgmPlayer;
-        private HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
-        private HashSet<(int, int)> boxes = new HashSet<(int, int)>();
         private bool canMove = true;
         private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
 
