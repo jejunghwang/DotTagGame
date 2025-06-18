@@ -550,5 +550,29 @@
   <ItemGroup>
     <None Include="Resources\night.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\banana.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\heal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sightCurse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\spider.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\teleport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\transparency.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\turtle.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
