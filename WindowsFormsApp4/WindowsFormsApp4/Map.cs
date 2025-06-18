@@ -672,6 +672,10 @@ namespace WindowsFormsApp4
                 }
             }
 
+            var itemFrame = new Rectangle(10, 160, 150, 150);
+            e.Graphics.DrawImage(Properties.Resources.itemFrame, itemFrame);
+
+
             // 이름 프레임 (화면 상단 왼쪽)
             var nameInfo = new Rectangle(150, 10, 300, 100);
             e.Graphics.DrawImage(Properties.Resources.info, nameInfo);
@@ -894,11 +898,14 @@ namespace WindowsFormsApp4
                 var player = Players.players[i];
                 if (player != null && player.isTagger)
                 {
-                    player.HP-=2;
-                    if(player.HP == 0)
+                    if(player.HP > 0)
                     {
-                        byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
-                        await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
+                        player.HP -= 2;
+                        if (player.HP == 0)
+                        {
+                            byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
+                            await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
+                        }
                     }
                 }
             }
