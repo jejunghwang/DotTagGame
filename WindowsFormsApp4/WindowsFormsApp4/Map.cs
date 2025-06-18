@@ -345,6 +345,8 @@ namespace WindowsFormsApp4
 
                     if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
                     {
+                        this.KeyDown -= Map_KeyDown;
+                        this.KeyUp -= Map_KeyUp;
                         stun.Enabled = true;
                     }
 
@@ -1029,17 +1031,16 @@ namespace WindowsFormsApp4
 
         private void stun_Tick(object sender, EventArgs e)
         {
+            pressedKeys.Clear();
             if (!canMove)
             {
                 canMove = true;
-                this.KeyUp += Map_KeyUp;
                 this.KeyDown += Map_KeyDown;
+                this.KeyUp += Map_KeyUp;
                 stun.Enabled = false;
             }
             else
             {
-                this.KeyDown -= Map_KeyDown;
-                this.KeyUp -= Map_KeyUp;
                 canMove = false;
             }
         }
