@@ -608,6 +608,29 @@ namespace WindowsFormsApp4
 
             stream.Dispose();
         }
+
+        private void btn_setting_Click(object sender, EventArgs e)
+        {
+            PlayButtonSound();
+
+            animationTimer.Stop();
+            pressedKeys.Clear();
+            overlayPanel.Visible = true;
+            overlayPanel.BringToFront();
+
+            using (var set = new Setting(isBgmPlaying))
+            {
+                set.Owner = this;  // Owner가 Lounge임을 알려주고
+                set.StartPosition = FormStartPosition.CenterParent;
+                set.ShowDialog();
+            }
+
+            overlayPanel.Visible = false;
+            pressedKeys.Clear();
+            animationTimer.Start();
+
+        }
+
         private Task ShowTransitionAsync(string message, int delayMs)
         {
             int dotCount = 0;
@@ -662,6 +685,15 @@ namespace WindowsFormsApp4
                     transitionLabel.Visible = false;
                 }));
             });
+        }
+
+        public void ToggleBgm(bool play)
+        {
+            if (play)
+                loungeBgmPlayer?.PlayLooping();
+            else
+                loungeBgmPlayer?.Stop();
+            isBgmPlaying = play;
         }
     }
 }

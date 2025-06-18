@@ -36,6 +36,7 @@
             this.guna2ShapesTool1 = new Guna.UI2.WinForms.Guna2ShapesTool(this.components);
             this.btn_ready = new Guna.UI2.WinForms.Guna2Button();
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.btn_setting = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -82,10 +83,10 @@
             this.btn_select.FillColor = System.Drawing.Color.Transparent;
             this.btn_select.Font = new System.Drawing.Font("휴먼둥근헤드라인", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_select.ForeColor = System.Drawing.Color.DarkOrange;
-            this.btn_select.Location = new System.Drawing.Point(39, 28);
+            this.btn_select.Location = new System.Drawing.Point(138, 17);
             this.btn_select.Name = "btn_select";
             this.btn_select.ShadowDecoration.BorderRadius = 3;
-            this.btn_select.Size = new System.Drawing.Size(274, 111);
+            this.btn_select.Size = new System.Drawing.Size(265, 111);
             this.btn_select.TabIndex = 3;
             this.btn_select.Text = "캐릭터 선택";
             this.btn_select.Click += new System.EventHandler(this.btn_select_Click);
@@ -130,12 +131,31 @@
             this.guna2PictureBox1.TabIndex = 6;
             this.guna2PictureBox1.TabStop = false;
             // 
+            // btn_setting
+            // 
+            this.btn_setting.BackColor = System.Drawing.Color.Transparent;
+            this.btn_setting.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.settingButton;
+            this.btn_setting.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btn_setting.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_setting.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_setting.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_setting.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_setting.FillColor = System.Drawing.Color.Transparent;
+            this.btn_setting.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btn_setting.ForeColor = System.Drawing.Color.White;
+            this.btn_setting.Location = new System.Drawing.Point(35, 32);
+            this.btn_setting.Name = "btn_setting";
+            this.btn_setting.Size = new System.Drawing.Size(89, 80);
+            this.btn_setting.TabIndex = 7;
+            this.btn_setting.Click += new System.EventHandler(this.btn_setting_Click);
+            // 
             // Lounge
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackgroundImage = global::WindowsFormsApp4.Properties.Resources.lounge1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 744);
+            this.Controls.Add(this.btn_setting);
             this.Controls.Add(this.guna2PictureBox1);
             this.Controls.Add(this.btn_ready);
             this.Controls.Add(this.btn_select);
@@ -161,5 +181,6 @@
         private Guna.UI2.WinForms.Guna2ShapesTool guna2ShapesTool1;
         private Guna.UI2.WinForms.Guna2Button btn_ready;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
+        private Guna.UI2.WinForms.Guna2Button btn_setting;
     }
 }
