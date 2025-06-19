@@ -151,12 +151,12 @@ namespace WindowsFormsApp4
             // 아이템 이미지 초기화
             itemIcons[0] = Properties.Resources.speedUp;    // 0: 이속
             itemIcons[1] = Properties.Resources.turtle;     // 1: 감속
-            itemIcons[2] = Properties.Resources.heal;       // 2: HP 회복
+            itemIcons[2] = Properties.Resources.keyCurse;       // 2: HP 회복
             itemIcons[3] = Properties.Resources.hpCurse;    // 3: HP 저주
             itemIcons[4] = Properties.Resources.shield;     // 4: 보호막
             itemIcons[5] = Properties.Resources.transparency; // 5: 투명화
             itemIcons[6] = Properties.Resources.teleport;   // 6: 순간이동
-            itemIcons[7] = Properties.Resources.keyCurse; // 7: 방향저주
+            itemIcons[7] = Properties.Resources.heal; // 7: 방향저주
             itemIcons[8] = Properties.Resources.sightCurse; // 8: 시야저주
 
             for (int i = 0; i < Players.players.Length; i++)
@@ -523,11 +523,11 @@ namespace WindowsFormsApp4
                             break;
                     }
                 }*/
-                /*if(me.item == 0)
+                if (me.item == 0)
                 {
                     Players.players[AppState.CurrentUserId].Speed = 10;
                     speedup_timer.Enabled = true;
-                }*/
+                }
 
                 if (me.item < 100)
                 {
