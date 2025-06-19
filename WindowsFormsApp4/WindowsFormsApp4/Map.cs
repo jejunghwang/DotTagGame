@@ -423,11 +423,11 @@ namespace WindowsFormsApp4
                             Players.players[effect.playerId].HP = Players.players[effect.playerId].HP > 70 ? 100 : Players.players[effect.playerId].HP + 30;
                             break;
                         case 4:  //HP 저주
-                            foreach (var player in Players.players)
+                            for(int i = 0; i < Players.players.Length; i++)
                             {
-                                if (player != null && effect.playerId != AppState.CurrentUserId)
+                                if (Players.players[i] != null && i != effect.playerId)
                                 {
-                                    player.HP = player.HP < 32 ? 2 : player.HP - 30;
+                                    Players.players[i].HP = Players.players[i].HP < 32 ? 2 : Players.players[i].HP - 30;
                                 }
                             }
                             break;
