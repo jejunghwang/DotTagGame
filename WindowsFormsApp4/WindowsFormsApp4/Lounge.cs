@@ -575,6 +575,10 @@ namespace WindowsFormsApp4
                     ApplyCharacterSelection(AppState.CurrentUserId, idx);
                 }
             }
+            foreach(var character in Players.players)
+            {
+                character.HP = 100;
+            }
             overlayPanel.Visible = false;
             pressedKeys.Clear();
             animationTimer.Start();

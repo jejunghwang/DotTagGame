@@ -384,19 +384,20 @@ namespace WindowsFormsApp4
                     switch (effect.itemType)
                     {
                         case 1:
-                            if (effect.playerId == AppState.CurrentUserId)
+                            if (effect.playerId != AppState.CurrentUserId)
                             {
-                            }
-                            else
-                            {
+                                Players.players[AppState.CurrentUserId].Speed = 3;
+                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                item_duration.Enabled = true;
                             }
                             break;
                         case 2:
-                            if (effect.playerId == AppState.CurrentUserId)
+                            if (effect.playerId != AppState.CurrentUserId)
                             {
-                            }
-                            else
-                            {
+                                Players.players[AppState.CurrentUserId].Speed = -Players.players[AppState.CurrentUserId].Speed;
+                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                item_duration.Enabled = true;
+
                             }
                             break;
                         default:
@@ -480,6 +481,7 @@ namespace WindowsFormsApp4
                 {
                     var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                    Players.players[AppState.CurrentUserId].item = -1;
                 }
                 else
                 {
@@ -1014,10 +1016,10 @@ namespace WindowsFormsApp4
                 var player = Players.players[i];
                 if (player != null && player.isTagger)
                 {
-                    if(player.HP > 0)
+                    if(player.HP >= 0)
                     {
                         player.HP -= 2;
-                        if (player.HP == 0)
+                        if (player.HP <= 0)
                         {
                             byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
                             await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
@@ -1108,6 +1110,18 @@ namespace WindowsFormsApp4
         {
             MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
             this.Close();
+        }
+
+        private void item_duration_Tick(object sender, EventArgs e)
+        {
+            var me = Players.players[AppState.CurrentUserId];
+            if (me.itemDuration>0)
+            {
+                me.itemDuration--;
+                return;
+            }
+            item_duration.Enabled = false;
+            me.Speed = 5;
         }
     }
 }

@@ -28,6 +28,8 @@ namespace WindowsFormsApp4
         public int HP { get; set; }
         public int Speed { get; set; }
 
+        public int itemDuration { get; set; }
+
         public int item = -1;
         public PictureBox Pbox { get; private set; }
         public Label NameLabel { get; private set; }
@@ -49,7 +51,7 @@ namespace WindowsFormsApp4
             Y = y;
             HP = hp;
             Speed = speed;
-
+            itemDuration = 5;
             // 캐릭터 이미지
             Pbox = new PictureBox
             {
