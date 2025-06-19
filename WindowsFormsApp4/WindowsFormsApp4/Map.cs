@@ -301,7 +301,7 @@ namespace WindowsFormsApp4
                         {
                             temp += tag * 50;
                         }
-                        AddOrUpdateCharacter(tag, (int)px-5, temp, charIdx, tag == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px - 5, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
                     {
@@ -322,9 +322,9 @@ namespace WindowsFormsApp4
                     else
                     {
                         Rectangle me = new Rectangle(mv.x, mv.y, characterSize, characterSize);
-                        if(itemBoxes != null && !item_get.Enabled)
+                        if (itemBoxes != null && !item_get.Enabled)
                         {
-                            foreach(var box in itemBoxes)
+                            foreach (var box in itemBoxes)
                             {
                                 if (box.IntersectsWith(me))
                                 {
@@ -338,7 +338,7 @@ namespace WindowsFormsApp4
                 case PacketType.changeTagger:
                     var packet = ChangeTaggerPacket.FromBytes(body);
                     currentTaggerId = packet.playerTag;
-                   
+
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
@@ -352,7 +352,7 @@ namespace WindowsFormsApp4
                     }
                     else if (hasInitialCountdownRun && AppState.CurrentUserId != packet.playerTag) Players.players[AppState.CurrentUserId].Speed = 5;
 
-                        initialTaggerName = Players.players[packet.playerTag].Name;
+                    initialTaggerName = Players.players[packet.playerTag].Name;
                     if (!isCountdownRunning && !hasInitialCountdownRun)
                     {
                         StartCountdown(5);
@@ -381,13 +381,27 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.itemEffect:
                     var effect = ItemEffectPacket.FromBytes(body);
-                    if (effect.playerId == AppState.CurrentUserId)
+                    switch (effect.itemType)
                     {
-                        // 효과 추가
-                    }
-                    else
-                    {
-                        // 효과 추가
+                        case 1:
+                            if (effect.playerId == AppState.CurrentUserId)
+                            {
+                            }
+                            else
+                            {
+                            }
+                            break;
+                        case 2:
+                            if (effect.playerId == AppState.CurrentUserId)
+                            {
+                            }
+                            else
+                            {
+                            }
+                            break;
+                        default:
+                            break;
+
                     }
                     break;
                 case PacketType.itemRemove:
