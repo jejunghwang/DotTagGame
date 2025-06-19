@@ -18,6 +18,8 @@ namespace WindowsFormsApp4
     {
         private Main mainForm;
 
+        private string ip = "223.194.46.59";
+        private int port = 9999;
         public Login(Main mainForm)
         {
             InitializeComponent();
@@ -52,7 +54,7 @@ namespace WindowsFormsApp4
         private async void btn_enter_Click(object sender, EventArgs e)
         {
             btn_enter.Enabled = false;
-            await AppState.Connection.ConnectAsync("127.0.0.1", 9999);
+            await AppState.Connection.ConnectAsync(ip, port);
 
             var req = new LoginRequestPacket { id = txtId.Text, pw = txtPw.Text };
             var buf = req.ToBytes();
