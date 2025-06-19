@@ -424,7 +424,7 @@ namespace WindowsFormsApp4
                         case 4:  //HP 저주
                             foreach (var player in Players.players)
                             {
-                                if (effect.playerId != AppState.CurrentUserId)
+                                if (player != null && effect.playerId != AppState.CurrentUserId)
                                 {
                                     player.HP = player.HP < 32 ? 2 : player.HP - 30;
                                 }
