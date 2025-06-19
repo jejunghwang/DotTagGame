@@ -156,9 +156,9 @@ namespace WindowsFormsApp4
             itemIcons[2] = Properties.Resources.keyCurse;       // 2: 방향키 반전
             itemIcons[3] = Properties.Resources.heal;    // 3: HP 저주
             itemIcons[4] = Properties.Resources.hpCurse;     // 4: 보호막
-            itemIcons[5] = Properties.Resources.transparency; // 5: 투명화
+            itemIcons[5] = Properties.Resources.shield; // 5: 투명화
             itemIcons[6] = Properties.Resources.teleport;   // 6: 순간이동
-            itemIcons[7] = Properties.Resources.shield; // 7: 방향저주
+            itemIcons[7] = Properties.Resources.transparency; // 7: 방향저주
             itemIcons[8] = Properties.Resources.sightCurse; // 8: 시야저주
 
             for (int i = 0; i < Players.players.Length; i++)
