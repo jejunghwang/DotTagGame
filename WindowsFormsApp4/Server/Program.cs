@@ -186,7 +186,7 @@ namespace Server
                                 }
                                 if (isAllReady)
                                 {
-
+                                    isAllReady = false;
                                     for (int i = 0; i < 100; i++)
                                     {
                                         readyStatus[i] = false;
@@ -197,8 +197,9 @@ namespace Server
                                     int idx = new Random().Next(activeTags.Count);
                                     curTagger = activeTags[idx];
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
-                                    for(int i=0; i<7; i++)
-                                        _ = Task.Run(() => spawn_items());
+                                    for (int i = 0; i < 7; i++)
+                                        await spawn_items();
+                                            //_ = Task.Run(() => spawn_items());
                                 }
                                 break;
 
@@ -253,7 +254,8 @@ namespace Server
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
-                                _ = Task.Run(() => spawn_items());
+                                await spawn_items();
+                                //_ = Task.Run(() => spawn_items());
                                 break;
 
                             case PacketType.itemEffect:
