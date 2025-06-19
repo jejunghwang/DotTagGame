@@ -739,7 +739,7 @@ namespace WindowsFormsApp4
         private void DrawMap(object sender, PaintEventArgs e)
         {
             var now = DateTime.Now;
-            foreach (var pid in lastUsedAt.Where(kv => (now - kv.Value).TotalSeconds > 3).Select(kv => kv.Key).ToList())
+            foreach (var pid in lastUsedAt.Where(kv => (now - kv.Value).TotalSeconds > 5).Select(kv => kv.Key).ToList())
             {
                 lastUsedAt.Remove(pid);
                 lastUsedItem.Remove(pid);
