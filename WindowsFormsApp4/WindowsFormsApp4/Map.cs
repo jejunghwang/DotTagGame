@@ -781,8 +781,10 @@ namespace WindowsFormsApp4
                         float xText = drawX + (characterSize - textSize.Width) / 2;
                         float yText = drawY - textSize.Height - 2;
                         if (yText < 0) yText = 0;
-                        e.Graphics.DrawString(name, nameFont, Brushes.Black, xText + 1, yText + 1); // 그림자 효과
-                        e.Graphics.DrawString(name, nameFont, Brushes.White, xText, yText);
+                        Brush textBrush = playerId == AppState.CurrentUserId ? Brushes.Yellow : Brushes.White;
+                        Brush shadowBrush = playerId == AppState.CurrentUserId ? Brushes.Orange : Brushes.Black;
+                        e.Graphics.DrawString(name, nameFont, shadowBrush, xText + 1, yText + 1); // 그림자 효과
+                        e.Graphics.DrawString(name, nameFont, textBrush, xText, yText);
                     }
                 }
             }
@@ -1180,7 +1182,20 @@ namespace WindowsFormsApp4
 
         private void gameEnd(int winnerId)
         {
-            MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            /*MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            this.Close();*/
+
+            gameBgmPlayer.Stop();
+
+            var standings = Players.players.Where(c => c != null).OrderByDescending(c => c.HP).ToList();
+
+            using (var endForm = new Endding())
+            {
+                endForm.StartPosition = FormStartPosition.CenterScreen;
+                endForm.Standings = standings;
+                endForm.ShowDialog();
+            }
+
             this.Close();
         }
     }
