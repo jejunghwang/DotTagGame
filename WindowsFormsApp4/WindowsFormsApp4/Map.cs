@@ -772,8 +772,21 @@ namespace WindowsFormsApp4
                     }
 
                     DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
+
+                    // 캐릭터 머리 위에 이름 라벨
+                    string name = Players.players[playerId]?.Name ?? "";
+                    using (var nameFont = new Font("맑은 고딕", 12, FontStyle.Bold))
+                    {
+                        SizeF textSize = e.Graphics.MeasureString(name, nameFont);
+                        float xText = drawX + (characterSize - textSize.Width) / 2;
+                        float yText = drawY - textSize.Height - 2;
+                        if (yText < 0) yText = 0;
+                        e.Graphics.DrawString(name, nameFont, Brushes.Black, xText + 1, yText + 1); // 그림자 효과
+                        e.Graphics.DrawString(name, nameFont, Brushes.White, xText, yText);
+                    }
                 }
             }
+
             // 아이템 맵에 추가
             foreach(var itemPos in itemBoxes)
             {
