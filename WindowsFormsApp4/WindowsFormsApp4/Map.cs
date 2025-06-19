@@ -444,8 +444,17 @@ namespace WindowsFormsApp4
 
                             } while (!walkableTiles.Contains(map[i_y, i_x]));
 
-                            Players.players[AppState.CurrentUserId].SetPosition(i_x, i_y);
-                            SendPlayerPosition(i_x, i_y);
+                            int worldX = tileSize * i_x;
+                            int worldY = tileSize * i_y;
+
+                            Players.players[AppState.CurrentUserId].SetPosition(worldX, worldY);
+
+                            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
+                            AddOrUpdateCharacter(AppState.CurrentUserId, worldX, worldY, ci, true);
+                            UpdateCameraPosition();
+                            this.Invalidate();
+
+                            SendPlayerPosition(worldX, worldY);
                             break;
                         case 8:
                             if (effect.playerId != AppState.CurrentUserId)
@@ -866,7 +875,9 @@ namespace WindowsFormsApp4
 
             foreach (var player in shield)
             {
-                int x = Players.players[player].X + offset.X - characterSize/3, y = Players.players[player].Y + offset.Y - characterSize/3;
+                if (!characterPositions.TryGetValue(player, out var p))
+                    continue;
+                int x = p.X + offset.X - characterSize/3, y = p.Y + offset.Y - characterSize/3;
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 0, 0, 255)))
                 {
                     e.Graphics.FillEllipse(brush, x, y, 50, 50);
@@ -1299,7 +1310,7 @@ namespace WindowsFormsApp4
 
             this.Close();
         }
-
+        
         private void item_duration_Tick(object sender, EventArgs e)
         {
             var me = Players.players[AppState.CurrentUserId];

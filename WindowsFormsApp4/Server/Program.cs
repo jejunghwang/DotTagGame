@@ -482,7 +482,7 @@ namespace Server
 
             } while (!canPlaceTile.Contains(map[y, x]) || boxes.Contains((x, y)));
             boxes.Add((x, y));
-            itemType = rand.Next(0, 6);
+            itemType = rand.Next(0, 7);
             ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
             await BroadCastAsync(item.ToBytes());
             Console.WriteLine("spawn item");
