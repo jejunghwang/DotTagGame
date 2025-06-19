@@ -28,6 +28,8 @@ namespace WindowsFormsApp4
         public int HP { get; set; }
         public int Speed { get; set; }
 
+        public bool isTransparent { get; set; }
+
         public int itemDuration { get; set; }
 
         public int item = -1;
@@ -52,6 +54,7 @@ namespace WindowsFormsApp4
             HP = hp;
             Speed = speed;
             itemDuration = 5;
+            isTransparent = false;
             // 캐릭터 이미지
             Pbox = new PictureBox
             {

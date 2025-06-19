@@ -99,6 +99,10 @@ namespace WindowsFormsApp4
         private List<Point> itemPositions = new List<Point>(); // 아이템 위치
         private List<Rectangle> itemBoxes = new List<Rectangle>();
         private Dictionary<Rectangle, int> itemType = new Dictionary<Rectangle, int>();
+        private Dictionary<int, int> transparentDuration = new Dictionary<int, int>();
+        private HashSet<int> transparentPlayers = new HashSet<int>();
+        private int sightCursedDuration = 0;
+
         private Image itemImage = Properties.Resources.item;   // 아이템 이미지
         public Map()
         {
@@ -479,11 +483,16 @@ namespace WindowsFormsApp4
 
                             SendPlayerPosition(worldX, worldY);
                             break;
+                        case 7:
+                            transparentPlayers.Add(effect.playerId);
+                            transparentDuration[effect.playerId] = 5;
+                            item_duration.Enabled = true;
+                            break;
                         case 8:
                             if (effect.playerId != AppState.CurrentUserId)
                             {
                                 isSightCursed = true;
-                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                sightCursedDuration = 5;
                                 item_duration.Enabled = true;
                             }
                             break;
@@ -829,6 +838,19 @@ namespace WindowsFormsApp4
                     }
                 }
 
+                if (transparentPlayers.Contains(playerId))
+                {
+                    if (playerId == AppState.CurrentUserId)
+                    {
+                        alpha = 0.4f;
+                    }
+                    else
+                    {
+                        shouldDraw = false;
+                    }
+                }
+
+
                 if (shouldDraw)
                 {
                     Rectangle destRect = new Rectangle(drawX, drawY, characterSize, characterSize);
@@ -909,7 +931,6 @@ namespace WindowsFormsApp4
                 pos.Height = itemPos.Height;
                 e.Graphics.DrawImage(dict[100], pos);
             }
-            // … 아이템 그리기 끝난 직후
             if (isSightCursed)
             {
                 var Me = Players.players[AppState.CurrentUserId];
@@ -1381,18 +1402,48 @@ namespace WindowsFormsApp4
             overlayPanel.Visible = false;
             this.Close();
         }
-        
+
         private void item_duration_Tick(object sender, EventArgs e)
         {
             var me = Players.players[AppState.CurrentUserId];
-            if (me.itemDuration>0)
+            if (me.itemDuration > 0)
             {
                 me.itemDuration--;
-                return;
+
+                if (me.itemDuration == 0)
+                {
+                    me.Speed = 5;
+                }
             }
-            item_duration.Enabled = false;
-            me.Speed = 5;
-            isSightCursed = false;
+            if (transparentDuration.Count > 0)
+            {
+                var expired = new List<int>();
+                foreach (var kv in transparentDuration.ToList())
+                {
+                    transparentDuration[kv.Key]--;
+                    if (transparentDuration[kv.Key] <= 0)
+                        expired.Add(kv.Key);
+                }
+                foreach (int pid in expired)
+                {
+                    transparentDuration.Remove(pid);
+                    transparentPlayers.Remove(pid);
+                }
+            }
+            if (isSightCursed)
+            {
+                sightCursedDuration--;
+
+                if (sightCursedDuration <= 0)
+                {
+                    isSightCursed = false;
+                }
+            }
+            if (me.itemDuration <= 0 && transparentDuration.Count == 0 && sightCursedDuration <= 0)
+            {
+                item_duration.Enabled = false;
+            }
         }
+
     }
 }
