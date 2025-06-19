@@ -53,6 +53,8 @@ namespace WindowsFormsApp4
         private HashSet<int> shield = new HashSet<int>();
         private Panel overlayPanel;
         private Label transitionLabel;
+        private Dictionary<int, int> lastUsedItem = new Dictionary<int, int>();
+        private Dictionary<int, DateTime> lastUsedAt = new Dictionary<int, DateTime>();
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -489,6 +491,20 @@ namespace WindowsFormsApp4
                             break;
 
                     }
+                    if (effect.playerId != AppState.CurrentUserId && itemIcons.ContainsKey(effect.itemType))
+                    {
+                        lastUsedItem[effect.playerId] = effect.itemType;
+                        lastUsedAt[effect.playerId] = DateTime.Now;
+                        var clearTimer = new Timer { Interval = 3000 };
+                        clearTimer.Tick += (s, ev) =>
+                        {
+                            clearTimer.Stop();
+                            clearTimer.Dispose();
+                            lastUsedItem.Remove(effect.playerId);
+                            this.Invalidate(); 
+                        };
+                        clearTimer.Start();
+                    }
                     break;
                 case PacketType.itemRemove:
                     var remove = ItemRemovePacket.FromBytes(body);
@@ -561,6 +577,8 @@ namespace WindowsFormsApp4
             else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
                 var me = Players.players[AppState.CurrentUserId];
+                lastUsedItem[AppState.CurrentUserId] = me.item;
+                lastUsedAt[AppState.CurrentUserId] = DateTime.Now;
                 /*
                 if (me.item >= 0)
                 {
@@ -708,6 +726,13 @@ namespace WindowsFormsApp4
 
         private void DrawMap(object sender, PaintEventArgs e)
         {
+            var now = DateTime.Now;
+            foreach (var pid in lastUsedAt.Where(kv => (now - kv.Value).TotalSeconds > 3).Select(kv => kv.Key).ToList())
+            {
+                lastUsedAt.Remove(pid);
+                lastUsedItem.Remove(pid);
+            }
+
             Point offset = this.AutoScrollPosition;
             int rows = map.GetLength(0);
             int cols = map.GetLength(1);
@@ -985,11 +1010,14 @@ namespace WindowsFormsApp4
             int barX = this.ClientSize.Width - frameW - 10;
             int barY = 10;
 
-            foreach (var player in Players.players.Where(p => p != null))
+            for (int playerId = 0; playerId < Players.players.Length; playerId++)
             {
+                var player = Players.players[playerId];
+                if (player == null) continue;
+
                 var frameRect = new Rectangle(barX, barY, frameW, frameH);
                 e.Graphics.DrawImage(Properties.Resources.hpBar, frameRect);
-                int gaugeHeight = 25; 
+                int gaugeHeight = 25;
                 int innerPaddingX = 4; // 분홍 영역 안쪽 여백
                 int gaugeY = barY + (frameH - gaugeHeight) / 2;
                 int gaugeX = barX + 62 + innerPaddingX;
@@ -1013,6 +1041,15 @@ namespace WindowsFormsApp4
                         frameRect,
                         sf
                     );
+                }
+                if (lastUsedItem.TryGetValue(playerId, out int usedType) && itemIcons.TryGetValue(usedType, out Image ico))
+                {
+                    int iconSize = frameH - 8;
+                    var iconRect = new Rectangle(
+                        frameRect.Left - iconSize - 4,
+                        frameRect.Top + (frameH - iconSize) / 2,
+                        iconSize, iconSize);
+                    e.Graphics.DrawImage(ico, iconRect);
                 }
                 barY += frameRect.Height + gap;
             }
