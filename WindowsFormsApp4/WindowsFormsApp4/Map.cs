@@ -436,7 +436,7 @@ namespace WindowsFormsApp4
                         case 5: //방패
                             shield.Add(effect.playerId);
                             break;
-                        case 6:
+                        case 6: //tp
                             do
                             {
                                 i_x = random.Next(0, map.GetLength(0));
@@ -444,8 +444,17 @@ namespace WindowsFormsApp4
 
                             } while (!walkableTiles.Contains(map[i_y, i_x]));
 
-                            Players.players[AppState.CurrentUserId].SetPosition(i_x, i_y);
-                            SendPlayerPosition(i_x, i_y);
+                            int worldX = tileSize * i_x;
+                            int worldY = tileSize * i_y;
+
+                            Players.players[AppState.CurrentUserId].SetPosition(worldX, worldY);
+
+                            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var index) ? idx : 1;
+                            AddOrUpdateCharacter(AppState.CurrentUserId, worldX, worldY, ci, true);
+                            UpdateCameraPosition();
+                            this.Invalidate();
+
+                            SendPlayerPosition(worldX, worldY);
                             break;
 
                         default:
