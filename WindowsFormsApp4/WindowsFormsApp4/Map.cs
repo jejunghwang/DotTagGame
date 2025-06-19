@@ -422,14 +422,14 @@ namespace WindowsFormsApp4
                             }
                             break;
                         case 3:  //HP 회복
-                            Players.players[effect.playerId].HP = Players.players[effect.playerId].HP > 70 ? 100 : Players.players[effect.playerId].HP + 30;
+                            Players.players[effect.playerId].HP = Players.players[effect.playerId].HP > 84 ? 100 : Players.players[effect.playerId].HP + 16;
                             break;
                         case 4:  //HP 저주
                             for(int i = 0; i < Players.players.Length; i++)
                             {
                                 if (Players.players[i] != null && i != effect.playerId)
                                 {
-                                    Players.players[i].HP = ((Players.players[i].HP < 32) ? 2 : Players.players[i].HP - 30);
+                                    Players.players[i].HP = ((Players.players[i].HP < 18) ? 2 : Players.players[i].HP - 16);
                                 }
                             }
                             break;
