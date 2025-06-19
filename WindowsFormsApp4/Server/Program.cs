@@ -232,6 +232,7 @@ namespace Server
                                     int lastPlayerTag = alivePlayers.First();
                                     Console.WriteLine($"[SERVER] Game Over. Winner = user {lastPlayerTag}");
                                     await BroadCastAsync(new EndPacket { playerId = lastPlayerTag }.ToBytes());
+                                    break;
                                 }
 
                                 int index = new Random().Next(candidates.Count);
