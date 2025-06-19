@@ -255,6 +255,15 @@ namespace Server
                                 await BroadCastAsync(wBuffer);
                                 _ = Task.Run(() => spawn_items());
                                 break;
+
+                            case PacketType.itemEffect:
+                                var effect = ItemEffectPacket.FromBytes(packet);
+                                Console.Write($"[{ip}] used item {effect.itemType}");
+                                wBuf = new byte[4 + packet.Length];
+                                BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
+                                break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
                                 break;
