@@ -415,12 +415,12 @@ namespace Server
                 {
                     if (shield.Contains(position.Key))
                     {
-                        _ = Task.Run(() =>
+                        shield.Remove(position.Key);
+                        var sp = new ShieldPacket{ playerTag = position.Key };
+                        _ = Task.Run(async () =>
                         {
-                            shield.Remove(position.Key);
-                            Task.Delay(1000);
-                            var sp = new ShieldPacket{ playerTag = position.Key };
-                            _ = Task.Run(() => BroadCastAsync(sp.ToBytes()));
+                            await Task.Delay(1000);
+                            await BroadCastAsync(sp.ToBytes());
                             return;
                         });
                     }
