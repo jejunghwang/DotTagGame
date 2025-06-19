@@ -529,7 +529,7 @@ namespace WindowsFormsApp4
                     var die = DeathPacket.FromBytes(body);
                     int Tag = die.playerTag;         
                     Point respawnPos = new Point(1217, 400);
-
+                    Players.players[Tag].HP = 0;
                     characterPositions[Tag] = respawnPos;
                     characterDirections[Tag] = Direction.down;
                     if (Tag == AppState.CurrentUserId)
