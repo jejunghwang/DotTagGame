@@ -301,7 +301,7 @@ namespace WindowsFormsApp4
                         {
                             temp += tag * 50;
                         }
-                        AddOrUpdateCharacter(tag, (int)px, temp, charIdx, tag == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px-5, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
                     {
@@ -1029,17 +1029,21 @@ namespace WindowsFormsApp4
 
         private void stun_Tick(object sender, EventArgs e)
         {
+            pressedKeys.Clear();
             if (!canMove)
             {
+                Players.players[AppState.CurrentUserId].Speed = 5;
                 canMove = true;
-                this.KeyUp += Map_KeyUp;
-                this.KeyDown += Map_KeyDown;
+                //this.KeyUp += Map_KeyUp;
+                //this.KeyDown += Map_KeyDown;*/
                 stun.Enabled = false;
             }
             else
             {
-                this.KeyDown -= Map_KeyDown;
-                this.KeyUp -= Map_KeyUp;
+                Players.players[AppState.CurrentUserId].Speed = 0;
+
+                //this.KeyDown -= Map_KeyDown;
+                //this.KeyUp -= Map_KeyUp;
                 canMove = false;
             }
         }
@@ -1090,6 +1094,7 @@ namespace WindowsFormsApp4
         private void gameEnd(int winnerId)
         {
             MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            this.Close();
         }
     }
 }
