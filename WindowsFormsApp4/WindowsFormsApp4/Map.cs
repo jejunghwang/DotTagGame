@@ -490,7 +490,7 @@ namespace WindowsFormsApp4
             else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
                 var me = Players.players[AppState.CurrentUserId];
-
+                /*
                 if (me.item >= 0)
                 {
                     int usedType = me.item;
@@ -522,7 +522,7 @@ namespace WindowsFormsApp4
                             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
                             break;
                     }
-                }
+                }*/
                 /*if(me.item == 0)
                 {
                     Players.players[AppState.CurrentUserId].Speed = 10;
