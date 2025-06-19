@@ -449,7 +449,7 @@ namespace WindowsFormsApp4
 
                             Players.players[AppState.CurrentUserId].SetPosition(worldX, worldY);
 
-                            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var index) ? idx : 1;
+                            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
                             AddOrUpdateCharacter(AppState.CurrentUserId, worldX, worldY, ci, true);
                             UpdateCameraPosition();
                             this.Invalidate();
