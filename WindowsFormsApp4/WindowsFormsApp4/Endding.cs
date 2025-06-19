@@ -24,6 +24,7 @@ namespace WindowsFormsApp4
             if (Standings != null)
             {
                 dataGridView1.DataSource = Standings
+                    .OrderByDescending(c => c.HP)
                     .Select((c, idx) => new {
                         순위 = idx + 1,
                         이름 = c.Name,
@@ -32,6 +33,7 @@ namespace WindowsFormsApp4
                     .ToList();
             }
         }
+
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
