@@ -862,18 +862,15 @@ namespace WindowsFormsApp4
                 }
             }
 
-            // 아이템 맵에 추가
-            if (!isSightCursed)
+
+            foreach (var itemPos in itemBoxes)
             {
-                foreach (var itemPos in itemBoxes)
-                {
-                    Rectangle pos = new Rectangle();
-                    pos.X = itemPos.X + offset.X;
-                    pos.Y = itemPos.Y + offset.Y;
-                    pos.Width = itemPos.Width;
-                    pos.Height = itemPos.Height;
-                    e.Graphics.DrawImage(dict[100], pos);
-                }
+                Rectangle pos = new Rectangle();
+                pos.X = itemPos.X + offset.X;
+                pos.Y = itemPos.Y + offset.Y;
+                pos.Width = itemPos.Width;
+                pos.Height = itemPos.Height;
+                e.Graphics.DrawImage(dict[100], pos);
             }
             // … 아이템 그리기 끝난 직후
             if (isSightCursed)
@@ -889,7 +886,8 @@ namespace WindowsFormsApp4
                 {
                     path.AddEllipse(center.X - radius, center.Y - radius, radius * 2, radius * 2);
                     full.Exclude(path);
-                    using (var brush = new SolidBrush(Color.FromArgb(200, 0, 0, 0)))
+
+                    using (var brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0)))
                         e.Graphics.FillRegion(brush, full);
                 }
             }
