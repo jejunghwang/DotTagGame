@@ -845,6 +845,18 @@ namespace WindowsFormsApp4
                     }
 
                     DrawTransparentImage(e.Graphics, spriteToDraw, destRect, alpha);
+                    if (shield.Contains(playerId))
+                    {
+                        int sx = drawX - characterSize / 3;
+                        int sy = drawY - characterSize / 3;
+
+                        int shieldAlpha = (int)(alpha * 153);  // 0.6 * alpha 반영 (풀숲이면 0.4 곱해짐)
+
+                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(shieldAlpha, 0, 0, 255)))
+                        {
+                            e.Graphics.FillEllipse(brush, sx, sy, 50, 50);
+                        }
+                    }
 
                     // 캐릭터 머리 위에 이름 라벨
                     string name = Players.players[playerId]?.Name ?? "";
@@ -892,7 +904,7 @@ namespace WindowsFormsApp4
                 }
             }
 
-            foreach (var player in shield)
+            /*foreach (var player in shield)
             {
                 if (!characterPositions.TryGetValue(player, out var p))
                     continue;
@@ -901,7 +913,7 @@ namespace WindowsFormsApp4
                 {
                     e.Graphics.FillEllipse(brush, x, y, 50, 50);
                 }
-            }
+            }*/
 
             // 내 캐릭터 액자 프레임
             var frameDest = new Rectangle(10, 10, 150, 150);
