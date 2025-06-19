@@ -222,6 +222,13 @@ namespace Server
                                 Positions[curTagger] = (1217, 400);
                                 var ActiveTags = SessionMap.Keys.ToList();
                                 var candidates = SessionMap.Keys.Where(t => alivePlayers.Contains(t)).ToList();
+                                if (alivePlayers.Count == 1)
+                                {
+                                    int lastPlayerTag = alivePlayers.First();
+                                    Console.WriteLine($"[SERVER] Game Over. Winner = user {lastPlayerTag}");
+                                    await BroadCastAsync(new EndPacket { playerId = lastPlayerTag }.ToBytes());
+                                }
+
                                 int index = new Random().Next(candidates.Count);
 
                                 curTagger = ActiveTags[index];
