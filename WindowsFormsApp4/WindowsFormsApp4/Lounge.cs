@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static CharacterSelectPacket;
 
 namespace WindowsFormsApp4
 {

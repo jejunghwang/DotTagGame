@@ -31,7 +31,8 @@ namespace Packets
         itemPickUp,
         itemEffect,
         usingCurseItem,
-        end
+        end,
+        shield
     }
     
     public interface pHeader
@@ -652,6 +653,27 @@ public class CharacterSelectPacket : pHeader
             {
                 playerId = BitConverter.ToInt32(buffer, 1)
             };
+        }
+    }
+
+    public class ShieldPacket : pHeader
+    {
+        public PacketType Type => PacketType.shield;
+        public int packetLen = 5;
+        public int playerTag;
+
+        public byte[] ToBytes()
+        {
+            byte[] buffer = new byte[packetLen + 4];
+            BitConverter.GetBytes(packetLen).CopyTo(buffer, 0);
+            buffer[4] = (byte)Type;
+            BitConverter.GetBytes(playerTag).CopyTo(buffer, 5);
+            return buffer;
+        }
+
+        public static ShieldPacket FromBytes(byte[] buffer)
+        {
+            return new ShieldPacket { playerTag = BitConverter.ToInt32(buffer, 1) };
         }
     }
 }
