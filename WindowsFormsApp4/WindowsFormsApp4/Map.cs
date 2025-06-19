@@ -40,6 +40,7 @@ namespace WindowsFormsApp4
         private bool showTaggerMessage = false;
         private Timer taggerMessageTimer = new Timer();
         private readonly HashSet<int> walkableTiles = new HashSet<int> { -16, -15, -14, -13, -12, -11, -10, -9, -8, -5, -4, -3, -2, -1, 2, 3, 5 };
+        private bool localDead = false;
 
         private Label countdownLabel = new Label();
         private Timer countdownTimer = new Timer();
@@ -455,6 +456,7 @@ namespace WindowsFormsApp4
                         LoadCharacterFrames(ci);
                         frames = downFrames;
                         frameIndex = 0;
+                        localDead = true;
                     }
 
                     var obj = Players.players[Tag];
@@ -962,6 +964,33 @@ namespace WindowsFormsApp4
                     e.Graphics.DrawString(title, titleFont, Brushes.White, xTitle, yTitle);
                     e.Graphics.DrawString(instruction, instFont, instructionBrush, xInst, yInst);
                 }
+            }
+
+            if (localDead)
+            {
+                var g = e.Graphics;
+                // 전체 반투명 검정
+                using (var brush = new SolidBrush(Color.FromArgb(180, 0, 0, 0)))
+                    g.FillRectangle(brush, ClientRectangle);
+
+                // 가운데 “DIED”
+                string text = "DIED";
+                using (var font = new Font("맑은 고딕", 48, FontStyle.Bold))
+                using (var sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    g.DrawString(
+                        text,
+                        font,
+                        Brushes.Red,
+                        new RectangleF(0, 0, ClientSize.Width, ClientSize.Height),
+                        sf
+                    );
+                }
+
             }
         }
 
