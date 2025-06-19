@@ -415,14 +415,15 @@ namespace Server
                 {
                     if (shield.Contains(position.Key))
                     {
-                        var sp = new ShieldPacket{ playerTag = position.Key };
+                        int targetKey = position.Key;
+                        var sp = new ShieldPacket{ playerTag = targetKey };
                         _ = Task.Run(async () =>
                         {
                             await Task.Delay(1000);
-                            shield.Remove(position.Key);
+                            shield.Remove(targetKey);
                             await BroadCastAsync(sp.ToBytes());
-                            return;
                         });
+                        return;
                     }
                     _ = Task.Run(() => stun(position.Key));
                     Console.WriteLine($"[{playerTag}] Collision {position.Key}");
