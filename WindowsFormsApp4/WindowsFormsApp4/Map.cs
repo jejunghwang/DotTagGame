@@ -51,6 +51,8 @@ namespace WindowsFormsApp4
         Rectangle intersection;
         private Dictionary<int, Image> itemIcons = new Dictionary<int, Image>();
         private HashSet<int> shield = new HashSet<int>();
+        private Panel overlayPanel;
+        private Label transitionLabel;
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -166,6 +168,25 @@ namespace WindowsFormsApp4
                 if (Players.players[i] != null)
                     Players.players[i].item = -1;
             }
+
+            overlayPanel = new Panel();
+            overlayPanel.Dock = DockStyle.Fill;
+            overlayPanel.BackColor = Color.FromArgb(150, 0, 0, 0); // 반투명 검정
+            overlayPanel.Visible = false;
+            overlayPanel.BringToFront();
+
+            this.Controls.Add(overlayPanel);
+
+            transitionLabel = new Label
+            {
+                AutoSize = true,
+                Font = new Font("맑은 고딕", 24, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent
+            };
+            overlayPanel.Controls.Add(transitionLabel);
+            transitionLabel.Location = new Point((overlayPanel.Width - transitionLabel.Width) / 2, (overlayPanel.Height - transitionLabel.Height) / 2
+);
         }
 
         private void UpdateCountdownLabelPosition()
@@ -1298,6 +1319,8 @@ namespace WindowsFormsApp4
             this.Close();*/
 
             gameBgmPlayer.Stop();
+            overlayPanel.Visible = true;
+            overlayPanel.BringToFront();
 
             var standings = Players.players.Where(c => c != null).OrderByDescending(c => c.HP).ToList();
 
@@ -1308,6 +1331,7 @@ namespace WindowsFormsApp4
                 endForm.ShowDialog();
             }
 
+            overlayPanel.Visible = false;
             this.Close();
         }
         
