@@ -88,7 +88,7 @@ namespace WindowsFormsApp4
         };
         private int tileSize = 32;
         int characterSize = 32; // 캐릭터 크기
-
+        private bool isSightCursed = false;
         private int[,] bushZones; 
         private int nextZoneId = 1;
 
@@ -436,7 +436,7 @@ namespace WindowsFormsApp4
                         case 5: //방패
                             shield.Add(effect.playerId);
                             break;
-                        case 6:
+                        case 6: //텔레포트
                             do
                             {
                                 i_x = random.Next(0, map.GetLength(0));
@@ -447,7 +447,14 @@ namespace WindowsFormsApp4
                             Players.players[AppState.CurrentUserId].SetPosition(i_x, i_y);
                             SendPlayerPosition(i_x, i_y);
                             break;
-
+                        case 8:
+                            if (effect.playerId != AppState.CurrentUserId)
+                            {
+                                isSightCursed = true;
+                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                item_duration.Enabled = true;
+                            }
+                            break;
                         default:
                             break;
 
@@ -826,17 +833,38 @@ namespace WindowsFormsApp4
             }
 
             // 아이템 맵에 추가
-            foreach(var itemPos in itemBoxes)
+            if (!isSightCursed)
             {
-                Rectangle pos = new Rectangle();
-                pos.X = itemPos.X + offset.X;
-                pos.Y = itemPos.Y + offset.Y;
-                pos.Width = itemPos.Width;
-                pos.Height = itemPos.Height;
-                e.Graphics.DrawImage(dict[100], pos);
+                foreach (var itemPos in itemBoxes)
+                {
+                    Rectangle pos = new Rectangle();
+                    pos.X = itemPos.X + offset.X;
+                    pos.Y = itemPos.Y + offset.Y;
+                    pos.Width = itemPos.Width;
+                    pos.Height = itemPos.Height;
+                    e.Graphics.DrawImage(dict[100], pos);
+                }
+            }
+            // … 아이템 그리기 끝난 직후
+            if (isSightCursed)
+            {
+                var Me = Players.players[AppState.CurrentUserId];
+                Point center = new Point(
+                    Me.X + offset.X + characterSize / 2,
+                    Me.Y + offset.Y + characterSize / 2);
+                int radius = tileSize * 5;
+
+                using (var full = new Region(new Rectangle(0, 0, ClientSize.Width, ClientSize.Height)))
+                using (var path = new System.Drawing.Drawing2D.GraphicsPath())
+                {
+                    path.AddEllipse(center.X - radius, center.Y - radius, radius * 2, radius * 2);
+                    full.Exclude(path);
+                    using (var brush = new SolidBrush(Color.FromArgb(200, 0, 0, 0)))
+                        e.Graphics.FillRegion(brush, full);
+                }
             }
 
-            foreach(var player in shield)
+            foreach (var player in shield)
             {
                 int x = Players.players[player].X + offset.X - characterSize/3, y = Players.players[player].Y + offset.Y - characterSize/3;
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 0, 0, 255)))
@@ -997,6 +1025,7 @@ namespace WindowsFormsApp4
 
             if (localDead)
             {
+                isSightCursed = false;
                 var g = e.Graphics;
                 // 전체 반투명 검정
                 using (var brush = new SolidBrush(Color.FromArgb(180, 0, 0, 0)))
@@ -1281,6 +1310,7 @@ namespace WindowsFormsApp4
             }
             item_duration.Enabled = false;
             me.Speed = 5;
+            isSightCursed = false;
         }
     }
 }
