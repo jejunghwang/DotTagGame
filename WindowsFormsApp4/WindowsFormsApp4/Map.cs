@@ -868,7 +868,8 @@ namespace WindowsFormsApp4
                 {
                     path.AddEllipse(center.X - radius, center.Y - radius, radius * 2, radius * 2);
                     full.Exclude(path);
-                    using (var brush = new SolidBrush(Color.FromArgb(200, 0, 0, 0)))
+
+                    using (var brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0)))
                         e.Graphics.FillRegion(brush, full);
                 }
             }
