@@ -417,11 +417,11 @@ namespace Server
                     {
                         int targetKey = position.Key;
                         var sp = new ShieldPacket{ playerTag = targetKey };
+                        _ = Task.Run(() => BroadCastAsync(sp.ToBytes()));
                         _ = Task.Run(async () =>
                         {
                             await Task.Delay(1000);
                             shield.Remove(targetKey);
-                            await BroadCastAsync(sp.ToBytes());
                         });
                         return;
                     }
