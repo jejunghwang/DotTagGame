@@ -404,7 +404,7 @@ namespace WindowsFormsApp4
                     switch (effect.itemType)
                     {
                         case 1:  //이속 저하
-                            if (effect.playerId == AppState.CurrentUserId)
+                            if (effect.playerId != AppState.CurrentUserId)
                             {
                                 Players.players[AppState.CurrentUserId].Speed = 3;
                                 Players.players[AppState.CurrentUserId].itemDuration = 5;
@@ -412,7 +412,7 @@ namespace WindowsFormsApp4
                             }
                             break;
                         case 2:  //방향 전환
-                            if (effect.playerId == AppState.CurrentUserId)
+                            if (effect.playerId != AppState.CurrentUserId)
                             {
                                 Players.players[AppState.CurrentUserId].Speed = -Players.players[AppState.CurrentUserId].Speed;
                                 Players.players[AppState.CurrentUserId].itemDuration = 5;
