@@ -31,7 +31,7 @@ namespace Server
         private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
         private static HashSet<(int, int)> boxes = new HashSet<(int, int)>();
         private static int stunTag = -1;
-
+        private static Random rand = new Random();
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -457,7 +457,7 @@ namespace Server
             int row = map.GetLength(0), col = map.GetLength(1);
             HashSet<int> canPlaceTile = new HashSet<int> { 5, 2, -1, -2, -3, -4, -5, -8, -9, -10, -11, -12, -13, -14, -15, -16 };
             
-            Random rand = new Random();
+            //Random rand = new Random();
             int x, y, itemType;
             do
             {
