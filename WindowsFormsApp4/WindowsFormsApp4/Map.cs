@@ -427,7 +427,7 @@ namespace WindowsFormsApp4
                             {
                                 if (Players.players[i] != null && i != effect.playerId)
                                 {
-                                    Players.players[i].HP = Players.players[i].HP < 32 ? 2 : Players.players[i].HP - 30;
+                                    Players.players[i].HP = ((Players.players[i].HP < 32) ? 2 : Players.players[i].HP - 30);
                                 }
                             }
                             break;
