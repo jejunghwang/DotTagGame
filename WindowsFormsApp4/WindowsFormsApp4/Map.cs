@@ -401,6 +401,8 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.itemEffect:
                     var effect = ItemEffectPacket.FromBytes(body);
+                    int i_x, i_y;
+                    Random random = new Random();
                     switch (effect.itemType)
                     {
                         case 1:  //이속 저하
@@ -434,6 +436,18 @@ namespace WindowsFormsApp4
                         case 5: //방패
                             shield.Add(effect.playerId);
                             break;
+                        case 6:
+                            do
+                            {
+                                i_x = random.Next(0, map.GetLength(0));
+                                i_y = random.Next(0, map.GetLength(1));
+
+                            } while (!walkableTiles.Contains(map[i_y, i_x]));
+
+                            Players.players[AppState.CurrentUserId].SetPosition(i_x, i_y);
+                            SendPlayerPosition(i_x, i_y);
+                            break;
+
                         default:
                             break;
 
@@ -824,7 +838,7 @@ namespace WindowsFormsApp4
 
             foreach(var player in shield)
             {
-                int x = Players.players[player].X-characterSize/3, y = Players.players[player].Y-characterSize/3;
+                int x = Players.players[player].X + offset.X - characterSize/3, y = Players.players[player].Y + offset.Y - characterSize/3;
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 0, 0, 255)))
                 {
                     e.Graphics.FillEllipse(brush, x, y, 50, 50);

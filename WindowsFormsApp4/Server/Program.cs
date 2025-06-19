@@ -415,11 +415,11 @@ namespace Server
                 {
                     if (shield.Contains(position.Key))
                     {
-                        shield.Remove(position.Key);
                         var sp = new ShieldPacket{ playerTag = position.Key };
                         _ = Task.Run(async () =>
                         {
                             await Task.Delay(1000);
+                            shield.Remove(position.Key);
                             await BroadCastAsync(sp.ToBytes());
                             return;
                         });
