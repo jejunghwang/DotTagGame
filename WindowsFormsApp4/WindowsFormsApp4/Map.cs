@@ -1048,7 +1048,7 @@ namespace WindowsFormsApp4
         int interCount = 0;
         private void item_get_Tick(object sender, EventArgs e)
         {
-            Rectangle me = new Rectangle(Players.players[AppState.CurrentUserId].X, Players.players[AppState.CurrentUserId].Y, characterSize, characterSize);
+            Rectangle me = new Rectangle(Players.players[AppState.CurrentUserId].X - (characterSize / 2), Players.players[AppState.CurrentUserId].Y - (characterSize / 2), 2 * characterSize, 2 * characterSize);
             if (intersection.IntersectsWith(me))
             {
                 interCount++;
@@ -1059,7 +1059,7 @@ namespace WindowsFormsApp4
                 interCount = 0;
             }
 
-            if(interCount == 100)
+            if(interCount == 10)
             {
                 item_get.Enabled = false;
                 interCount = 0;

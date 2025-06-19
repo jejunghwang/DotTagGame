@@ -197,7 +197,7 @@ namespace Server
                                     int idx = new Random().Next(activeTags.Count);
                                     curTagger = activeTags[idx];
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
-                                    for(int i=0; i<5; i++)
+                                    for(int i=0; i<7; i++)
                                         _ = Task.Run(() => spawn_items());
                                 }
                                 break;
