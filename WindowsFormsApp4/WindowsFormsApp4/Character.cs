@@ -37,6 +37,8 @@ namespace WindowsFormsApp4
         public Label NameLabel { get; private set; }
         public Label ReadyBubble { get; private set; }
         public PictureBox BubbleBox { get; private set; }
+
+        public int TaggingTime { get; set; }
         public bool isTagger = false;
 
         public bool isReady = false;
@@ -55,6 +57,7 @@ namespace WindowsFormsApp4
             Speed = speed;
             itemDuration = 5;
             isTransparent = false;
+            TaggingTime = 0;
             // 캐릭터 이미지
             Pbox = new PictureBox
             {

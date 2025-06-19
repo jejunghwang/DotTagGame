@@ -36,6 +36,7 @@
             this.speedup_timer = new System.Windows.Forms.Timer(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.item_duration = new System.Windows.Forms.Timer(this.components);
+            this.taggerUlti = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // hp_handling
@@ -62,12 +63,17 @@
             this.item_duration.Interval = 1000;
             this.item_duration.Tick += new System.EventHandler(this.item_duration_Tick);
             // 
+            // taggerUlti
+            // 
+            this.taggerUlti.Interval = 1000;
+            this.taggerUlti.Tick += new System.EventHandler(this.taggerUlti_Tick);
+            // 
             // Map
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(881, 496);
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.ClientSize = new System.Drawing.Size(1259, 744);
+            this.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
             this.Name = "Map";
             this.Text = "Map";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Map_FormClosed);
@@ -85,5 +91,6 @@
         private System.Windows.Forms.Timer speedup_timer;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer item_duration;
+        private System.Windows.Forms.Timer taggerUlti;
     }
 }

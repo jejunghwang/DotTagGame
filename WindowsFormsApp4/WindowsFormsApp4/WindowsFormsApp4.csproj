@@ -598,5 +598,8 @@
   <ItemGroup>
     <None Include="Resources\enddingCredit.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\stun.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

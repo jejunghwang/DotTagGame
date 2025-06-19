@@ -102,6 +102,8 @@ namespace WindowsFormsApp4
         private Dictionary<int, int> transparentDuration = new Dictionary<int, int>();
         private HashSet<int> transparentPlayers = new HashSet<int>();
         private int sightCursedDuration = 0;
+        private bool isStunned = false;
+        private int stunDuration = 0;
 
         private Image itemImage = Properties.Resources.item;   // 아이템 이미지
         public Map()
@@ -168,6 +170,7 @@ namespace WindowsFormsApp4
             itemIcons[6] = Properties.Resources.teleport;   // 6: 순간이동
             itemIcons[7] = Properties.Resources.transparency; // 7: 방향저주
             itemIcons[8] = Properties.Resources.sightCurse; // 8: 시야저주
+            itemIcons[101] = Properties.Resources.stun; 
 
             for (int i = 0; i < Players.players.Length; i++)
             {
@@ -389,7 +392,11 @@ namespace WindowsFormsApp4
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
-
+                    if (packet.playerTag == AppState.CurrentUserId)
+                    {
+                        Players.players[packet.playerTag].TaggingTime = 10;
+                        taggerUlti.Enabled = true;
+                    }
                     if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
                     {
                         this.KeyDown -= Map_KeyDown;
@@ -497,6 +504,15 @@ namespace WindowsFormsApp4
                                 isSightCursed = true;
                                 sightCursedDuration = 5;
                                 item_duration.Enabled = true;
+                            }
+                            break;
+                        case 101:
+                            if (effect.playerId != AppState.CurrentUserId)
+                            {
+                                isStunned = true;
+                                stunDuration = 2;
+                                item_duration.Enabled = true;
+                                Players.players[AppState.CurrentUserId].Speed = 0;
                             }
                             break;
                         default:
@@ -638,7 +654,10 @@ namespace WindowsFormsApp4
                 }
                 else 
                 {
-                    //아이템 사용 준비
+                    var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
+                    await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                    Players.players[AppState.CurrentUserId].item = -1;
+                    taggerUlti.Enabled = true;
                 }
             }
         }
@@ -1297,6 +1316,8 @@ namespace WindowsFormsApp4
                         player.HP -= 2;
                         if (player.HP <= 0)
                         {
+                            player.TaggingTime = 1000;
+                            player.item = -1;
                             byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
                             await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
                         }
@@ -1442,11 +1463,37 @@ namespace WindowsFormsApp4
                     isSightCursed = false;
                 }
             }
-            if (me.itemDuration <= 0 && transparentDuration.Count == 0 && sightCursedDuration <= 0)
+            if (isStunned)
+            {
+                stunDuration--;
+                if (stunDuration <= 0)
+                {
+                    isStunned = false;
+                    me.Speed = 5;
+                }
+            }
+            if (me.itemDuration <= 0 && transparentDuration.Count == 0 && sightCursedDuration <= 0 && stunDuration <= 0)
             {
                 item_duration.Enabled = false;
             }
         }
 
+        private void taggerUlti_Tick(object sender, EventArgs e)
+        {
+            var tagger = Players.players[AppState.CurrentUserId];
+            if (!tagger.isTagger)
+            {
+                tagger.item = -1;
+                taggerUlti.Enabled = false;
+                return;
+            }
+            if (tagger.TaggingTime-- == 0)
+            {
+                tagger.item = 101;
+                tagger.TaggingTime = 10;
+                taggerUlti.Enabled = false;
+                this.Invalidate();
+            }
+        }
     }
 }
