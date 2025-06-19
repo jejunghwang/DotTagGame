@@ -824,7 +824,7 @@ namespace WindowsFormsApp4
 
             foreach(var player in shield)
             {
-                int x = Players.players[player].X + offset.X-characterSize/3, y = Players.players[player].Y + offset.Y-characterSize/3;
+                int x = Players.players[player].X-characterSize/3, y = Players.players[player].Y-characterSize/3;
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 0, 0, 255)))
                 {
                     e.Graphics.FillEllipse(brush, x, y, 50, 50);
