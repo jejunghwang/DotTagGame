@@ -345,6 +345,8 @@ namespace WindowsFormsApp4
 
                     if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
                     {
+                        this.KeyDown -= Map_KeyDown;
+                        this.KeyUp -= Map_KeyUp;
                         stun.Enabled = true;
                     }
 
@@ -1034,16 +1036,12 @@ namespace WindowsFormsApp4
             {
                 Players.players[AppState.CurrentUserId].Speed = 5;
                 canMove = true;
-                //this.KeyUp += Map_KeyUp;
-                //this.KeyDown += Map_KeyDown;*/
+                this.KeyDown += Map_KeyDown;
+                this.KeyUp += Map_KeyUp;
                 stun.Enabled = false;
             }
             else
             {
-                Players.players[AppState.CurrentUserId].Speed = 0;
-
-                //this.KeyDown -= Map_KeyDown;
-                //this.KeyUp -= Map_KeyUp;
                 canMove = false;
             }
         }
