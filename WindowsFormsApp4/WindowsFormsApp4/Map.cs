@@ -1377,7 +1377,7 @@ namespace WindowsFormsApp4
             {
                 item_get.Enabled = false;
                 interCount = 0;
-                Players.players[AppState.CurrentUserId].item = itemType[intersection];
+                if (Players.players[AppState.CurrentUserId].item!=101) Players.players[AppState.CurrentUserId].item = itemType[intersection];
 
                 ItemRemovePacket packet = new ItemRemovePacket { x = intersection.X, y = intersection.Y };
                 byte[] buffer = packet.ToBytes();
