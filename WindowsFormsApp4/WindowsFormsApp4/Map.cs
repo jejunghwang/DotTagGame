@@ -1088,7 +1088,7 @@ namespace WindowsFormsApp4
 
         private void gameEnd(int winnerId)
         {
-
+            MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
         }
     }
 }
