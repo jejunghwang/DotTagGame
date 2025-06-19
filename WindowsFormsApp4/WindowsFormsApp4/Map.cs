@@ -151,12 +151,12 @@ namespace WindowsFormsApp4
             // 아이템 이미지 초기화
             itemIcons[0] = Properties.Resources.speedUp;    // 0: 이속
             itemIcons[1] = Properties.Resources.turtle;     // 1: 감속
-            itemIcons[2] = Properties.Resources.heal;       // 2: HP 회복
-            itemIcons[3] = Properties.Resources.hpCurse;    // 3: HP 저주
-            itemIcons[4] = Properties.Resources.shield;     // 4: 보호막
+            itemIcons[2] = Properties.Resources.keyCurse;       // 2: 방향키 반전
+            itemIcons[3] = Properties.Resources.heal;    // 3: HP 저주
+            itemIcons[4] = Properties.Resources.hpCurse;     // 4: 보호막
             itemIcons[5] = Properties.Resources.transparency; // 5: 투명화
             itemIcons[6] = Properties.Resources.teleport;   // 6: 순간이동
-            itemIcons[7] = Properties.Resources.keyCurse; // 7: 방향저주
+            itemIcons[7] = Properties.Resources.shield; // 7: 방향저주
             itemIcons[8] = Properties.Resources.sightCurse; // 8: 시야저주
 
             for (int i = 0; i < Players.players.Length; i++)
@@ -401,22 +401,32 @@ namespace WindowsFormsApp4
                     var effect = ItemEffectPacket.FromBytes(body);
                     switch (effect.itemType)
                     {
-                        case 1:
-                            if (effect.playerId == AppState.CurrentUserId)
+                        case 1:  //이속 저하
+                            if (effect.playerId != AppState.CurrentUserId)
                             {
-                            }
-                            else
-                            {
-                            }
-                            break;
-                        case 2:
-                            if (effect.playerId == AppState.CurrentUserId)
-                            {
-                            }
-                            else
-                            {
+                                Players.players[AppState.CurrentUserId].Speed = 3;
+                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                item_duration.Enabled = true;
                             }
                             break;
+                        case 2:  //방향 전환
+                            if (effect.playerId != AppState.CurrentUserId)
+                            {
+                                Players.players[AppState.CurrentUserId].Speed = -Players.players[AppState.CurrentUserId].Speed;
+                                Players.players[AppState.CurrentUserId].itemDuration = 5;
+                                item_duration.Enabled = true;
+                            }
+                            break;
+                        case 3:  //HP 회복
+                            Players.players[effect.playerId].HP = Players.players[effect.playerId].HP > 70 ? 100 : Players.players[effect.playerId].HP + 30;
+                            break;
+                        case 4:  //HP 저주
+                            if (effect.playerId != AppState.CurrentUserId)
+                            {
+                                Players.players[effect.playerId].HP = Players.players[effect.playerId].HP < 32 ? 2 : Players.players[effect.playerId].HP - 30;
+                            }
+                            break;
+
                         default:
                             break;
 
@@ -489,7 +499,7 @@ namespace WindowsFormsApp4
             else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
                 var me = Players.players[AppState.CurrentUserId];
-
+                /*
                 if (me.item >= 0)
                 {
                     int usedType = me.item;
@@ -521,17 +531,18 @@ namespace WindowsFormsApp4
                             await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
                             break;
                     }
-                }
-                /*if(me.item == 0)
+                }*/
+                if (me.item == 0)
                 {
                     Players.players[AppState.CurrentUserId].Speed = 10;
                     speedup_timer.Enabled = true;
-                }*/
+                }
 
                 if (me.item < 100)
                 {
                     var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
+                    Players.players[AppState.CurrentUserId].item = -1;
                 }
                 else 
                 {
@@ -781,8 +792,10 @@ namespace WindowsFormsApp4
                         float xText = drawX + (characterSize - textSize.Width) / 2;
                         float yText = drawY - textSize.Height - 2;
                         if (yText < 0) yText = 0;
-                        e.Graphics.DrawString(name, nameFont, Brushes.Black, xText + 1, yText + 1); // 그림자 효과
-                        e.Graphics.DrawString(name, nameFont, Brushes.White, xText, yText);
+                        Brush textBrush = playerId == AppState.CurrentUserId ? Brushes.Yellow : Brushes.White;
+                        Brush shadowBrush = playerId == AppState.CurrentUserId ? Brushes.Orange : Brushes.Black;
+                        e.Graphics.DrawString(name, nameFont, shadowBrush, xText + 1, yText + 1); // 그림자 효과
+                        e.Graphics.DrawString(name, nameFont, textBrush, xText, yText);
                     }
                 }
             }
@@ -1086,10 +1099,10 @@ namespace WindowsFormsApp4
                 var player = Players.players[i];
                 if (player != null && player.isTagger)
                 {
-                    if(player.HP > 0)
+                    if(player.HP >= 0)
                     {
                         player.HP -= 2;
-                        if (player.HP == 0)
+                        if (player.HP <= 0)
                         {
                             byte[] buffer = new DeathPacket { playerTag = i }.ToBytes();
                             await AppState.Connection.Stream.WriteAsync(buffer, 0, buffer.Length);
@@ -1180,8 +1193,33 @@ namespace WindowsFormsApp4
 
         private void gameEnd(int winnerId)
         {
-            MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            /*MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            this.Close();*/
+
+            gameBgmPlayer.Stop();
+
+            var standings = Players.players.Where(c => c != null).OrderByDescending(c => c.HP).ToList();
+
+            using (var endForm = new Endding())
+            {
+                endForm.StartPosition = FormStartPosition.CenterScreen;
+                endForm.Standings = standings;
+                endForm.ShowDialog();
+            }
+
             this.Close();
+        }
+
+        private void item_duration_Tick(object sender, EventArgs e)
+        {
+            var me = Players.players[AppState.CurrentUserId];
+            if (me.itemDuration>0)
+            {
+                me.itemDuration--;
+                return;
+            }
+            item_duration.Enabled = false;
+            me.Speed = 5;
         }
     }
 }

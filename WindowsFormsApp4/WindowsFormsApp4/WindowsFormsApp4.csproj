@@ -54,6 +54,12 @@
   <ItemGroup>
     <Compile Include="AppState.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="Endding.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Endding.Designer.cs">
+      <DependentUpon>Endding.cs</DependentUpon>
+    </Compile>
     <Compile Include="Loading.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +128,9 @@
       <DependentUpon>Setting.cs</DependentUpon>
     </Compile>
     <Compile Include="TcpConnectionManager.cs" />
+    <EmbeddedResource Include="Endding.resx">
+      <DependentUpon>Endding.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
     </EmbeddedResource>
@@ -585,6 +594,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hpCurse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\enddingCredit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
