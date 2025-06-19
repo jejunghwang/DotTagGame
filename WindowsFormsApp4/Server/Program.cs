@@ -30,6 +30,7 @@ namespace Server
         private static ConcurrentDictionary<int, string> TagToId = new ConcurrentDictionary<int, string>();
         private static ConcurrentDictionary<int, int> TagToCharIdx = new ConcurrentDictionary<int, int>();
         private static HashSet<(int, int)> boxes = new HashSet<(int, int)>();
+        private static int stunTag = -1;
 
         static async Task Main(string[] args) => await RunAsync();
 
@@ -140,6 +141,10 @@ namespace Server
                             case PacketType.move:
                                 var mv = MovePacket.FromBytes(packet);
                                 Positions[mv.playerId] = (mv.x, mv.y);
+                                if(mv.playerId == stunTag)
+                                {
+                                    break;
+                                }
                                 Console.WriteLine($"[MOVE] {mv.playerId}: ({Positions[mv.playerId].x},{Positions[mv.playerId].y})");
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
@@ -192,7 +197,7 @@ namespace Server
                                     int idx = new Random().Next(activeTags.Count);
                                     curTagger = activeTags[idx];
                                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = curTagger }.ToBytes());
-                                    for(int i=0; i<5; i++)
+                                    for(int i=0; i<7; i++)
                                         _ = Task.Run(() => spawn_items());
                                 }
                                 break;
@@ -222,6 +227,14 @@ namespace Server
                                 Positions[curTagger] = (1217, 400);
                                 var ActiveTags = SessionMap.Keys.ToList();
                                 var candidates = SessionMap.Keys.Where(t => alivePlayers.Contains(t)).ToList();
+                                if (alivePlayers.Count == 1)
+                                {
+                                    int lastPlayerTag = alivePlayers.First();
+                                    Console.WriteLine($"[SERVER] Game Over. Winner = user {lastPlayerTag}");
+                                    await BroadCastAsync(new EndPacket { playerId = lastPlayerTag }.ToBytes());
+                                    break;
+                                }
+
                                 int index = new Random().Next(candidates.Count);
 
                                 curTagger = ActiveTags[index];
@@ -241,6 +254,15 @@ namespace Server
                                 packet.CopyTo(wBuffer, 4);
                                 await BroadCastAsync(wBuffer);
                                 _ = Task.Run(() => spawn_items());
+                                break;
+
+                            case PacketType.itemEffect:
+                                var effect = ItemEffectPacket.FromBytes(packet);
+                                Console.Write($"[{ip}] used item {effect.itemType}");
+                                wBuf = new byte[4 + packet.Length];
+                                BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
+                                packet.CopyTo(wBuffer, 4);
+                                await BroadCastAsync(wBuffer);
                                 break;
                             default:
                                 Console.WriteLine($"[{ip}] unknown packet.");
@@ -369,7 +391,13 @@ namespace Server
                 }
             }
         }
-
+        private static async Task stun(int playerTag)
+        {
+            stunTag = playerTag;
+            Console.WriteLine($"[{stunTag}] stun");
+            await Task.Delay(2000);
+            stunTag = -1;
+        }
         private static async Task CheckCollision(int playerTag)
         {
             int x1, y1;
@@ -381,6 +409,7 @@ namespace Server
                 if (playerTag == position.Key) continue;
                 if (charSize > Math.Abs((x2 + charSize / 2) - (x1 + charSize / 2)) + Math.Abs((y2 + charSize / 2) - (y1 + charSize / 2)))
                 {
+                    _ = Task.Run(() => stun(position.Key));
                     Console.WriteLine($"[{playerTag}] Collision {position.Key}");
                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = position.Key }.ToBytes());
                     curTagger = position.Key;

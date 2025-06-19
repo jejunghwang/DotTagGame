@@ -319,7 +319,7 @@ namespace WindowsFormsApp4
                         {
                             temp += tag * 50;
                         }
-                        AddOrUpdateCharacter(tag, (int)px, temp, charIdx, tag == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px - 5, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
                     {
@@ -340,9 +340,9 @@ namespace WindowsFormsApp4
                     else
                     {
                         Rectangle me = new Rectangle(mv.x, mv.y, characterSize, characterSize);
-                        if(itemBoxes != null && !item_get.Enabled)
+                        if (itemBoxes != null && !item_get.Enabled)
                         {
-                            foreach(var box in itemBoxes)
+                            foreach (var box in itemBoxes)
                             {
                                 if (box.IntersectsWith(me))
                                 {
@@ -356,15 +356,19 @@ namespace WindowsFormsApp4
                 case PacketType.changeTagger:
                     var packet = ChangeTaggerPacket.FromBytes(body);
                     currentTaggerId = packet.playerTag;
-                   
+
                     foreach (var p in Players.players.Where(p => p != null && p.isTagger))
                         p.SetTagger(false);
                     Players.players[packet.playerTag].isTagger = true;
 
                     if (hasInitialCountdownRun && AppState.CurrentUserId == packet.playerTag)
                     {
+                        this.KeyDown -= Map_KeyDown;
+                        this.KeyUp -= Map_KeyUp;
                         stun.Enabled = true;
+                        Players.players[packet.playerTag].Speed = 7;
                     }
+                    else if (hasInitialCountdownRun && AppState.CurrentUserId != packet.playerTag) Players.players[AppState.CurrentUserId].Speed = 5;
 
                     initialTaggerName = Players.players[packet.playerTag].Name;
                     if (!isCountdownRunning && !hasInitialCountdownRun)
@@ -395,13 +399,27 @@ namespace WindowsFormsApp4
                     break;
                 case PacketType.itemEffect:
                     var effect = ItemEffectPacket.FromBytes(body);
-                    if (effect.playerId == AppState.CurrentUserId)
+                    switch (effect.itemType)
                     {
-                        // 효과 추가
-                    }
-                    else
-                    {
-                        // 효과 추가
+                        case 1:
+                            if (effect.playerId == AppState.CurrentUserId)
+                            {
+                            }
+                            else
+                            {
+                            }
+                            break;
+                        case 2:
+                            if (effect.playerId == AppState.CurrentUserId)
+                            {
+                            }
+                            else
+                            {
+                            }
+                            break;
+                        default:
+                            break;
+
                     }
                     break;
                 case PacketType.itemRemove:
@@ -1088,24 +1106,23 @@ namespace WindowsFormsApp4
 
         private void stun_Tick(object sender, EventArgs e)
         {
+            pressedKeys.Clear();
             if (!canMove)
             {
                 canMove = true;
-                this.KeyUp += Map_KeyUp;
                 this.KeyDown += Map_KeyDown;
+                this.KeyUp += Map_KeyUp;
                 stun.Enabled = false;
             }
             else
             {
-                this.KeyDown -= Map_KeyDown;
-                this.KeyUp -= Map_KeyUp;
                 canMove = false;
             }
         }
         int interCount = 0;
         private void item_get_Tick(object sender, EventArgs e)
         {
-            Rectangle me = new Rectangle(Players.players[AppState.CurrentUserId].X, Players.players[AppState.CurrentUserId].Y, characterSize, characterSize);
+            Rectangle me = new Rectangle(Players.players[AppState.CurrentUserId].X - (characterSize / 2), Players.players[AppState.CurrentUserId].Y - (characterSize / 2), 2 * characterSize, 2 * characterSize);
             if (intersection.IntersectsWith(me))
             {
                 interCount++;
@@ -1116,7 +1133,7 @@ namespace WindowsFormsApp4
                 interCount = 0;
             }
 
-            if(interCount == 100)
+            if(interCount == 10)
             {
                 item_get.Enabled = false;
                 interCount = 0;
@@ -1143,13 +1160,15 @@ namespace WindowsFormsApp4
             if(speedup_timer.Enabled)
             {
                 Players.players[AppState.CurrentUserId].Speed = 5;
+                Players.players[AppState.CurrentUserId].item = -1;
                 speedup_timer.Enabled = false;
             }
         }
 
         private void gameEnd(int winnerId)
         {
-
+            MessageBox.Show($"게임이 종료되었습니다!\n승리자: Player {Players.players[winnerId].Name}", "게임 종료");
+            this.Close();
         }
     }
 }
