@@ -439,8 +439,8 @@ namespace WindowsFormsApp4
                         case 6: //텔레포트
                             do
                             {
-                                i_x = random.Next(0, map.GetLength(0));
-                                i_y = random.Next(0, map.GetLength(1));
+                                i_y = random.Next(0, map.GetLength(0));
+                                i_x = random.Next(0, map.GetLength(1));
 
                             } while (!walkableTiles.Contains(map[i_y, i_x]));
 
