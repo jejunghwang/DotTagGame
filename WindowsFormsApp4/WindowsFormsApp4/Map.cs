@@ -414,7 +414,7 @@ namespace WindowsFormsApp4
                         case 2:  //방향 전환
                             if (effect.playerId != AppState.CurrentUserId)
                             {
-                                Players.players[AppState.CurrentUserId].Speed = -Players.players[AppState.CurrentUserId].Speed;
+                                Players.players[AppState.CurrentUserId].Speed = -Math.Abs(Players.players[AppState.CurrentUserId].Speed);
                                 Players.players[AppState.CurrentUserId].itemDuration = 5;
                                 item_duration.Enabled = true;
                             }
