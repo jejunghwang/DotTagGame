@@ -514,4 +514,13 @@
   <data name="turtle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\turtle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="hpCurse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hpCurse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="keyCurse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\keyCurse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="speedUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\speedUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

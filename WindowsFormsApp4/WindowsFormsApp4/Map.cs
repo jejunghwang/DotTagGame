@@ -48,6 +48,7 @@ namespace WindowsFormsApp4
         private int remainingSeconds;
         private Point lockedScrollPosition;
         Rectangle intersection;
+        private Dictionary<int, Image> itemIcons = new Dictionary<int, Image>();
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -146,6 +147,23 @@ namespace WindowsFormsApp4
                 taggerMessageTimer.Stop();
                 this.Invalidate();  // 메시지 사라진 뒤 갱신
             };
+
+            // 아이템 이미지 초기화
+            itemIcons[0] = Properties.Resources.speedUp;    // 0: 이속
+            itemIcons[1] = Properties.Resources.turtle;     // 1: 감속
+            itemIcons[2] = Properties.Resources.heal;       // 2: HP 회복
+            itemIcons[3] = Properties.Resources.hpCurse;    // 3: HP 저주
+            itemIcons[4] = Properties.Resources.shield;     // 4: 보호막
+            itemIcons[5] = Properties.Resources.transparency; // 5: 투명화
+            itemIcons[6] = Properties.Resources.teleport;   // 6: 순간이동
+            itemIcons[7] = Properties.Resources.keyCurse; // 7: 방향저주
+            itemIcons[8] = Properties.Resources.sightCurse; // 8: 시야저주
+
+            for (int i = 0; i < Players.players.Length; i++)
+            {
+                if (Players.players[i] != null)
+                    Players.players[i].item = -1;
+            }
         }
 
         private void UpdateCountdownLabelPosition()
@@ -453,17 +471,51 @@ namespace WindowsFormsApp4
             else if(e.KeyCode == Keys.P && Players.players[AppState.CurrentUserId].item != -1)
             {
                 var me = Players.players[AppState.CurrentUserId];
-                if(me.item == 0)
+
+                if (me.item >= 0)
+                {
+                    int usedType = me.item;
+                    me.item = -1; // 프레임에서 아이콘 지우기
+                    this.Invalidate();
+
+                    switch (usedType)
+                    {
+                        case 0: // 이속 버프
+                            me.Speed = 10;
+                            speedup_timer.Enabled = true;
+                            break;
+                        case 1: // 감속
+                        case 2: // HP 회복
+                        case 3: // HP 저주
+                        case 4: // 보호막
+                        case 5: // 투명화
+                        case 6: // 순간이동
+                        case 7: // 방향저주
+                        case 8: // 시야저주
+                            var effectPkt = new ItemEffectPacket
+                            {
+                                itemType = usedType,
+                                playerId = AppState.CurrentUserId,
+                                x = me.X,
+                                y = me.Y
+                            };
+                            byte[] buf = effectPkt.ToBytes();
+                            await AppState.Connection.Stream.WriteAsync(buf, 0, buf.Length);
+                            break;
+                    }
+                }
+                /*if(me.item == 0)
                 {
                     Players.players[AppState.CurrentUserId].Speed = 10;
                     speedup_timer.Enabled = true;
-                }
-                else if (me.item < 100)
+                }*/
+
+                if (me.item < 100)
                 {
                     var itemPkt = new ItemEffectPacket { itemType = me.item, playerId = AppState.CurrentUserId, x = me.X, y = me.Y };
                     await AppState.Connection.Stream.WriteAsync(itemPkt.ToBytes(), 0, itemPkt.ToBytes().Length);
                 }
-                else
+                else 
                 {
                     //아이템 사용 준비
                 }
@@ -738,6 +790,13 @@ namespace WindowsFormsApp4
             var itemFrame = new Rectangle(10, 160, 150, 150);
             e.Graphics.DrawImage(Properties.Resources.itemFrame, itemFrame);
 
+            var me = Players.players[AppState.CurrentUserId]; 
+            if(me.item>=0 && itemIcons.TryGetValue(me.item, out var icon))
+            {
+                int pad = 20;
+                var iconRect = new Rectangle(itemFrame.X + pad, itemFrame.Y + pad, itemFrame.Width - pad * 2, itemFrame.Height - pad * 2);
+                e.Graphics.DrawImage(icon, iconRect);
+            }
 
             // 이름 프레임 (화면 상단 왼쪽)
             var nameInfo = new Rectangle(150, 10, 300, 100);
@@ -765,7 +824,7 @@ namespace WindowsFormsApp4
             // hp 프레임 (화면 상단 왼쪽)
             var hpInfo = new Rectangle(150, 60, 300, 100);
             e.Graphics.DrawImage(Properties.Resources.info, hpInfo);
-            var me = Players.players[AppState.CurrentUserId];
+
             string hpText = $"{me.HP} / 100";
             using (var hpFont = new Font("맑은 고딕", 20, FontStyle.Regular))
             using (var sf2 = new StringFormat
@@ -1066,6 +1125,8 @@ namespace WindowsFormsApp4
                 ItemRemovePacket packet = new ItemRemovePacket { x = intersection.X, y = intersection.Y };
                 byte[] buffer = packet.ToBytes();
                 AppState.Connection.Stream.Write(buffer, 0, buffer.Length);
+
+                this.Invalidate();
             }
         }
 

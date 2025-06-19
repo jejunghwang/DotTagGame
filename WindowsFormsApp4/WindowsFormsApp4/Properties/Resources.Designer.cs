@@ -240,6 +240,16 @@ namespace WindowsFormsApp4.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap hpCurse {
+            get {
+                object obj = ResourceManager.GetObject("hpCurse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap info {
             get {
                 object obj = ResourceManager.GetObject("info", resourceCulture);
@@ -273,6 +283,16 @@ namespace WindowsFormsApp4.Properties {
         internal static System.Drawing.Bitmap itemFrame {
             get {
                 object obj = ResourceManager.GetObject("itemFrame", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap keyCurse {
+            get {
+                object obj = ResourceManager.GetObject("keyCurse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1161,6 +1181,16 @@ namespace WindowsFormsApp4.Properties {
         internal static System.Drawing.Bitmap sightCurse {
             get {
                 object obj = ResourceManager.GetObject("sightCurse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap speedUp {
+            get {
+                object obj = ResourceManager.GetObject("speedUp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
