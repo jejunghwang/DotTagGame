@@ -350,8 +350,9 @@ namespace WindowsFormsApp4
                         stun.Enabled = true;
                         Players.players[packet.playerTag].Speed = 7;
                     }
+                    else if (hasInitialCountdownRun && AppState.CurrentUserId != packet.playerTag) Players.players[AppState.CurrentUserId].Speed = 5;
 
-                    initialTaggerName = Players.players[packet.playerTag].Name;
+                        initialTaggerName = Players.players[packet.playerTag].Name;
                     if (!isCountdownRunning && !hasInitialCountdownRun)
                     {
                         StartCountdown(5);
