@@ -50,6 +50,7 @@ namespace WindowsFormsApp4
         private Point lockedScrollPosition;
         Rectangle intersection;
         private Dictionary<int, Image> itemIcons = new Dictionary<int, Image>();
+        private HashSet<int> shield = new HashSet<int>();
 
         private int[,] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7,-7},
@@ -403,7 +404,7 @@ namespace WindowsFormsApp4
                     switch (effect.itemType)
                     {
                         case 1:  //이속 저하
-                            if (effect.playerId != AppState.CurrentUserId)
+                            if (effect.playerId == AppState.CurrentUserId)
                             {
                                 Players.players[AppState.CurrentUserId].Speed = 3;
                                 Players.players[AppState.CurrentUserId].itemDuration = 5;
@@ -411,7 +412,7 @@ namespace WindowsFormsApp4
                             }
                             break;
                         case 2:  //방향 전환
-                            if (effect.playerId != AppState.CurrentUserId)
+                            if (effect.playerId == AppState.CurrentUserId)
                             {
                                 Players.players[AppState.CurrentUserId].Speed = -Players.players[AppState.CurrentUserId].Speed;
                                 Players.players[AppState.CurrentUserId].itemDuration = 5;
@@ -430,7 +431,9 @@ namespace WindowsFormsApp4
                                 }
                             }
                             break;
-
+                        case 5: //방패
+                            shield.Add(effect.playerId);
+                            break;
                         default:
                             break;
 
@@ -476,7 +479,10 @@ namespace WindowsFormsApp4
                     int winnerTag = information.playerId;
                     gameEnd(winnerTag);
                     break;
-
+                case PacketType.shield:
+                    var sp = ShieldPacket.FromBytes(body);
+                    shield.Remove(sp.playerTag);
+                    break;
                 default:
                     break;
             }
@@ -814,6 +820,15 @@ namespace WindowsFormsApp4
                 pos.Width = itemPos.Width;
                 pos.Height = itemPos.Height;
                 e.Graphics.DrawImage(dict[100], pos);
+            }
+
+            foreach(var player in shield)
+            {
+                int x = Players.players[player].X + offset.X-characterSize/3, y = Players.players[player].Y + offset.Y-characterSize/3;
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 0, 0, 255)))
+                {
+                    e.Graphics.FillEllipse(brush, x, y, 50, 50);
+                }
             }
 
             // 내 캐릭터 액자 프레임

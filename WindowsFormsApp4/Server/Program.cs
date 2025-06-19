@@ -32,6 +32,7 @@ namespace Server
         private static HashSet<(int, int)> boxes = new HashSet<(int, int)>();
         private static int stunTag = -1;
         private static Random rand = new Random();
+        private static HashSet<int> shield = new HashSet<int>();
         static async Task Main(string[] args) => await RunAsync();
 
         private static async Task RunAsync()
@@ -260,6 +261,7 @@ namespace Server
 
                             case PacketType.itemEffect:
                                 var effect = ItemEffectPacket.FromBytes(packet);
+                                if (effect.itemType == 5) shield.Add(effect.playerId);
                                 Console.Write($"[{ip}] used item {effect.itemType}");
                                 wBuf = new byte[4 + packet.Length];
                                 BitConverter.GetBytes(packet.Length).CopyTo(wBuffer, 0);
@@ -411,6 +413,13 @@ namespace Server
                 if (playerTag == position.Key) continue;
                 if (charSize > Math.Abs((x2 + charSize / 2) - (x1 + charSize / 2)) + Math.Abs((y2 + charSize / 2) - (y1 + charSize / 2)))
                 {
+                    if (shield.Contains(position.Key))
+                    {
+                        shield.Remove(position.Key);
+                        var sp = new ShieldPacket{ playerTag = position.Key };
+                        _ = Task.Run(() => BroadCastAsync(sp.ToBytes()));
+                        return;
+                    }
                     _ = Task.Run(() => stun(position.Key));
                     Console.WriteLine($"[{playerTag}] Collision {position.Key}");
                     await BroadCastAsync(new ChangeTaggerPacket { playerTag = position.Key }.ToBytes());
@@ -468,7 +477,7 @@ namespace Server
 
             } while (!canPlaceTile.Contains(map[y, x]) || boxes.Contains((x, y)));
             boxes.Add((x, y));
-            itemType = rand.Next(0, 5);
+            itemType = rand.Next(0, 6);
             ItemSpawnPacket item = new ItemSpawnPacket { y = y, x = x, ItemId = itemType };
             await BroadCastAsync(item.ToBytes());
             Console.WriteLine("spawn item");
