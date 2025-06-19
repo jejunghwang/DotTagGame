@@ -464,24 +464,27 @@ namespace WindowsFormsApp4
                             shield.Add(effect.playerId);
                             break;
                         case 6: //텔레포트
-                            do
+                            if (AppState.CurrentUserId == effect.playerId)
                             {
-                                i_y = random.Next(0, map.GetLength(0));
-                                i_x = random.Next(0, map.GetLength(1));
+                                do
+                                {
+                                    i_y = random.Next(0, map.GetLength(0));
+                                    i_x = random.Next(0, map.GetLength(1));
 
-                            } while (!walkableTiles.Contains(map[i_y, i_x]));
+                                } while (!walkableTiles.Contains(map[i_y, i_x]));
 
-                            int worldX = tileSize * i_x;
-                            int worldY = tileSize * i_y;
+                                int worldX = tileSize * i_x;
+                                int worldY = tileSize * i_y;
 
-                            Players.players[AppState.CurrentUserId].SetPosition(worldX, worldY);
+                                Players.players[AppState.CurrentUserId].SetPosition(worldX, worldY);
 
-                            int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
-                            AddOrUpdateCharacter(AppState.CurrentUserId, worldX, worldY, ci, true);
-                            UpdateCameraPosition();
-                            this.Invalidate();
+                                int ci = characterIndices.TryGetValue(AppState.CurrentUserId, out var idx) ? idx : 1;
+                                AddOrUpdateCharacter(AppState.CurrentUserId, worldX, worldY, ci, true);
+                                UpdateCameraPosition();
+                                this.Invalidate();
 
-                            SendPlayerPosition(worldX, worldY);
+                                SendPlayerPosition(worldX, worldY);
+                            }
                             break;
                         case 7:
                             transparentPlayers.Add(effect.playerId);
