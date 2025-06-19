@@ -424,7 +424,7 @@ namespace WindowsFormsApp4
                         case 4:  //HP 저주
                             if (effect.playerId != AppState.CurrentUserId)
                             {
-                                Players.players[effect.playerId].HP = Players.players[effect.playerId].HP < 32 ? 2 : Players.players[effect.playerId].HP - 30;
+                                Players.players[AppState.CurrentUserId].HP = Players.players[AppState.CurrentUserId].HP < 32 ? 2 : Players.players[AppState.CurrentUserId].HP - 30;
                             }
                             break;
 

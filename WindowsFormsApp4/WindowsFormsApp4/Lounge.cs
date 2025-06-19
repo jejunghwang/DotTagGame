@@ -169,6 +169,13 @@ namespace WindowsFormsApp4
                     c.SetPosition(c.X, c.Y);
                     break;
                 case PacketType.start:
+                    foreach(var player in Players.players)
+                    {
+                        if(player != null)
+                        {
+                            player.HP = 100;
+                        }
+                    }
                     ShowTransitionAsync("술래 준비 중...", 3000).ContinueWith(_ =>
                     {
                         this.BeginInvoke(new Action(() => {
