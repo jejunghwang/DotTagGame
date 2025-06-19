@@ -349,9 +349,9 @@ namespace WindowsFormsApp4
                         int temp = (int)py;
                         if (px == 937 && py == 270)
                         {
-                            temp += tag * 100;
+                            temp += tag * 50;
                         }
-                        AddOrUpdateCharacter(tag, (int)px - 10, temp, charIdx, tag == AppState.CurrentUserId);
+                        AddOrUpdateCharacter(tag, (int)px - 5, temp, charIdx, tag == AppState.CurrentUserId);
                     }
                     if (characterIndices.TryGetValue(AppState.CurrentUserId, out var myCi))
                     {
