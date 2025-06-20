@@ -1,7 +1,6 @@
 # DotTagGame
 Application Software Team Project
 
-서버의 응답없이 클라이언트에서 자체적인 상태 업데이트 없애야 함
-캐릭터의 이미지 변경 속도 낮추기
-서버에서 아이디, 비밀번호 양식 체크해야함.
-동일 ip접속 거부 구현.
+실행방법
+서버에 해당하는 컴퓨터에서 Server 을 실행한다.
+클라이언트에서는 Login.cs 파일의 상단에 위치한 ip 와 port 번호에 서버컴퓨터의 ip 와 port 입력한 후 실행한다.
